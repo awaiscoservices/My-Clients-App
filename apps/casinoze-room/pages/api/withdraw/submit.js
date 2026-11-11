@@ -138,7 +138,12 @@ export default async function handler(req, res) {
       .from('withdrawals')
       .select('amount_cents')
       .eq('user_id', user.id)
-      .in('status', ['pending', 'approved'])
+      // A withdrawal that has been paid is the clearest possible use of the
+      // daily allowance, and 'approved' is not a status this table can hold
+      // — so only pending requests counted. Once one was paid it stopped
+      // counting, and the same player could take the full limit again the
+      // same day, as often as staff kept approving.
+      .in('status', ['pending', 'processing', 'paid'])
       .gte('created_at', startOfDay.toISOString())
 
     const usedToday = (todayWithdrawals || []).reduce((s, w) => s + w.amount_cents, 0)
