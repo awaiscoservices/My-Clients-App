@@ -137,3 +137,32 @@ export function txTypeColor(type) {
   const credits = ['deposit','deposit_bonus','redeem','referral_bonus','level_bonus','adjustment_credit','promotion_credit','refund','game_load_reserve_release','redeem_reserve_release','withdrawal_reserve_release']
   return credits.includes(type) ? '#10b981' : '#f87171'
 }
+
+/**
+ * How many times a player has loaded each of their game accounts.
+ *
+ * Returns { [game_account_id]: count }. Used to put the games someone
+ * actually plays at the top of My Games, instead of whichever account was
+ * created most recently — which told a player nothing they did not know.
+ *
+ * Counted in the browser over the id column alone: PostgREST cannot group,
+ * and a player's own load history is small. Approved loads only, so a
+ * rejected or pending one does not inflate the ranking.
+ */
+export async function getMyLoadCounts(userId) {
+  const { data, error } = await supabase
+    .from('game_loads')
+    .select('game_account_id')
+    .eq('user_id', userId)
+    .eq('status', 'approved')
+    .limit(1000)
+
+  if (error) return {}
+
+  const counts = {}
+  for (const row of data || []) {
+    if (!row.game_account_id) continue
+    counts[row.game_account_id] = (counts[row.game_account_id] || 0) + 1
+  }
+  return counts
+}

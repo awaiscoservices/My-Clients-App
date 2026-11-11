@@ -34,22 +34,19 @@ function Icon({ name, size = 18, color = 'currentColor' }) {
   )
 }
 
-// Sidebar: Wallet is the hub — Deposit/Transactions/Redeem/Withdraw all removed
-const NAV_GROUPS = [
-  { title: 'Main', items: [
-    { href: '/dashboard',               icon: 'home',   label: 'Dashboard' },
-    // Games and My Games were two entries for one question. They are one
-    // page with two tabs now; /dashboard/game-accounts redirects into it.
-    { href: '/dashboard/games',         icon: 'games',  label: 'Games'     },
-    { href: '/dashboard/wallet',        icon: 'wallet', label: 'Wallet'    },
-  ]},
-  { title: 'Account', items: [
-    { href: '/dashboard/rewards',   icon: 'star',   label: 'Player Levels' },
-    { href: '/dashboard/referrals', icon: 'users',  label: 'Referrals'     },
-    { href: '/dashboard/kyc',       icon: 'shield', label: 'Verification'  },
-    { href: '/dashboard/profile',   icon: 'user',   label: 'Profile'       },
-    { href: '/dashboard/support',   icon: 'chat',   label: 'Support'       },
-  ]},
+// Sidebar: Wallet is the hub — Deposit/Transactions/Redeem/Withdraw all removed.
+//
+// One flat list rather than Main and Account: six entries did not need two
+// headings over them, and the headings cost a line each in a rail this
+// narrow. Verification moved under Profile, and Support is reachable from
+// the pages that need it.
+const NAV_ITEMS = [
+  { href: '/dashboard',           icon: 'home',   label: 'Dashboard'     },
+  { href: '/dashboard/games',     icon: 'games',  label: 'Games'         },
+  { href: '/dashboard/wallet',    icon: 'wallet', label: 'Wallet'        },
+  { href: '/dashboard/rewards',   icon: 'star',   label: 'Player Levels' },
+  { href: '/dashboard/referrals', icon: 'users',  label: 'Referrals'     },
+  { href: '/dashboard/profile',   icon: 'user',   label: 'Profile'       },
 ]
 
 function BalanceChip({ label, cents, accent }) {
@@ -197,44 +194,36 @@ export default function PlayerLayout({ children }) {
 
       {/* SIDEBAR */}
       <aside className={`player-sidebar${sidebarOpen ? ' open' : ''}`} style={{
-        position: 'fixed', top: 64, left: 0, bottom: 0, width: 250, zIndex: 50,
+        position: 'fixed', top: 64, left: 0, bottom: 0, zIndex: 50,
         background: 'var(--panel-gradient)', borderRight: '1px solid rgba(251,191,36,.1)',
         display: 'flex', flexDirection: 'column',
       }}>
         <nav ref={navRef} onScroll={e => { cache.navScroll = e.currentTarget.scrollTop }} style={{ flex: 1, overflowY: 'auto', padding: '14px 12px', scrollbarWidth: 'none' }}>
-          {NAV_GROUPS.map(group => (
-            <div key={group.title} style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(251,191,36,.7)', padding: '4px 12px 8px' }}>{group.title}</div>
-              {group.items.map(item => {
-                const active = isActive(item.href)
-                return (
-                  <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
-                    className={`nav-link${active ? ' active' : ''}`}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 12, padding: '11px 12px', borderRadius: 12, marginBottom: 3,
-                      textDecoration: 'none', fontSize: 14, fontWeight: active ? 700 : 500,
-                      color: active ? '#050505' : 'rgba(255,255,255,.7)',
-                      background: active ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 'transparent',
-                      boxShadow: active ? '0 0 20px rgba(251,191,36,.25)' : 'none',
-                    }}>
-                    <Icon name={item.icon} />
-                    <span style={{ flex: 1 }}>{item.label}</span>
-                  </Link>
-                )
-              })}
-            </div>
-          ))}
+          {NAV_ITEMS.map(item => {
+            const active = isActive(item.href)
+            return (
+              <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
+                title={item.label}
+                className={`nav-link${active ? ' active' : ''}`}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 12, padding: '11px 12px', borderRadius: 12, marginBottom: 4,
+                  textDecoration: 'none', fontSize: 14, fontWeight: active ? 700 : 500,
+                  color: active ? '#050505' : 'rgba(255,255,255,.7)',
+                  background: active ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 'transparent',
+                  boxShadow: active ? '0 0 20px rgba(251,191,36,.25)' : 'none',
+                }}>
+                <Icon name={item.icon} />
+                <span className="rail-label" style={{ flex: 1, whiteSpace: 'nowrap' }}>{item.label}</span>
+              </Link>
+            )
+          })}
         </nav>
 
         <div style={{ padding: 12, borderTop: '1px solid rgba(251,191,36,.1)' }}>
-          {profile && (
-            <div style={{ marginBottom: 10, padding: '8px 12px', borderRadius: 12, background: 'rgba(251,191,36,.05)', border: '1px solid rgba(251,191,36,.12)' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.full_name}</div>
-              <div style={{ fontSize: 10, color: GOLD, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em' }}>Level {profile.player_level_id || 1}</div>
-            </div>
-          )}
-          <button onClick={handleSignOut} disabled={signingOut} style={{ width: '100%', padding: '10px 12px', background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 12, color: '#f87171', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit', sans-serif", display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            <Icon name="logout" size={16} /> {signingOut ? 'Signing out…' : 'Sign Out'}
+          <button onClick={handleSignOut} disabled={signingOut} title="Sign out" className="rail-btn"
+            style={{ width: '100%', height: 40, padding: '0 12px', background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 10, color: '#f87171', fontSize: 13, fontWeight: 700, cursor: signingOut ? 'default' : 'pointer', fontFamily: "'Outfit', sans-serif", display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: signingOut ? .6 : 1 }}>
+            <Icon name="logout" size={16} />
+            <span className="rail-label" style={{ whiteSpace: 'nowrap' }}>{signingOut ? 'Signing out…' : 'Sign Out'}</span>
           </button>
         </div>
       </aside>
@@ -242,7 +231,7 @@ export default function PlayerLayout({ children }) {
       {sidebarOpen && <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, top: 64, background: 'rgba(0,0,0,.7)', zIndex: 40 }} />}
 
       {/* MAIN */}
-      <div className="player-main" style={{ marginLeft: 250, paddingTop: 64, minHeight: '100vh' }}>
+      <div className="player-main" style={{ marginLeft: 72, paddingTop: 64, minHeight: '100vh' }}>
         <WinsTicker />
         {showPromo && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '10px 40px 10px 16px', position: 'relative', background: 'linear-gradient(90deg,rgba(251,191,36,.14),rgba(245,158,11,.06),rgba(251,191,36,.14))', borderBottom: '1px solid rgba(251,191,36,.18)', fontSize: 13, fontWeight: 600, textAlign: 'center' }}>
@@ -256,6 +245,27 @@ export default function PlayerLayout({ children }) {
       </div>
 
       <style>{`
+        /* Icon rail: 72px of icons, expanding to 250px on hover and sitting
+           over the page, so nothing shifts underneath. Same as both admin
+           portals. */
+        .player-sidebar { width: 72px; overflow: hidden; transition: width .18s ease; }
+        .player-sidebar:hover,
+        .player-sidebar:focus-within { width: 250px; box-shadow: 8px 0 32px rgba(0,0,0,.55); }
+
+        /* A hidden label must take no WIDTH either, or the Sign Out button
+           centres its icon against invisible text and pushes it off the
+           edge — which is exactly what happened in the admin rail. */
+        .player-sidebar .rail-label {
+          opacity: 0; max-width: 0; overflow: hidden;
+          transition: opacity .12s ease, max-width .18s ease; pointer-events: none;
+        }
+        .player-sidebar:hover .rail-label,
+        .player-sidebar:focus-within .rail-label { opacity: 1; max-width: 190px; pointer-events: auto; }
+
+        .player-sidebar .rail-btn { gap: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }
+        .player-sidebar:hover .rail-btn,
+        .player-sidebar:focus-within .rail-btn { gap: 8px !important; padding-left: 12px !important; padding-right: 12px !important; }
+
         .nav-link:not(.active):hover { background: rgba(251,191,36,.08) !important; color: #fff !important; }
         .player-sidebar::-webkit-scrollbar { display: none; }
         .wins-track { animation: winsScroll 40s linear infinite; padding-left: 20px; }
@@ -268,8 +278,12 @@ export default function PlayerLayout({ children }) {
           .deposit-btn { padding: 9px 12px !important; }
         }
         @media (max-width: 768px) {
-          .player-sidebar { transform: translateX(-100%); transition: transform .25s; }
+          /* On a phone there is no hover, so the drawer opens at full width
+             with every label showing. */
+          .player-sidebar { width: 250px !important; transform: translateX(-100%); transition: transform .25s; }
           .player-sidebar.open { transform: translateX(0); }
+          .player-sidebar .rail-label { opacity: 1 !important; max-width: none !important; pointer-events: auto !important; }
+          .player-sidebar .rail-btn { gap: 8px !important; padding-left: 12px !important; padding-right: 12px !important; }
           .player-main { margin-left: 0 !important; overflow-x: hidden; }
           .player-content { padding: 18px 14px !important; }
           .top-header { padding: 0 12px !important; gap: 8px !important; }

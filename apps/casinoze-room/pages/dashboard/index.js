@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
-import { getMyPendingCounts, getMyGameAccounts } from '../../lib/wallet'
+import { getMyPendingCounts, getMyGameAccounts, getMyLoadCounts } from '../../lib/wallet'
 import { gameLogoFor } from '../../lib/gameCatalog'
 
 // ─── WHEEL OF FORTUNE ─────────────────────────────────────────────────────────
@@ -553,14 +553,23 @@ export default function Dashboard() {
     supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', u.id).eq('is_read', false)
       .then(({ count }) => setUnread(count || 0), () => {})
     try {
-      const [{ data: prof }, { data: wal }, accounts, counts] = await Promise.all([
+      const [{ data: prof }, { data: wal }, accounts, counts, loadCounts] = await Promise.all([
         supabase.from('profiles').select('*, kyc_records(status)').eq('id', u.id).single(),
         supabase.from('wallets').select('*').eq('user_id', u.id).single(),
         getMyGameAccounts(u.id),
         getMyPendingCounts(u.id),
+        getMyLoadCounts(u.id),
       ])
       setProfile(prof); setWallet(wal)
-      setGameAccounts(accounts || [])
+      // Most played first — an active account the player actually uses is
+      // more useful at the top than whichever was created last. Ties, and
+      // accounts never loaded, keep the newest-first order underneath.
+      const ranked = [...(accounts || [])].sort((a, b) => {
+        const byUse = (loadCounts[b.id] || 0) - (loadCounts[a.id] || 0)
+        if (byUse !== 0) return byUse
+        return new Date(b.created_at) - new Date(a.created_at)
+      })
+      setGameAccounts(ranked)
       setPending(counts)
       if (prof?.player_level_id) {
         const { data: lvl } = await supabase.from('player_levels').select('*').eq('id', prof.player_level_id).single()
@@ -651,9 +660,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* WHEEL OF FORTUNE */}
-      <WheelSection wallet={wallet} />
-
       {/* GAMES STRIP */}
       {panels.length > 0 && (
         <div style={{ marginBottom: 28 }}>
@@ -693,6 +699,9 @@ export default function Dashboard() {
           <PendingCard label="Withdrawals" count={pending.withdrawals} href="/dashboard/withdraw"      color="#3b82f6" />
         </div>
       )}
+
+      {/* WHEEL OF FORTUNE */}
+      <WheelSection wallet={wallet} />
 
       {/* MAIN GRID */}
       <div className="dash-main-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 20 }}>
