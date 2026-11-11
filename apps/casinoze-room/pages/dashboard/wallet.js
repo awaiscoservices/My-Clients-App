@@ -259,7 +259,15 @@ export default function WalletPage() {
                     {tx.direction === 'credit' ? '⬆️' : '⬇️'}
                   </div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>{txTypeLabel(tx.type)}</div>
+                    {/* The game's name sits on the title line, where it is
+                        read first — "Game Load · Fire Kirin" answers the
+                        question the reference number never did. It comes
+                        from the linked load or redemption, so entries
+                        written before the name existed show it too. */}
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>
+                      {txTypeLabel(tx.type)}
+                      {tx.game_name && <span style={{ color: '#fbbf24' }}> · {tx.game_name}</span>}
+                    </div>
                     {tx.description && <div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)', marginTop: 2 }}>{tx.description}</div>}
                     <div style={{ fontSize: 11, color: 'rgba(255,255,255,.25)', marginTop: 2 }}>
                       {new Date(tx.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}

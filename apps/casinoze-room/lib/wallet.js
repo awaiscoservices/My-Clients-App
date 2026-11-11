@@ -17,18 +17,41 @@ export async function getMyWallet(userId) {
  * Get recent ledger transactions for a user
  */
 export async function getMyTransactions(userId, { limit = 20, offset = 0, type } = {}) {
-  let query = supabase
-    .from('ledger')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1)
+  // The game's name comes from the linked game load or redemption, not from
+  // the ledger row's own text.
+  //
+  // The description is written once, when the entry is created, and the
+  // ledger is append-only — two database rules forbid updating or deleting
+  // a row. So entries written before the name was added to that text can
+  // never gain it. Reading it through the link fixes old rows and new ones
+  // alike, and keeps working whatever the description happens to say.
+  const base = (select) => {
+    let q = supabase
+      .from('ledger')
+      .select(select)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1)
+    if (type) q = q.eq('type', type)
+    return q
+  }
 
-  if (type) query = query.eq('type', type)
+  // The embedded read needs a foreign key PostgREST can see from
+  // ledger.game_load_id and ledger.redeem_id. If either is missing the
+  // whole query fails, and a wallet that will not load is far worse than
+  // one missing a game name — so fall back to the plain rows.
+  let { data, error } = await base('*, game_loads(game_panel_name), redemptions(game_panel_name)')
 
-  const { data, error } = await query
+  if (error) {
+    console.warn('[wallet] game names unavailable:', error.message)
+    ;({ data, error } = await base('*'))
+  }
   if (error) throw error
-  return data
+
+  return (data || []).map(row => ({
+    ...row,
+    game_name: row.game_loads?.game_panel_name || row.redemptions?.game_panel_name || null,
+  }))
 }
 
 /**
