@@ -4,7 +4,7 @@ import { GAME_CATALOG } from '../../lib/gameCatalog'
 
 const cols = [
   ['Platform', [['Games', '/#games'], ['How it works', '/#how'], ['Register', '/auth/register'], ['Login', '/auth/login']]],
-  ['Company', [['About', '/about'], ['FAQ', '/faq'], ['Support', '/dashboard/support']]],
+  ['Company', [['About', '/about'], ['FAQ', '/faq'], ['Support', '/dashboard/chat']]],
   ['Legal', [['Terms of Service', '/terms'], ['Privacy Policy', '/privacy']]],
 ]
 

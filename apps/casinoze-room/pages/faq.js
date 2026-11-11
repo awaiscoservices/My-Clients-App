@@ -18,7 +18,7 @@ export default function FAQ() {
         ))}
       </div>
       <p style={{ marginTop: 24, color: 'rgba(255,255,255,.5)', fontSize: 14 }}>
-        Still have a question? <Link href="/dashboard/support" style={{ color: '#fbbf24', fontWeight: 700 }}>Contact support</Link> from your dashboard.
+        Still have a question? <Link href="/dashboard/chat" style={{ color: '#fbbf24', fontWeight: 700 }}>Contact support</Link> from your dashboard.
       </p>
     </StaticPage>
   )

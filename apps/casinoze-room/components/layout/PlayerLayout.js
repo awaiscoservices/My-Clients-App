@@ -47,6 +47,9 @@ const NAV_ITEMS = [
   { href: '/dashboard/rewards',   icon: 'star',   label: 'Player Levels' },
   { href: '/dashboard/referrals', icon: 'users',  label: 'Referrals'     },
   { href: '/dashboard/profile',   icon: 'user',   label: 'Profile'       },
+  // Live chat replaces the old Support page — a real conversation with staff
+  // rather than a ticket form.
+  { href: '/dashboard/chat',      icon: 'chat',   label: 'Live Chat'     },
 ]
 
 function BalanceChip({ label, cents, accent }) {
