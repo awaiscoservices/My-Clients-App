@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
-import { getMyTransactions, getMyPendingCounts, getMyGameAccounts, txTypeLabel, txTypeColor } from '../../lib/wallet'
+import { getMyPendingCounts, getMyGameAccounts } from '../../lib/wallet'
 import { gameLogoFor } from '../../lib/gameCatalog'
 
 // ─── WHEEL OF FORTUNE ─────────────────────────────────────────────────────────
@@ -533,7 +533,6 @@ export default function Dashboard() {
   const [user, setUser]               = useState(null)
   const [profile, setProfile]         = useState(null)
   const [wallet, setWallet]           = useState(null)
-  const [transactions, setTransactions] = useState([])
   const [gameAccounts, setGameAccounts] = useState([])
   const [pending, setPending]         = useState({ deposits: 0, loads: 0, redeems: 0, withdrawals: 0 })
   const [level, setLevel]             = useState(null)
@@ -554,15 +553,14 @@ export default function Dashboard() {
     supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', u.id).eq('is_read', false)
       .then(({ count }) => setUnread(count || 0), () => {})
     try {
-      const [{ data: prof }, { data: wal }, txs, accounts, counts] = await Promise.all([
+      const [{ data: prof }, { data: wal }, accounts, counts] = await Promise.all([
         supabase.from('profiles').select('*, kyc_records(status)').eq('id', u.id).single(),
         supabase.from('wallets').select('*').eq('user_id', u.id).single(),
-        getMyTransactions(u.id, { limit: 8 }),
         getMyGameAccounts(u.id),
         getMyPendingCounts(u.id),
       ])
       setProfile(prof); setWallet(wal)
-      setTransactions(txs || []); setGameAccounts(accounts || [])
+      setGameAccounts(accounts || [])
       setPending(counts)
       if (prof?.player_level_id) {
         const { data: lvl } = await supabase.from('player_levels').select('*').eq('id', prof.player_level_id).single()
@@ -699,41 +697,65 @@ export default function Dashboard() {
       {/* MAIN GRID */}
       <div className="dash-main-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 20 }}>
 
-        {/* Recent Transactions */}
+        {/* My Games
+            Recent Transactions used to sit here. Wallet already lists every
+            movement with filters and running balances, so this was a second,
+            shorter answer to a question that has a better page — and it left
+            the player's own game accounts squeezed into a 300px column with
+            a placeholder where each logo should be. */}
         <div style={{ ...PANEL, borderRadius: 18, overflow: 'hidden' }}>
           <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>Recent Transactions</span>
-            <Link href="/dashboard/transactions" style={{ fontSize: 12, color: '#fbbf24', fontWeight: 600, textDecoration: 'none' }}>View All →</Link>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>My Games</span>
+            <Link href="/dashboard/games?tab=mine" style={{ fontSize: 12, color: '#fbbf24', fontWeight: 600, textDecoration: 'none' }}>View All →</Link>
           </div>
-          {transactions.length === 0 ? (
-            <div style={{ padding: '40px 20px', textAlign: 'center' }}>
-              <div style={{ fontSize: 32, marginBottom: 10 }}>📋</div>
-              <div style={{ color: 'rgba(255,255,255,.3)', fontSize: 13 }}>No transactions yet</div>
-              <Link href="/dashboard/deposit" style={{ display: 'inline-block', marginTop: 12, color: '#fbbf24', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>Make your first deposit →</Link>
+
+          {gameAccounts.length === 0 ? (
+            <div style={{ padding: '44px 20px', textAlign: 'center' }}>
+              <div style={{ color: 'rgba(255,255,255,.45)', fontSize: 14, fontWeight: 600, marginBottom: 6 }}>No game accounts yet</div>
+              <div style={{ color: 'rgba(255,255,255,.3)', fontSize: 12.5, marginBottom: 16 }}>
+                Pick a game and our team will set an account up for you.
+              </div>
+              <Link href="/dashboard/games" style={{ display: 'inline-block', padding: '11px 26px', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', borderRadius: 12, color: '#050505', fontSize: 13, fontWeight: 800, textDecoration: 'none' }}>
+                Browse games
+              </Link>
             </div>
           ) : (
             <div>
-              {transactions.map((tx, i) => (
-                <div key={tx.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom: i < transactions.length - 1 ? '1px solid rgba(255,255,255,.04)' : 'none', transition: 'background .15s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,.03)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, background: txTypeColor(tx.type) === '#10b981' ? 'rgba(16,185,129,.12)' : 'rgba(248,113,113,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, flexShrink: 0 }}>
-                      {tx.direction === 'credit' ? '⬆️' : '⬇️'}
+              {gameAccounts.slice(0, 5).map((ga, i) => {
+                const accent = ga.game_panels?.accent_color || '#fbbf24'
+                const logo   = ga.game_panels?.logo_url || gameLogoFor(ga.game_panels?.slug, ga.game_panels?.name)
+                return (
+                  <div key={ga.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 20px', borderBottom: i < Math.min(gameAccounts.length, 5) - 1 ? '1px solid rgba(255,255,255,.04)' : 'none' }}>
+                    <div style={{ width: 46, height: 46, borderRadius: 13, flexShrink: 0, background: `linear-gradient(145deg,${accent}2e,${accent}0a)`, border: `1px solid ${accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                      {logo
+                        ? <img src={logo} alt={ga.game_panels?.name || 'Game'} loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: 36, height: 36, objectFit: 'contain', filter: 'drop-shadow(0 3px 6px rgba(0,0,0,.45))' }} />
+                        : <span style={{ fontSize: 20 }}>🎮</span>}
                     </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>{txTypeLabel(tx.type)}</div>
-                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,.3)' }}>{new Date(tx.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13.5, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ga.game_panels?.name}</div>
+                      <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,.35)', fontFamily: ga.game_username ? 'monospace' : 'inherit' }}>
+                        {ga.game_username ? `@${ga.game_username}` : 'Pending setup'}
+                      </div>
                     </div>
+
+                    {ga.status === 'active' ? (
+                      <div className="mg-acts" style={{ display: 'flex', gap: 7, flexShrink: 0 }}>
+                        <Link href={`/dashboard/load-game?account=${ga.id}`} style={{ padding: '7px 13px', borderRadius: 9, background: 'rgba(16,185,129,.14)', border: '1px solid rgba(16,185,129,.3)', color: '#10b981', fontSize: 11.5, fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap' }}>Load</Link>
+                        <Link href={`/dashboard/redeem?account=${ga.id}`} style={{ padding: '7px 13px', borderRadius: 9, background: 'rgba(168,85,247,.14)', border: '1px solid rgba(168,85,247,.3)', color: '#c084fc', fontSize: 11.5, fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap' }}>Redeem</Link>
+                      </div>
+                    ) : (
+                      <StatusBadge status={ga.status} size="xs" />
+                    )}
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: txTypeColor(tx.type) }}>
-                      {tx.direction === 'credit' ? '+' : '-'}<MoneyDisplay cents={tx.amount_cents} size="sm" color={txTypeColor(tx.type)} />
-                    </div>
-                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,.25)', textTransform: 'uppercase', letterSpacing: '.06em' }}>{tx.wallet_bucket}</div>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
+
+              {gameAccounts.length > 5 && (
+                <Link href="/dashboard/games?tab=mine" style={{ display: 'block', padding: '13px 20px', textAlign: 'center', fontSize: 12.5, fontWeight: 700, color: '#fbbf24', textDecoration: 'none', borderTop: '1px solid rgba(255,255,255,.04)' }}>
+                  {gameAccounts.length - 5} more →
+                </Link>
+              )}
             </div>
           )}
         </div>
@@ -743,32 +765,6 @@ export default function Dashboard() {
           <DailyBonusCard />
           <VIPProgressCard level={level} profile={profile} />
           <LuckyNumberCard />
-
-          {/* My Game Accounts */}
-          <div style={{ ...PANEL, borderRadius: 18, padding: '18px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-              <span style={LABEL}>My Games</span>
-              <Link href="/dashboard/games" style={{ fontSize: 12, color: '#fbbf24', fontWeight: 600, textDecoration: 'none' }}>+ Add</Link>
-            </div>
-            {gameAccounts.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '12px 0' }}>
-                <div style={{ fontSize: 24, marginBottom: 8 }}>🎮</div>
-                <div style={{ color: 'rgba(255,255,255,.3)', fontSize: 12, marginBottom: 10 }}>No game accounts yet</div>
-                <Link href="/dashboard/games" style={{ fontSize: 12, color: '#fbbf24', fontWeight: 700, textDecoration: 'none' }}>Browse Games →</Link>
-              </div>
-            ) : (
-              gameAccounts.slice(0, 4).map(ga => (
-                <div key={ga.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,.04)' }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 8, background: `${ga.game_panels?.accent_color || '#fbbf24'}22`, border: `1px solid ${ga.game_panels?.accent_color || '#fbbf24'}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>🎮</div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ga.game_panels?.name}</div>
-                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,.35)' }}>{ga.game_username || 'Pending setup'}</div>
-                  </div>
-                  <StatusBadge status={ga.status} size="xs" />
-                </div>
-              ))
-            )}
-          </div>
 
           {/* Verification status */}
           <div style={{ ...PANEL, borderRadius: 18, padding: '16px 20px' }}>
