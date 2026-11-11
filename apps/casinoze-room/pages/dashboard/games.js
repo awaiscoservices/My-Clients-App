@@ -246,19 +246,31 @@ export default function GamesPage() {
   }
 
   async function loadData() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/auth/login'); return }
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { router.push('/auth/login'); return }
 
-    const [{ data: gamesData }, { data: accountsData }] = await Promise.all([
+    // Accounts come from the API, not straight from the table. The game
+    // password is stored encrypted and the key lives on the server, so a
+    // query made in the browser could never show one — Show just revealed
+    // another row of dots. The route decrypts the caller's own accounts and
+    // never returns the encrypted blob itself.
+    const [{ data: gamesData }, accountsRes] = await Promise.all([
       supabase.from('game_panels').select('*').eq('is_active', true).order('sort_order'),
-      supabase.from('game_accounts')
-        .select('*, game_panels(name, accent_color, slug, logo_url)')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false }),
+      fetch('/api/player/game-accounts', {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      }),
     ])
 
     setGames(gamesData || [])
-    setAccounts(accountsData || [])
+
+    if (accountsRes.ok) {
+      const d = await accountsRes.json()
+      setAccounts(d.accounts || [])
+    } else {
+      setAccounts([])
+      showToast('Could not load your game accounts', 'error')
+    }
+
     setLoading(false)
   }
 
