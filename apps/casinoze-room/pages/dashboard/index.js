@@ -686,7 +686,7 @@ export default function Dashboard() {
             Pending Requests <span style={{ background: '#fbbf24', color: '#000', fontSize: 9, padding: '2px 7px', borderRadius: 99, marginLeft: 6, fontWeight: 800 }}>{totalPending}</span>
           </div>
           <PendingCard label="Deposits"    count={pending.deposits}    href="/dashboard/deposit"       color="#10b981" />
-          <PendingCard label="Game Loads"  count={pending.loads}       href="/dashboard/game-accounts" color="#fbbf24" />
+          <PendingCard label="Game Loads"  count={pending.loads}       href="/dashboard/games?tab=mine" color="#fbbf24" />
           <PendingCard label="Redemptions" count={pending.redeems}     href="/dashboard/redeem"        color="#f59e0b" />
           <PendingCard label="Withdrawals" count={pending.withdrawals} href="/dashboard/withdraw"      color="#3b82f6" />
         </div>

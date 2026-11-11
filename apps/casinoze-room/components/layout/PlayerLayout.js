@@ -38,8 +38,9 @@ function Icon({ name, size = 18, color = 'currentColor' }) {
 const NAV_GROUPS = [
   { title: 'Main', items: [
     { href: '/dashboard',               icon: 'home',   label: 'Dashboard' },
+    // Games and My Games were two entries for one question. They are one
+    // page with two tabs now; /dashboard/game-accounts redirects into it.
     { href: '/dashboard/games',         icon: 'games',  label: 'Games'     },
-    { href: '/dashboard/game-accounts', icon: 'cards',  label: 'My Games'  },
     { href: '/dashboard/wallet',        icon: 'wallet', label: 'Wallet'    },
   ]},
   { title: 'Account', items: [
