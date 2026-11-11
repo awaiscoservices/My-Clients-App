@@ -663,8 +663,12 @@ export default function Dashboard() {
             <span style={LABEL}>Our Games</span>
             <Link href="/dashboard/games" style={{ fontSize: 12, color: '#fbbf24', fontWeight: 700, textDecoration: 'none' }}>View all →</Link>
           </div>
-          <div style={{ display: 'flex', gap: 14, overflowX: 'auto', padding: '8px 4px 16px', scrollbarWidth: 'thin' }}>
-            {panels.map((g, i) => {
+          {/* A wrapping grid, not a sideways scroller. This was a flex row
+              with overflow-x:auto, so the catalogue sat behind a scrollbar
+              and most of it was never seen. Two rows of seven here, and
+              View all goes to the full list. */}
+          <div className="hg-grid">
+            {panels.slice(0, 14).map((g, i) => {
               const logo = g.logo_url || gameLogoFor(g.slug, g.name)
               const t = TILE_TINTS[i % TILE_TINTS.length]
               return (
@@ -785,7 +789,16 @@ export default function Dashboard() {
         @media (max-width: 1080px) {
           .dash-main-grid { grid-template-columns: 1fr !important; }
         }
-        .hg{position:relative;flex:0 0 150px;display:block;text-decoration:none;color:#fff;border-radius:18px;overflow:hidden;background:linear-gradient(165deg,var(--g1) 0%,var(--g2) 62%,#0a1222 100%);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 22px rgba(0,0,0,.35);transition:transform .3s cubic-bezier(.2,.9,.3,1.35),box-shadow .3s,border-color .3s}
+        .hg-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;padding:8px 4px 4px}
+        @media(max-width:1500px){.hg-grid{grid-template-columns:repeat(6,1fr)}}
+        @media(max-width:1280px){.hg-grid{grid-template-columns:repeat(5,1fr)}}
+        @media(max-width:1040px){.hg-grid{grid-template-columns:repeat(4,1fr)}}
+        @media(max-width:860px){.hg-grid{grid-template-columns:repeat(3,1fr)}}
+        /* Two across on a phone, and only six tiles: fourteen would be seven
+           rows of scrolling before the rest of the dashboard. View all is
+           right above them. */
+        @media(max-width:720px){.hg-grid{grid-template-columns:repeat(2,1fr);gap:11px}.hg-grid>:nth-child(n+7){display:none}}
+        .hg{position:relative;display:block;text-decoration:none;color:#fff;border-radius:18px;overflow:hidden;background:linear-gradient(165deg,var(--g1) 0%,var(--g2) 62%,#0a1222 100%);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 22px rgba(0,0,0,.35);transition:transform .3s cubic-bezier(.2,.9,.3,1.35),box-shadow .3s,border-color .3s}
         .hg::after{content:'';position:absolute;top:0;left:-70%;width:45%;height:100%;pointer-events:none;background:linear-gradient(105deg,transparent,rgba(255,255,255,.24),transparent);transform:skewX(-18deg);transition:left .7s}
         .hg-art{height:128px;display:flex;align-items:center;justify-content:center;padding:16px 12px 6px}
         .hg-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.5));transition:transform .35s cubic-bezier(.2,.9,.3,1.35)}
