@@ -40,76 +40,6 @@ function BucketCard({ label, cents, color, icon, desc }) {
 }
 
 // ─── Withdraw method picker (inline modal) ────────────────────────────────────
-function WithdrawMethodPicker({ onClose }) {
-  const [methods, setMethods] = useState([])
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
-
-  useEffect(() => {
-    supabase
-      .from('payment_methods')
-      .select('id, name, type, icon')
-      .eq('is_active', true)
-      .eq('allow_withdraw', true)
-      .order('sort_order', { ascending: true })
-      .then(({ data }) => { setMethods(data || []); setLoading(false) })
-  }, [])
-
-  const METHOD_ICONS = {
-    cashapp: '💚', zelle: '⚡', venmo: '💙', chime: '💳',
-    paypal: '🅿️', bank_transfer: '🏦', crypto: '₿', other: '💵',
-  }
-
-  return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 100,
-      background: 'rgba(0,0,0,.7)', backdropFilter: 'blur(4px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16,
-    }} onClick={onClose}>
-      <div style={{
-        background: 'linear-gradient(135deg,rgba(10,22,40,.98),rgba(5,10,20,.98))',
-        border: '1px solid rgba(251,191,36,.2)', borderRadius: 20,
-        padding: 28, width: '100%', maxWidth: 420,
-        boxShadow: '0 20px 60px rgba(0,0,0,.8)',
-      }} onClick={e => e.stopPropagation()}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-          <div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', fontFamily: "'Cinzel',serif" }}>Withdraw Funds</div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>Choose your withdrawal method</div>
-          </div>
-          <button onClick={onClose} style={{ background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, width: 36, height: 36, cursor: 'pointer', color: 'rgba(255,255,255,.6)', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
-        </div>
-
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '32px 0', color: 'rgba(255,255,255,.3)', fontSize: 13 }}>Loading…</div>
-        ) : methods.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '32px 0', color: 'rgba(255,255,255,.3)', fontSize: 13 }}>No withdrawal methods available</div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {methods.map(m => (
-              <button key={m.id} onClick={() => router.push(`/dashboard/withdraw?method=${m.id}`)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 14,
-                  padding: '14px 16px', borderRadius: 14,
-                  background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.1)',
-                  cursor: 'pointer', textAlign: 'left', transition: 'all .15s',
-                  fontFamily: "'Outfit',sans-serif", color: '#fff',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(251,191,36,.08)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,.3)' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.1)' }}
-              >
-                <span style={{ fontSize: 24 }}>{METHOD_ICONS[m.type] || '💵'}</span>
-                <span style={{ fontSize: 15, fontWeight: 700 }}>{m.name}</span>
-                <span style={{ marginLeft: 'auto', fontSize: 18, color: 'rgba(255,255,255,.3)' }}>→</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function WalletPage() {
   const router = useRouter()
@@ -120,7 +50,6 @@ export default function WalletPage() {
   const [txLoading, setTxLoading]     = useState(false)
   const [page, setPage]               = useState(0)
   const [hasMore, setHasMore]         = useState(true)
-  const [showWithdraw, setShowWithdraw] = useState(false)
   const LIMIT = 15
 
   useEffect(() => { loadWallet() }, [])
@@ -170,7 +99,10 @@ export default function WalletPage() {
       label: '💸 Withdraw',
       bg: 'linear-gradient(135deg,#3b82f6,#2563eb)',
       color: '#fff',
-      onClick: () => setShowWithdraw(true),
+      // Straight to the withdraw page. This opened a method picker first,
+      // and the withdraw page then asked for the method again — the same
+      // question twice, with two different lists behind it.
+      onClick: () => router.push('/dashboard/withdraw'),
     },
     {
       label: '🎮 Scores',
@@ -189,8 +121,6 @@ export default function WalletPage() {
   return (
     <PlayerLayout>
       <Head><title>Wallet — Casinoze Room</title></Head>
-
-      {showWithdraw && <WithdrawMethodPicker onClose={() => setShowWithdraw(false)} />}
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>

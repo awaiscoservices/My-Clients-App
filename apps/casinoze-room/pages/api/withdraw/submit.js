@@ -41,11 +41,15 @@ export default async function handler(req, res) {
   const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' })
 
+  // Payout details are given with each withdrawal now, not chosen from a
+  // list saved on the player's profile. Where the money goes can change
+  // between one payout and the next, and a stale saved account is how money
+  // gets sent to the wrong place.
   const {
     payment_method_id,
     amount_cents,
-    payout_account_id, // references player_payout_methods.id
-    player_notes,
+    destination,        // the tag, address or account the player wants paying
+    qr_path,            // optional QR image, uploaded first
     idempotency_key,
   } = req.body
 
@@ -54,6 +58,9 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Payment method is required' })
   if (!amount_cents || typeof amount_cents !== 'number' || amount_cents <= 0 || !Number.isInteger(amount_cents))
     return res.status(400).json({ error: 'Invalid amount (must be positive integer cents)' })
+  // Staff need somewhere to send it: either typed details or a QR image.
+  if (!String(destination || '').trim() && !qr_path)
+    return res.status(400).json({ error: 'Enter your payout details, or upload a QR code' })
   if (!idempotency_key)
     return res.status(400).json({ error: 'Idempotency key is required' })
 
@@ -96,7 +103,7 @@ export default async function handler(req, res) {
   // ── Load profile + level ──────────────────────────────────────────────────
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('status, player_level_id')
+    .select('status, player_level_id, tenant_id')
     .eq('id', user.id)
     .single()
 
@@ -187,18 +194,6 @@ export default async function handler(req, res) {
       : 0
   }
 
-  // ── Load payout account details (optional but useful for record) ──────────
-  let payoutAccount = null
-  if (payout_account_id) {
-    const { data: pa } = await supabaseAdmin
-      .from('player_payout_methods')
-      .select('id, label, account_number_masked, type')
-      .eq('id', payout_account_id)
-      .eq('user_id', user.id)
-      .single()
-    payoutAccount = pa
-  }
-
   // ── Create withdrawal record ──────────────────────────────────────────────
   const { data: withdrawal, error: wError } = await supabaseAdmin
     .from('withdrawals')
@@ -209,11 +204,18 @@ export default async function handler(req, res) {
       cash_deduct_cents,
       bonus_deduct_cents,
       bonus_to_cash_pct_applied: bonusToCashPct,
-      payout_account_id:    payoutAccount?.id || null,
-      payout_label:         payoutAccount?.label || null,
-      player_notes:         player_notes || null,
+      // What staff need to pay this out, captured at the moment it was asked
+      // for. `player_notes` was written here and is not a column on this
+      // table, so this insert could never have succeeded.
+      method:               method.name,
+      destination:          String(destination || '').trim() || null,
+      payout_label:         method.name,
+      proof_screenshot_url: qr_path || null,
       status:               'pending',
       idempotency_key,
+      // Defaults to the first casino, so without this every other casino's
+      // withdrawals would be filed under it.
+      ...(profile?.tenant_id ? { tenant_id: profile.tenant_id } : {}),
     })
     .select()
     .single()
