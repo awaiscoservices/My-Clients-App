@@ -217,7 +217,10 @@ export default async function handler(req, res) {
       method:               method.name,
       destination:          String(destination || '').trim() || null,
       payout_label:         method.name,
-      proof_screenshot_url: qr_path || null,
+      // Its own column, not proof_screenshot_url: that one holds the proof
+      // staff upload when they pay, so putting the player's QR there meant
+      // approving a withdrawal erased the thing it was paid to.
+      payout_qr_url:        qr_path || null,
       status:               'pending',
       idempotency_key,
       // Defaults to the first casino, so without this every other casino's
