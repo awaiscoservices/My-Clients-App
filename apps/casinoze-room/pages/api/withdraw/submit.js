@@ -80,14 +80,22 @@ export default async function handler(req, res) {
   }
 
   // ── Load payment method ───────────────────────────────────────────────────
+  // payment_methods has min_deposit_cents and max_deposit_cents. It has no
+  // withdrawal limits — those belong to the player's level, and are applied
+  // below. Asking for columns that do not exist made PostgREST reject the
+  // whole query, which this code then reported as "Payment method not
+  // found" — for a method the dropdown had just listed.
   const { data: method, error: methodError } = await supabaseAdmin
     .from('payment_methods')
-    .select('id, name, is_active, allow_withdraw, min_withdrawal_cents, max_withdrawal_cents')
+    .select('id, name, is_active, allow_withdraw')
     .eq('id', payment_method_id)
     .single()
 
-  if (methodError || !method)
-    return res.status(400).json({ error: 'Payment method not found' })
+  if (methodError) {
+    console.error('[withdraw/submit] method lookup failed:', methodError)
+    return res.status(500).json({ error: 'Could not check that payment method' })
+  }
+  if (!method) return res.status(400).json({ error: 'Payment method not found' })
   if (!method.is_active)
     return res.status(400).json({ error: 'Payment method is not active' })
 
@@ -95,10 +103,9 @@ export default async function handler(req, res) {
   if (!method.allow_withdraw)
     return res.status(400).json({ error: 'Withdrawals are not currently accepted via this payment method' })
 
-  if (amount_cents < (method.min_withdrawal_cents || 0))
-    return res.status(400).json({ error: `Minimum withdrawal is $${((method.min_withdrawal_cents || 0) / 100).toFixed(2)}` })
-  if (method.max_withdrawal_cents && amount_cents > method.max_withdrawal_cents)
-    return res.status(400).json({ error: `Maximum withdrawal is $${(method.max_withdrawal_cents / 100).toFixed(2)}` })
+  // The minimum and maximum for a single withdrawal come from the player's
+  // level, applied below. There were checks here against columns the
+  // payment_methods table does not have.
 
   // ── Load profile + level ──────────────────────────────────────────────────
   const { data: profile } = await supabaseAdmin
@@ -243,6 +250,9 @@ export default async function handler(req, res) {
 
   // ── Append-only ledger entry ──────────────────────────────────────────────
   await supabaseAdmin.from('ledger').insert({
+    // Without the casino, this row is invisible to every scoped read and the
+    // casino's own staff never see the movement.
+    tenant_id:      profile?.tenant_id || null,
     user_id:        user.id,
     type:           'withdrawal_pending',
     amount_cents:   -amount_cents, // negative = outflow
@@ -254,6 +264,7 @@ export default async function handler(req, res) {
 
   // ── Notification ──────────────────────────────────────────────────────────
   await supabaseAdmin.from('notifications').insert({
+    tenant_id: profile?.tenant_id || null,
     user_id: user.id,
     type:    'general',
     title:   'Withdrawal Submitted',
