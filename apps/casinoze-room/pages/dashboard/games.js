@@ -99,11 +99,12 @@ function GameCard({ game, myAccount, onRequest, requesting }) {
 }
 
 /* ── one of my accounts, in the My Games tab ──────────────────────────────── */
-function AccountCard({ account }) {
+function AccountCard({ account, onRequestPassword, requestingPassword }) {
   const [showPassword, setShowPassword] = useState(false)
   const [hov, setHov] = useState(false)
   const [copied, setCopied] = useState('')
   const color = account.game_panels?.accent_color || '#fbbf24'
+  const pwRequested = !!account.password_change_requested
 
   function copy(text, label) {
     navigator.clipboard.writeText(text || '').then(
@@ -184,6 +185,22 @@ function AccountCard({ account }) {
           </div>
         )}
 
+        {/* A password change is a request to staff, not something the player
+            can do themselves — the password lives in the game panel. The old
+            one keeps working until staff replace it. */}
+        {account.status === 'active' && (
+          pwRequested ? (
+            <div style={{ marginBottom: 10, padding: '9px 12px', background: 'rgba(245,158,11,.1)', border: '1px solid rgba(245,158,11,.25)', borderRadius: 10, fontSize: 11.5, color: '#f59e0b', fontWeight: 700, textAlign: 'center' }}>
+              New password requested — your current one still works
+            </div>
+          ) : (
+            <button onClick={() => onRequestPassword(account)} disabled={requestingPassword}
+              style={{ width: '100%', marginBottom: 10, padding: '9px 12px', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, color: 'rgba(255,255,255,.6)', fontSize: 11.5, fontWeight: 700, cursor: requestingPassword ? 'default' : 'pointer', fontFamily: "'Outfit',sans-serif" }}>
+              {requestingPassword ? 'Requesting…' : 'Request new password'}
+            </button>
+          )
+        )}
+
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {account.status === 'active' && (
             <Link href={`/dashboard/load-game?account=${account.id}`} style={{ flex: 1, minWidth: 130, padding: 10, background: 'linear-gradient(135deg,#10b981,#059669)', borderRadius: 10, color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none', textAlign: 'center', letterSpacing: '.02em' }}>
@@ -210,6 +227,7 @@ export default function GamesPage() {
   const [accounts, setAccounts]     = useState([])
   const [loading, setLoading]       = useState(true)
   const [requesting, setRequesting] = useState(null)
+  const [pwRequesting, setPwRequesting] = useState(null)
   const [toast, setToast]           = useState(null)
   const [tab, setTab]               = useState('all')
 
@@ -269,8 +287,30 @@ export default function GamesPage() {
     }
   }
 
+  async function handleRequestPassword(account) {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { router.push('/auth/login'); return }
+
+    setPwRequesting(account.id)
+    try {
+      const res = await fetch('/api/game-accounts/request-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ account_id: account.id }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Request failed')
+      showToast(data.message, 'success')
+      loadData()
+    } catch (err) {
+      showToast(err.message || 'Something went wrong', 'error')
+    } finally {
+      setPwRequesting(null)
+    }
+  }
+
   const stats = [
-    { label: 'Total Games', value: games.length,                                         color: '#fbbf24' },
+    { label: 'Total Games', value: games.length,                                       color: '#fbbf24' },
     { label: 'My Accounts', value: accounts.length,                                      color: '#10b981' },
     { label: 'Active',      value: accounts.filter(a => a.status === 'active').length,   color: '#f59e0b' },
     { label: 'Pending',     value: accounts.filter(a => a.status === 'pending').length,  color: '#94a3b8' },
@@ -364,7 +404,14 @@ export default function GamesPage() {
         ) : (
           <>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(300px,100%),1fr))', gap: 16, marginBottom: 24 }}>
-              {accounts.map(a => <AccountCard key={a.id} account={a} />)}
+              {accounts.map(a => (
+                <AccountCard
+                  key={a.id}
+                  account={a}
+                  onRequestPassword={handleRequestPassword}
+                  requestingPassword={pwRequesting === a.id}
+                />
+              ))}
             </div>
             <div style={{ textAlign: 'center' }}>
               <button onClick={() => setTab('all')} style={{ padding: '12px 28px', background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.3)', borderRadius: 12, color: '#fbbf24', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>

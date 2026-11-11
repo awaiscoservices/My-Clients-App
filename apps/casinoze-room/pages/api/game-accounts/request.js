@@ -36,7 +36,7 @@ export default async function handler(req, res) {
   // Check player status
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('status')
+    .select('status, tenant_id')
     .eq('id', user.id)
     .single()
 
@@ -67,6 +67,10 @@ export default async function handler(req, res) {
       user_id: user.id,
       game_panel_id,
       status: 'pending',
+      // game_accounts.tenant_id defaults to the FIRST casino, so leaving it
+      // out filed every player's request under that casino no matter which
+      // one they belong to — and their own casino's staff never saw it.
+      ...(profile.tenant_id ? { tenant_id: profile.tenant_id } : {}),
     })
     .select()
     .single()
@@ -78,6 +82,7 @@ export default async function handler(req, res) {
 
   // Notify player
   await supabaseAdmin.from('notifications').insert({
+    ...(profile.tenant_id ? { tenant_id: profile.tenant_id } : {}),
     user_id: user.id,
     type: 'general',
     title: 'Game Account Requested',
