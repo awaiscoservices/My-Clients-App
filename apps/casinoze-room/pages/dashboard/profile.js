@@ -61,7 +61,9 @@ export default function ProfilePage() {
 
   const fetchPayoutMethods = async (tok) => {
     const res = await fetch('/api/payout-methods/list', { headers: { Authorization: `Bearer ${tok}` } })
-    if (res.ok) { const d = await res.json(); setPayoutMethods(d.payment_methods || []) }
+    // The route answers with `methods`. This read `payment_methods`, so even
+    // once the route existed the list would have come back empty.
+    if (res.ok) { const d = await res.json(); setPayoutMethods(d.methods || []) }
   }
 
   const addPayoutMethod = async () => {
