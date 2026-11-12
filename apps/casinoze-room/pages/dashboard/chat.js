@@ -21,6 +21,38 @@ function Paperclip({ size = 18, color = 'currentColor' }) {
   )
 }
 
+// Small, dependency-free emoji picker.
+const EMOJIS = ['😀','😁','😂','🤣','😊','😍','😘','😎','🤩','🥳','😅','😭','😉','😴','🤔','🙏','👍','👎','👌','🙌','👏','💪','👋','🤝','🔥','💯','✅','❌','⭐','🎉','🎁','💰','💵','🤑','🥰','😇','😳','🤗','😢','😡','❤️','💖','😬','🙈','🫶','😄','🤭','😤']
+
+function EmojiButton({ onPick, disabled }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  useEffect(() => {
+    if (!open) return
+    const close = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', close)
+    return () => document.removeEventListener('mousedown', close)
+  }, [open])
+  return (
+    <div ref={ref} style={{ position: 'relative', flexShrink: 0 }}>
+      <button type="button" onClick={() => setOpen(o => !o)} disabled={disabled} title="Emoji"
+        style={{ width: 40, height: 40, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 10, color: '#fff', fontSize: 18, cursor: disabled ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        🙂
+      </button>
+      {open && (
+        <div style={{ position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, width: 268, background: '#0e1a2e', border: '1px solid rgba(251,191,36,.25)', borderRadius: 12, boxShadow: '0 16px 40px rgba(0,0,0,.6)', padding: 8, display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 2, zIndex: 30 }}>
+          {EMOJIS.map(em => (
+            <button key={em} type="button" onClick={() => { onPick(em); setOpen(false) }}
+              style={{ background: 'transparent', border: 'none', fontSize: 20, lineHeight: 1, padding: '5px 0', cursor: 'pointer', borderRadius: 6 }}>
+              {em}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // WhatsApp-style ticks: grey ✓✓ = delivered, blue ✓✓ = seen (read_at set).
 function Ticks({ read }) {
   return (
@@ -221,6 +253,7 @@ export default function PlayerChat() {
               style={{ flexShrink: 0, width: 40, height: 40, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 10, color: (uploading || loading) ? 'rgba(255,255,255,.3)' : '#fff', fontSize: 18, cursor: (uploading || loading) ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {uploading ? '…' : <Paperclip size={18} />}
             </button>
+            <EmojiButton disabled={sending || loading} onPick={em => setBody(b => b + em)} />
             <input
               value={body}
               onChange={e => setBody(e.target.value)}
