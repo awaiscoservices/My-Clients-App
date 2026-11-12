@@ -5,7 +5,7 @@
  * File path: <user_id>/<timestamp>-<random>.<ext>
  * RLS storage policy allows players to upload to their own folder.
  */
-import { createPagesServerClient } from '../../lib/supabaseServer'
+import { createPagesServerClient } from '../../../lib/supabaseServer'
 import formidable from 'formidable'
 import fs from 'fs'
 
