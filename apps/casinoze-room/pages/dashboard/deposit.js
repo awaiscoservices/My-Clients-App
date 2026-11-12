@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
+import { WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
 
 // ─── STEP INDICATOR ─────────────────────────────────────────
 function Steps({ current }) {
@@ -87,6 +88,7 @@ export default function DepositPage() {
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
   const [myDeposits, setMyDeposits] = useState([])
+  const [showWait, setShowWait] = useState(false)
   // Bonus % per payment method, from the player_bonuses grid for THIS player's
   // level and today — the same source the server credits from. (The old badge
   // showed payment_methods.default_bonus_pct, a different number, so a player
@@ -209,7 +211,7 @@ export default function DepositPage() {
       if (!submitRes.ok) throw new Error(submitData.error || 'Submission failed')
 
       setResult(submitData.deposit)
-      showToast(`Deposit ${submitData.deposit.reference_id} submitted successfully!`, 'success')
+      setShowWait(true)
       loadData()
 
     } catch (err) {
@@ -224,15 +226,13 @@ export default function DepositPage() {
   if (result) return (
     <PlayerLayout>
       <Head><title>Deposit Submitted — Casinoze Room</title></Head>
+      <WaitPopup data={showWait ? WAIT_MESSAGES.deposit : null} onClose={() => setShowWait(false)} />
       <div style={{ maxWidth: 520, margin: '40px auto', textAlign: 'center' }}>
         <div style={{ fontSize: 64, marginBottom: 20 }}>✅</div>
         <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Deposit Submitted!</h2>
-        <p style={{ color: 'rgba(255,255,255,.5)', fontSize: 15, marginBottom: 20, lineHeight: 1.7 }}>
+        <p style={{ color: 'rgba(255,255,255,.5)', fontSize: 15, marginBottom: 28, lineHeight: 1.7 }}>
           Your deposit request has been submitted and is pending review by our team. You will be notified once it's approved.
         </p>
-        <div style={{ background: 'rgba(251,191,36,.08)', border: '1px solid rgba(251,191,36,.25)', borderRadius: 12, padding: '14px 18px', marginBottom: 28, fontSize: 14, color: 'rgba(255,255,255,.7)', lineHeight: 1.6 }}>
-          ⏳ Please allow at least <strong style={{ color: '#fbbf24' }}>3 to 5 minutes</strong> for your deposit to be approved before contacting customer support.
-        </div>
         <div style={{ background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.25)', borderRadius: 16, padding: '24px', marginBottom: 28 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px,100%), 1fr))', gap: 16, textAlign: 'left' }}>
             {[
