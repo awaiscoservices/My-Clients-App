@@ -154,8 +154,6 @@ export default function Withdraw() {
               {uploading ? 'Uploading…' : qr ? 'Attached: ' + qr.name : 'Easier than typing a long crypto address.'}
             </p>
           </div>
-          <div style={{ marginBottom: 16 }}><Label>Account / handle / address</Label>
-            <input value={dest} onChange={e => setDest(e.target.value)} placeholder="e.g. $yourcashtag" style={input} /></div>
           <div style={{ marginBottom: 20 }}><Label>Amount (USD)</Label>
             <input type="number" min="1" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" style={input} /></div>
           <Btn type="submit" disabled={busy || !verified} style={{ width: '100%' }}>{busy ? 'Submitting…' : 'Request Withdrawal'}</Btn>
