@@ -111,6 +111,25 @@ export default function PlayerChat() {
     return () => { supabase.removeChannel(ch); channelRef.current = null }
   }, [conv?.id])
 
+  // Safety-net poll: reload the thread every 5s and merge only when something
+  // changed, so a support reply shows live even if the realtime drops.
+  useEffect(() => {
+    if (!conv) return
+    const poll = setInterval(async () => {
+      try {
+        const r = await fetch(`/api/chat/messages?conversationId=${conv.id}`)
+        const d = await r.json()
+        if (!Array.isArray(d.messages)) return
+        setMessages(prev => {
+          const b = prev[prev.length - 1], n = d.messages[d.messages.length - 1]
+          const same = prev.length === d.messages.length && (!n || (b && b.id === n.id && b.read_at === n.read_at))
+          return same ? prev : d.messages
+        })
+      } catch {}
+    }, 5000)
+    return () => clearInterval(poll)
+  }, [conv?.id])
+
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
 
   async function handleSend(e) {
