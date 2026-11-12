@@ -51,6 +51,18 @@ async function getMessages(req, res) {
 
   if (error) return res.status(500).json({ error: error.message })
 
+  // Mark unread staff messages as read, so support sees the blue (seen) ticks.
+  const unreadIds = (messages ?? [])
+    .filter(m => m.sender_type === 'staff' && !m.read_at)
+    .map(m => m.id)
+
+  if (unreadIds.length) {
+    sb.from('chat_messages')
+      .update({ read_at: new Date().toISOString() })
+      .in('id', unreadIds)
+      .then(() => {})
+  }
+
   return res.json({ messages: messages ?? [] })
 }
 

@@ -9,6 +9,15 @@ import PlayerLayout from '../../components/layout/PlayerLayout'
 
 const fmtTime = d => d ? new Date(d).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : ''
 
+// WhatsApp-style ticks: grey ✓✓ = delivered, blue ✓✓ = seen (read_at set).
+function Ticks({ read }) {
+  return (
+    <span style={{ marginLeft: 5, fontSize: 11, letterSpacing: '-3px', color: read ? '#53bdeb' : 'rgba(255,255,255,.5)' }}>
+      ✓✓
+    </span>
+  )
+}
+
 function Bubble({ msg }) {
   const isMe   = msg.sender_type === 'player'
   const isImage = msg.file_type?.startsWith('image/')
@@ -47,6 +56,7 @@ function Bubble({ msg }) {
         {msg.body && <span>{msg.body}</span>}
         <div style={{ fontSize: 10, color: 'rgba(255,255,255,.35)', marginTop: 4, textAlign: isMe ? 'right' : 'left' }}>
           {fmtTime(msg.created_at)}
+          {isMe && <Ticks read={!!msg.read_at} />}
         </div>
       </div>
     </div>
@@ -87,8 +97,13 @@ export default function PlayerChat() {
     if (!conv) return
     if (channelRef.current) { supabase.removeChannel(channelRef.current); channelRef.current = null }
     const ch = supabase.channel(`player-chat-${conv.id}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `conversation_id=eq.${conv.id}` },
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages', filter: `conversation_id=eq.${conv.id}` },
         (payload) => {
+          if (payload.eventType === 'UPDATE') {
+            // read_at flips when support opens the thread — turn ticks blue.
+            setMessages(prev => prev.map(m => m.id === payload.new.id ? { ...m, ...payload.new } : m))
+            return
+          }
           setMessages(prev => prev.find(m => m.id === payload.new.id) ? prev : [...prev, payload.new])
         })
       .subscribe()
