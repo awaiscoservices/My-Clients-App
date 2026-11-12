@@ -20,12 +20,15 @@ const TYPE_META = {
 }
 
 const STATUS_STYLE = {
-  pending:   { bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.35)', color: gold,                        label: 'Pending' },
-  approved:  { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   color: green,                       label: 'Approved' },
-  completed: { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   color: green,                       label: 'Completed' },
-  rejected:  { bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.3)',   color: red,                         label: 'Rejected' },
-  failed:    { bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.3)',   color: red,                         label: 'Failed' },
-  cancelled: { bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)',   label: 'Cancelled' },
+  pending:    { bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.35)', color: gold,                        label: 'Pending' },
+  under_review: { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.35)', color: blue,                      label: 'Processing' },
+  processing: { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.35)', color: blue,                       label: 'Processing' },
+  approved:   { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   color: green,                       label: 'Completed' },
+  completed:  { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   color: green,                       label: 'Completed' },
+  paid:       { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   color: green,                       label: 'Paid' },
+  rejected:   { bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.3)',   color: red,                         label: 'Rejected' },
+  failed:     { bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.3)',   color: red,                         label: 'Failed' },
+  cancelled:  { bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)',   label: 'Cancelled' },
 }
 
 function StatusPill({ status }) {
@@ -50,6 +53,7 @@ export default function TransactionsPage() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [token, setToken] = useState(null)
+  const [openReason, setOpenReason] = useState(null)
 
   useEffect(() => {
     const init = async () => {
@@ -176,8 +180,12 @@ export default function TransactionsPage() {
             {rows.map((row, i) => {
               const meta = TYPE_META[row._type] || { label: row._type, icon: '•', color: 'rgba(255,255,255,0.5)' }
               const isCredit = row._dir === 'credit'
+              const rowKey = `${row._type}-${row.id}`
+              const isRejected = row.status === 'rejected'
+              const reasonOpen = openReason === rowKey
               return (
-                <div key={`${row._type}-${row.id}`} className="txn-row" style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr', padding: '14px 20px', alignItems: 'center', borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', transition: 'background 0.15s' }}
+                <div key={rowKey} style={{ borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
+                <div className="txn-row" style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr', padding: '14px 20px', alignItems: 'center', transition: 'background 0.15s' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                   {/* Type + desc */}
@@ -194,11 +202,27 @@ export default function TransactionsPage() {
                   {/* Date */}
                   <div className="txn-date" style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{fmtDate(row.created_at)}</div>
                   {/* Status */}
-                  <div><StatusPill status={row.status} /></div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 5 }}>
+                    <StatusPill status={row.status} />
+                    {isRejected && (
+                      <button onClick={() => setOpenReason(reasonOpen ? null : rowKey)} style={{ fontSize: 11, fontWeight: 600, padding: 0, background: 'none', border: 'none', color: 'rgba(239,68,68,0.9)', cursor: 'pointer', fontFamily: 'Outfit, sans-serif', textDecoration: 'underline' }}>
+                        {reasonOpen ? 'Hide reason' : 'View reason'}
+                      </button>
+                    )}
+                  </div>
                   {/* Amount */}
                   <div style={{ fontSize: 15, fontWeight: 700, color: isCredit ? green : red, textAlign: 'right' }}>
                     {isCredit ? '+' : '−'}{fmt(row._amount)}
                   </div>
+                </div>
+                {isRejected && reasonOpen && (
+                  <div style={{ padding: '0 20px 14px 68px', margin: '-4px 0 0' }}>
+                    <div style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 8, padding: '10px 14px', fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>
+                      <span style={{ color: red, fontWeight: 700 }}>Reason: </span>
+                      {row.rejection_reason || 'No reason was provided.'}
+                    </div>
+                  </div>
+                )}
                 </div>
               )
             })}

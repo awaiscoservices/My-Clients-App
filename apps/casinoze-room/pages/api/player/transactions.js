@@ -33,10 +33,10 @@ export default async function handler(req, res) {
 
   // Also fetch pending deposits, withdrawals, loads, redemptions for status
   const [{ data: deposits }, { data: withdrawals }, { data: loads }, { data: redemptions }] = await Promise.all([
-    supabaseAdmin.from('deposits').select('id, reference_id, status, amount_cents, payment_method_name, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50),
-    supabaseAdmin.from('withdrawals').select('id, reference_id, status, amount_cents, payout_method_label, payout_method_type, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50),
-    supabaseAdmin.from('game_loads').select('id, reference_id, status, amount_cents, game_panel_name, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50),
-    supabaseAdmin.from('redemptions').select('id, reference_id, status, amount_cents, game_panel_name, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50),
+    supabaseAdmin.from('deposits').select('id, reference_id, status, amount_cents, payment_method_name, rejection_reason, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50),
+    supabaseAdmin.from('withdrawals').select('id, reference_id, status, amount_cents, payout_method_label, payout_method_type, rejection_reason, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50),
+    supabaseAdmin.from('game_loads').select('id, reference_id, status, amount_cents, game_panel_name, rejection_reason, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50),
+    supabaseAdmin.from('redemptions').select('id, reference_id, status, amount_cents, game_panel_name, rejection_reason, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50),
   ])
 
   return res.status(200).json({
