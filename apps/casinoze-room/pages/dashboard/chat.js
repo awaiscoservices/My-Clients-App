@@ -178,7 +178,7 @@ export default function PlayerChat() {
   return (
     <PlayerLayout>
       <Head><title>Support Chat</title></Head>
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 32px' }}>
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 32px', width: '100%', boxSizing: 'border-box' }}>
         <div style={{ marginBottom: 20 }}>
           <h1 style={{ fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: '#fff', margin: 0 }}>Support Chat</h1>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginTop: 4 }}>Chat with our support team — we typically reply within a few minutes.</p>
@@ -215,10 +215,10 @@ export default function PlayerChat() {
               placeholder="Type a message…"
               maxLength={2000}
               disabled={sending || loading}
-              style={{ flex: 1, padding: '11px 16px', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 12, color: '#fff', fontSize: 14, fontFamily: "'Outfit',sans-serif", outline: 'none' }}
+              style={{ flex: 1, minWidth: 0, padding: '11px 16px', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 12, color: '#fff', fontSize: 14, fontFamily: "'Outfit',sans-serif", outline: 'none' }}
             />
             <button type="submit" disabled={!body.trim() || sending || loading}
-              style={{ padding: '11px 22px', background: (body.trim() && !sending) ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 'rgba(255,255,255,.07)', border: 'none', borderRadius: 12, color: (body.trim() && !sending) ? '#000' : 'rgba(255,255,255,.35)', fontWeight: 800, fontSize: 14, cursor: (body.trim() && !sending) ? 'pointer' : 'default', fontFamily: "'Outfit',sans-serif", transition: 'all .15s' }}>
+              style={{ flexShrink: 0, padding: '11px 18px', background: (body.trim() && !sending) ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 'rgba(255,255,255,.07)', border: 'none', borderRadius: 12, color: (body.trim() && !sending) ? '#000' : 'rgba(255,255,255,.35)', fontWeight: 800, fontSize: 14, cursor: (body.trim() && !sending) ? 'pointer' : 'default', fontFamily: "'Outfit',sans-serif", transition: 'all .15s' }}>
               {sending ? '…' : 'Send'}
             </button>
           </form>
