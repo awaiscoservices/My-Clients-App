@@ -365,6 +365,9 @@ export default function GamesPage() {
         @media (max-width: 860px)  { .games-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 720px)  { .games-grid { grid-template-columns: repeat(2, 1fr); gap: 11px; } }
 
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 560px; margin: 0 auto 22px; }
+        @media (max-width: 560px) { .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+
         .gcard { display: flex; flex-direction: column; gap: 8px; }
 
         /* The dashboard's tile, so a game looks the same in both places. */
@@ -440,9 +443,9 @@ export default function GamesPage() {
       </div>
 
       {/* Stat cards — equal-sized, centred, 2-up on mobile */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px,1fr))', gap: 12, maxWidth: 560, margin: '0 auto 22px' }}>
+      <div className="stat-grid">
         {stats.map(s => (
-          <div key={s.label} style={{ padding: '12px 16px', borderRadius: 12, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <div key={s.label} style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minWidth: 0 }}>
             <span style={{ fontFamily: "'Cinzel Decorative',serif", fontSize: 22, fontWeight: 900, color: s.color }}>{s.value}</span>
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', fontWeight: 600 }}>{s.label}</span>
           </div>
