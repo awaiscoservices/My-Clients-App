@@ -75,7 +75,7 @@ export function WaitPopup({ data, onClose, emoji = '✅' }) {
 
 // Standard wait messages, one per request type.
 export const WAIT_MESSAGES = {
-  deposit:  { title: 'Deposit Received', text: 'Your deposit request has been received. Please allow at least 3 to 5 minutes for it to be approved before contacting customer support.' },
+  deposit:  { title: 'Deposit Request Received', text: 'Your deposit request has been received. Please allow at least 3 to 5 minutes for it to be approved before contacting customer support.' },
   scores:   { title: 'Scores Request Received', text: 'Your scores request has been received. Please allow at least 3 to 5 minutes for the scores to be added before contacting customer support.' },
   redeem:   { title: 'Redeem Request Received', text: 'Your redeem request has been received. Please allow at least 3 to 5 minutes for it to be reviewed before contacting customer support.' },
   withdraw: { title: 'Withdraw Request Received', text: 'Your withdraw request has been received and your details will now be reviewed, then your withdraw will be processed. Please allow 5 to 10 minutes for the withdraw to process before contacting customer support.' },
