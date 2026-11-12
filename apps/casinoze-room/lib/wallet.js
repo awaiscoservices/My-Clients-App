@@ -87,35 +87,41 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
     // The running wallet balance after each settled request, from the ledger.
     supabase.from('ledger')
-      .select('balance_after_cents, wallet_bucket, deposit_id, withdrawal_id, redeem_id, game_load_id')
+      .select('balance_after_cents, wallet_bucket, created_at, deposit_id, withdrawal_id, redeem_id, game_load_id')
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(1000),
   ])
 
-  // Map each request to its "after" balance. Latest ledger row wins, but a
-  // cash-bucket row is preferred (a deposit writes both a cash and a bonus
-  // entry, and the cash balance is the one the player wants to see).
-  const afterBal = {}
+  // Map each request to its "after" balance AND when the money actually moved.
+  // Latest ledger row wins, but a cash-bucket row is preferred (a deposit
+  // writes both a cash and a bonus entry, and the cash balance is the one the
+  // player wants to see).
+  const settled = {}
   const put = (id, l) => {
     if (!id) return
-    const cur = afterBal[id]
+    const cur = settled[id]
     if (cur === undefined || (cur.bucket !== 'cash' && l.wallet_bucket === 'cash')) {
-      afterBal[id] = { cents: l.balance_after_cents, bucket: l.wallet_bucket }
+      settled[id] = { cents: l.balance_after_cents, bucket: l.wallet_bucket, at: l.created_at }
     }
   }
   for (const l of led.data || []) {
     put(l.deposit_id, l); put(l.withdrawal_id, l); put(l.redeem_id, l); put(l.game_load_id, l)
   }
-  const after = id => (afterBal[id] ? afterBal[id].cents : null)
+  const after  = id => (settled[id] ? settled[id].cents : null)
+  // Order and date a settled request by when it was credited/debited, not when
+  // it was requested — so the running balance reads correctly even when two
+  // requests were approved out of the order they were made. Pending and
+  // rejected requests have no ledger entry, so they fall back to request time.
+  const whenAt = (id, requestedAt) => (settled[id] ? settled[id].at : requestedAt)
 
   // A deposit is "approved" in the DB but the player sees it as "Completed",
   // like scores and redeems; withdraw keeps its own "Paid".
   const normDeposit = s => (s === 'approved' ? 'completed' : s)
 
   const rows = [
-    ...(dep.data || []).map(r => ({ id: 'dep-' + r.id, kind: 'deposit', label: 'Deposit', game_name: r.payment_methods?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: normDeposit(r.status), created_at: r.created_at, rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
-    ...(wd.data || []).map(r => ({ id: 'wd-' + r.id, kind: 'withdrawal', label: 'Withdrawal', game_name: r.method || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
-    ...(rd.data || []).map(r => ({ id: 'rd-' + r.id, kind: 'redeem', label: 'Redeem', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
-    ...(gl.data || []).map(r => ({ id: 'gl-' + r.id, kind: 'game_load', label: 'Scores', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(dep.data || []).map(r => ({ id: 'dep-' + r.id, kind: 'deposit', label: 'Deposit', game_name: r.payment_methods?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: normDeposit(r.status), created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(wd.data || []).map(r => ({ id: 'wd-' + r.id, kind: 'withdrawal', label: 'Withdrawal', game_name: r.method || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(rd.data || []).map(r => ({ id: 'rd-' + r.id, kind: 'redeem', label: 'Redeem', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(gl.data || []).map(r => ({ id: 'gl-' + r.id, kind: 'game_load', label: 'Scores', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
   ]
 
   rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
