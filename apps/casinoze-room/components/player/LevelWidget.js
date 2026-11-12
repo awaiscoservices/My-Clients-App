@@ -82,7 +82,6 @@ export default function LevelWidget({ level, xp }) {
 
       {/* Perks row */}
       <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-        <Perk label="Deposit Bonus" value={`${level.deposit_bonus_pct ?? 0}%`} accent={accent} />
         <Perk label="Daily Withdraw" value={`$${((level.daily_withdrawal_limit_cents || 0) / 100).toLocaleString()}`} accent={accent} />
         <Perk label="Bonus → Cash" value={`${level.bonus_to_cash_pct ?? 10}%`} accent={accent} />
       </div>

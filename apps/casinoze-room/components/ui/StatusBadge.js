@@ -6,7 +6,7 @@
 const STATUS_CONFIG = {
   // Financial statuses
   pending:           { label: 'Pending',        bg: 'rgba(245,158,11,.15)',  color: '#f59e0b', dot: '#f59e0b' },
-  under_review:      { label: 'Under Review',   bg: 'rgba(99,102,241,.15)',  color: '#94a3b8', dot: '#94a3b8' },
+  under_review:      { label: 'Processing',     bg: 'rgba(59,130,246,.15)',  color: '#60a5fa', dot: '#60a5fa' },
   processing:        { label: 'Processing',     bg: 'rgba(59,130,246,.15)',  color: '#60a5fa', dot: '#60a5fa' },
   approved:          { label: 'Approved',       bg: 'rgba(16,185,129,.15)', color: '#10b981', dot: '#10b981' },
   completed:         { label: 'Completed',      bg: 'rgba(16,185,129,.15)', color: '#10b981', dot: '#10b981' },

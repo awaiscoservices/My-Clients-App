@@ -122,7 +122,6 @@ export default async function handler(req, res) {
       name:          level.name,
       accent_color:  level.accent_color,
       min_xp:        level.min_xp,
-      deposit_bonus_pct: level.deposit_bonus_pct,
       bonus_to_cash_pct: level.bonus_to_cash_pct,
       daily_withdrawal_limit_cents: level.daily_withdrawal_limit_cents,
     } : null,

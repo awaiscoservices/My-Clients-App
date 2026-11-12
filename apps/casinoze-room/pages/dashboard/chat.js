@@ -9,6 +9,18 @@ import PlayerLayout from '../../components/layout/PlayerLayout'
 
 const fmtTime = d => d ? new Date(d).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : ''
 
+// Inline SVG paperclip — the 📎 emoji rendered as a broken box on some
+// phones/browsers, so the attach icon showed nothing. An SVG always draws.
+function Paperclip({ size = 18, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      style={{ display: 'block' }} aria-hidden="true">
+      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+    </svg>
+  )
+}
+
 // WhatsApp-style ticks: grey ✓✓ = delivered, blue ✓✓ = seen (read_at set).
 function Ticks({ read }) {
   return (
@@ -49,7 +61,7 @@ function Bubble({ msg }) {
         {msg.file_url && !isImage && (
           <a href={msg.file_url} target="_blank" rel="noreferrer"
             style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: 'rgba(255,255,255,.1)', borderRadius: 10, color: '#fff', textDecoration: 'none', marginBottom: msg.body ? 8 : 0 }}>
-            <span style={{ fontSize: 20 }}>📎</span>
+            <Paperclip size={20} />
             <span style={{ fontSize: 12, wordBreak: 'break-all' }}>{msg.file_name ?? 'Attachment'}</span>
           </a>
         )}
@@ -207,7 +219,7 @@ export default function PlayerChat() {
             <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading || loading}
               title="Attach file"
               style={{ flexShrink: 0, width: 40, height: 40, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 10, color: (uploading || loading) ? 'rgba(255,255,255,.3)' : '#fff', fontSize: 18, cursor: (uploading || loading) ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {uploading ? '…' : '📎'}
+              {uploading ? '…' : <Paperclip size={18} />}
             </button>
             <input
               value={body}
