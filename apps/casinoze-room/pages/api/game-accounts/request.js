@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   // Check game panel exists and is active
   const { data: panel } = await supabaseAdmin
     .from('game_panels')
-    .select('id, name, is_active')
+    .select('id, name, is_active, tenant_id')
     .eq('id', game_panel_id)
     .eq('is_active', true)
     .single()
@@ -42,6 +42,12 @@ export default async function handler(req, res) {
 
   if (!profile || profile.status !== 'active')
     return res.status(403).json({ error: 'Account is not active' })
+
+  // The game must belong to the player's own casino. Without this a player
+  // could request an account on another casino's copy of a game, ending up
+  // with two accounts for the same game.
+  if (profile.tenant_id && panel.tenant_id && panel.tenant_id !== profile.tenant_id)
+    return res.status(403).json({ error: 'This game is not available for your account.' })
 
   // Check for existing account (pending or active)
   const { data: existing } = await supabaseAdmin

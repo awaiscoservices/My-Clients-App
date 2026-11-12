@@ -252,8 +252,17 @@ export default function GamesPage() {
     // query made in the browser could never show one — Show just revealed
     // another row of dots. The route decrypts the caller's own accounts and
     // never returns the encrypted blob itself.
+    // Only this player's own casino's games. Without the tenant filter the
+    // list showed every casino's panels, so a player could request an account
+    // on another casino's copy of a game — a second account for the same game.
+    const { data: me } = await supabase
+      .from('profiles').select('tenant_id').eq('id', session.user.id).single()
+
+    let panelQuery = supabase.from('game_panels').select('*').eq('is_active', true)
+    if (me?.tenant_id) panelQuery = panelQuery.eq('tenant_id', me.tenant_id)
+
     const [{ data: gamesData }, accountsRes] = await Promise.all([
-      supabase.from('game_panels').select('*').eq('is_active', true).order('sort_order'),
+      panelQuery.order('sort_order'),
       fetch('/api/player/game-accounts', {
         headers: { Authorization: `Bearer ${session.access_token}` },
       }),
