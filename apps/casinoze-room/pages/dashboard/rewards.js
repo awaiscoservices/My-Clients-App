@@ -27,14 +27,15 @@ async function apiFetch(path) {
 }
 
 // ─── Stat box ─────────────────────────────────────────────────────────────────
-function StatBox({ label, value, color = 'rgba(255,255,255,.85)' }) {
+function StatBox({ label, value, color = 'rgba(255,255,255,.88)' }) {
   return (
     <div style={{
-      background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)',
-      borderRadius: 10, padding: '12px 14px',
+      background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.07)',
+      borderRadius: 8, padding: '7px 9px',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6,
     }}>
-      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.35)', marginBottom: 5 }}>{label}</div>
-      <div style={{ fontSize: 15, fontWeight: 800, color, fontFamily: "'Outfit',sans-serif" }}>{value}</div>
+      <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)' }}>{label}</span>
+      <span style={{ fontSize: 12.5, fontWeight: 800, color, fontFamily: "'Outfit',sans-serif", whiteSpace: 'nowrap' }}>{value}</span>
     </div>
   )
 }
@@ -82,113 +83,92 @@ function LevelCard({ level, status, bonusRows }) {
 
   return (
     <div style={{
-      background: 'rgba(10,22,40,.7)',
+      background: `linear-gradient(170deg, ${accent}0f, rgba(10,20,36,.82) 60%)`,
       border: `1px solid ${borderColor}`,
-      borderRadius: 18,
-      boxShadow: status === 'active' ? `0 0 28px ${accent}30` : 'none',
+      borderRadius: 14,
+      boxShadow: status === 'active' ? `0 0 0 1px ${accent}55, 0 10px 30px ${accent}22` : '0 6px 18px rgba(0,0,0,.25)',
       transition: 'box-shadow .2s',
       overflow: 'hidden',
+      opacity: status === 'locked' ? 0.82 : 1,
     }}>
       {/* Card header */}
       <div style={{
-        padding: '18px 20px 14px',
+        padding: '12px 14px',
         background: headerBg,
         borderBottom: '1px solid rgba(255,255,255,.06)',
+        display: 'flex', alignItems: 'center', gap: 11,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-          {/* Icon */}
-          <div style={{
-            width: 46, height: 46, borderRadius: 12,
-            background: `${accent}22`,
-            border: `2px solid ${status === 'locked' ? 'rgba(255,255,255,.2)' : accent}`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 22, flexShrink: 0,
-          }}>
-            {levelEmoji(level)}
+        {/* Icon */}
+        <div style={{
+          width: 38, height: 38, borderRadius: 10,
+          background: `${accent}22`,
+          border: `1.5px solid ${status === 'locked' ? 'rgba(255,255,255,.2)' : accent}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 18, flexShrink: 0,
+        }}>
+          {levelEmoji(level)}
+        </div>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ fontSize: 16, fontWeight: 800, color: status === 'active' ? accent : '#fff', fontFamily: "'Cinzel',serif", letterSpacing: '.02em', lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {level.name}
           </div>
-          {/* Status badge */}
-          <span style={{
-            fontSize: 10, fontWeight: 800, letterSpacing: '.08em', textTransform: 'uppercase',
-            padding: '3px 10px', borderRadius: 99,
-            background: badge.bg, border: badge.border, color: badge.color,
-          }}>{badge.label}</span>
+          {level.description && (
+            <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,.4)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{level.description}</div>
+          )}
         </div>
-        <div style={{ fontSize: 20, fontWeight: 800, color: status === 'active' ? accent : '#fff', fontFamily: "'Cinzel',serif", letterSpacing: '.02em' }}>
-          {level.name}
-        </div>
-        {level.description && (
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)', marginTop: 3 }}>{level.description}</div>
-        )}
+        {/* Status badge */}
+        <span style={{
+          fontSize: 9, fontWeight: 800, letterSpacing: '.06em', textTransform: 'uppercase',
+          padding: '3px 8px', borderRadius: 99, flexShrink: 0,
+          background: badge.bg, border: badge.border, color: badge.color,
+        }}>{badge.label}</span>
       </div>
 
       {/* Redeem Rules */}
-      <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.75)', marginBottom: 14, textAlign: 'center' }}>
-          Redeem Rules
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      <div style={{ padding: '12px 14px', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           {/* Wallet Rules sub-panel */}
-          <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(96,165,250,.4)' }}>
-            {/* Panel header */}
-            <div style={{
-              background: 'rgba(96,165,250,.18)',
-              padding: '8px 12px',
-              borderBottom: '1px solid rgba(96,165,250,.3)',
-              textAlign: 'center',
-            }}>
-              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.09em', textTransform: 'uppercase', color: '#93c5fd' }}>💰 Wallet Rules</span>
+          <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(96,165,250,.35)' }}>
+            <div style={{ background: 'rgba(96,165,250,.16)', padding: '6px 9px', borderBottom: '1px solid rgba(96,165,250,.28)', textAlign: 'center' }}>
+              <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: '.05em', textTransform: 'uppercase', color: '#93c5fd' }}>💰 Wallet</span>
             </div>
-            {/* Panel body */}
-            <div style={{ background: 'rgba(96,165,250,.05)', padding: '10px', display: 'flex', flexDirection: 'column', gap: 7 }}>
-              <StatBox label="Min Withdraw"   value={fmt(level.min_withdrawal_cents)} />
-              <StatBox label="Max Withdraw"   value={fmt(level.max_withdrawal_cents)} />
-              <StatBox label="Limit Duration" value="24 Hours" color="rgba(255,255,255,.6)" />
+            <div style={{ background: 'rgba(96,165,250,.05)', padding: '8px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <StatBox label="Min WD"   value={fmt(level.min_withdrawal_cents)} />
+              <StatBox label="Max WD"   value={fmt(level.max_withdrawal_cents)} />
+              <StatBox label="Window"   value="24h" color="rgba(255,255,255,.6)" />
             </div>
           </div>
           {/* Game Rules sub-panel */}
-          <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(167,139,250,.4)' }}>
-            {/* Panel header */}
-            <div style={{
-              background: 'rgba(167,139,250,.18)',
-              padding: '8px 12px',
-              borderBottom: '1px solid rgba(167,139,250,.3)',
-              textAlign: 'center',
-            }}>
-              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.09em', textTransform: 'uppercase', color: '#c4b5fd' }}>🎮 Game Rules</span>
+          <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(167,139,250,.35)' }}>
+            <div style={{ background: 'rgba(167,139,250,.16)', padding: '6px 9px', borderBottom: '1px solid rgba(167,139,250,.28)', textAlign: 'center' }}>
+              <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: '.05em', textTransform: 'uppercase', color: '#c4b5fd' }}>🎮 Game</span>
             </div>
-            {/* Panel body */}
-            <div style={{ background: 'rgba(167,139,250,.05)', padding: '10px', display: 'flex', flexDirection: 'column', gap: 7 }}>
-              <StatBox label="Min Multiplier"   value={fmtX(level.min_redeem_multiplier)} />
-              <StatBox label="Max Multiplier"   value={fmtX(level.max_redeem_multiplier)} />
-              <StatBox label="Max Redeem Limit" value={fmt(level.max_redeem_cap_cents)} />
+            <div style={{ background: 'rgba(167,139,250,.05)', padding: '8px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <StatBox label="Min x"    value={fmtX(level.min_redeem_multiplier)} />
+              <StatBox label="Max x"    value={fmtX(level.max_redeem_multiplier)} />
+              <StatBox label="Cap"      value={fmt(level.max_redeem_cap_cents)} />
             </div>
           </div>
         </div>
       </div>
 
       {/* Deposit Bonuses */}
-      <div style={{ padding: '16px 20px' }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.75)', marginBottom: 12, textAlign: 'center' }}>
-          Deposit Bonuses
+      <div style={{ padding: '10px 14px 12px' }}>
+        <div style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: 8 }}>
+          Today's Deposit Bonuses
         </div>
         {bonusRows.length === 0 ? (
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', padding: '8px 0', textAlign: 'center' }}>No bonuses configured</div>
+          <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,.3)', padding: '4px 0' }}>No bonuses today</div>
         ) : (
-          <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(255,255,255,.12)' }}>
-            {/* Header */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', padding: '8px 14px', background: 'rgba(255,255,255,.07)' }}>
-              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.65)' }}>Payment Method</span>
-              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.65)', textAlign: 'right' }}>Bonus %</span>
-            </div>
-            {bonusRows.map((b, i) => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {bonusRows.map((b) => (
               <div key={b.pmId} style={{
-                display: 'grid', gridTemplateColumns: '1fr auto',
-                padding: '10px 14px', alignItems: 'center',
-                background: i % 2 === 0 ? 'rgba(255,255,255,.03)' : 'transparent',
-                borderTop: '1px solid rgba(255,255,255,.06)',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+                padding: '6px 10px', borderRadius: 8,
+                background: 'rgba(255,255,255,.035)', border: '1px solid rgba(255,255,255,.07)',
               }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,.85)' }}>{b.pmName}</span>
-                <span style={{ fontSize: 14, fontWeight: 800, color: '#fbbf24' }}>{parseFloat(b.bonus_percent).toFixed(0)}%</span>
+                <span style={{ fontSize: 11.5, fontWeight: 600, color: 'rgba(255,255,255,.82)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.pmName}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: accent }}>{parseFloat(b.bonus_percent).toFixed(0)}%</span>
               </div>
             ))}
           </div>
@@ -270,7 +250,7 @@ export default function PlayerLevels() {
 
       {/* Page heading */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>Player Levels</h1>
+        <h1 className="levels-heading" style={{ fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>Player Levels</h1>
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 13, margin: 0 }}>
           Complete more activity to unlock higher tiers and bigger bonuses.
         </p>
@@ -278,9 +258,9 @@ export default function PlayerLevels() {
 
       {/* Progress bar */}
       {profile && levels.length > 0 && (
-        <div style={{
+        <div className="levels-progress" style={{
           background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.08)',
-          borderRadius: 16, padding: '20px 24px', marginBottom: 28,
+          borderRadius: 16, padding: '18px 22px', marginBottom: 24,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: currentLevel?.accent_color || '#fbbf24' }}>
@@ -320,7 +300,7 @@ export default function PlayerLevels() {
           <div style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>Levels coming soon</div>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+        <div className="levels-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
           {levels.map((level, idx) => {
             // Status logic:
             // idx < currentIdx  → Achieved (completed, below current)
@@ -345,11 +325,13 @@ export default function PlayerLevels() {
       )}
 
       <style>{`
-        @media (max-width: 900px) {
+        @media (max-width: 980px) {
           .levels-grid { grid-template-columns: repeat(2,1fr) !important; }
         }
-        @media (max-width: 580px) {
+        @media (max-width: 620px) {
           .levels-grid { grid-template-columns: 1fr !important; }
+          .levels-heading { font-size: 20px !important; }
+          .levels-progress { padding: 16px !important; }
         }
       `}</style>
     </PlayerLayout>

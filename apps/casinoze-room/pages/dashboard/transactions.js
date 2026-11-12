@@ -92,10 +92,21 @@ export default function TransactionsPage() {
 
   return (
     <PlayerLayout>
+      <style jsx global>{`
+        @media (max-width: 560px) {
+          .txn-head { display: none !important; }
+          .txn-row {
+            grid-template-columns: 1fr auto !important;
+            row-gap: 4px !important;
+            padding: 12px 14px !important;
+          }
+          .txn-date { text-align: right; font-size: 12px !important; }
+        }
+      `}</style>
       <div style={{ fontFamily: 'Outfit, sans-serif', color: '#fff' }}>
 
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 700, color: gold, margin: 0 }}>📋 My Transactions</h1>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: '4px 0 0' }}>Track all your deposits, withdrawals, game loads and redemptions.</p>
@@ -156,7 +167,7 @@ export default function TransactionsPage() {
         ) : (
           <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, overflow: 'hidden' }}>
             {/* Header row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr', padding: '11px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', fontSize: 11, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <div className="txn-head" style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr', padding: '11px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', fontSize: 11, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               <span>Transaction</span>
               <span>Date</span>
               <span>Status</span>
@@ -166,7 +177,7 @@ export default function TransactionsPage() {
               const meta = TYPE_META[row._type] || { label: row._type, icon: '•', color: 'rgba(255,255,255,0.5)' }
               const isCredit = row._dir === 'credit'
               return (
-                <div key={`${row._type}-${row.id}`} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr', padding: '14px 20px', alignItems: 'center', borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', transition: 'background 0.15s' }}
+                <div key={`${row._type}-${row.id}`} className="txn-row" style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr', padding: '14px 20px', alignItems: 'center', borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', transition: 'background 0.15s' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                   {/* Type + desc */}
@@ -181,7 +192,7 @@ export default function TransactionsPage() {
                     </div>
                   </div>
                   {/* Date */}
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{fmtDate(row.created_at)}</div>
+                  <div className="txn-date" style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{fmtDate(row.created_at)}</div>
                   {/* Status */}
                   <div><StatusPill status={row.status} /></div>
                   {/* Amount */}
