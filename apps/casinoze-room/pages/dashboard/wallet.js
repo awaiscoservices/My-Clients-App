@@ -138,11 +138,11 @@ export default function WalletPage() {
         </div>
       )}
 
-      {/* 4 Action buttons */}
-      <div style={{ display: 'flex', gap: 10, marginBottom: 28, flexWrap: 'wrap' }}>
+      {/* 4 Action buttons — equal-sized, centred, 2-up on mobile */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px,1fr))', gap: 10, marginBottom: 28 }}>
         {ACTIONS.map(a => (
           <button key={a.label} onClick={a.onClick} style={{
-            display: 'inline-flex', alignItems: 'center', padding: '11px 22px', borderRadius: 12,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 22px', borderRadius: 12,
             background: a.bg, color: a.color, fontSize: 13, fontWeight: 700, border: 'none',
             cursor: 'pointer', letterSpacing: '.02em', fontFamily: "'Outfit',sans-serif",
             boxShadow: '0 2px 12px rgba(0,0,0,.3)', transition: 'opacity .15s',

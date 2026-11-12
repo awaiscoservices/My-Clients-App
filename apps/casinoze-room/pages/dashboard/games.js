@@ -439,10 +439,10 @@ export default function GamesPage() {
         </p>
       </div>
 
-      {/* Stat cards */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 22, flexWrap: 'wrap', justifyContent: 'center' }}>
+      {/* Stat cards — equal-sized, centred, 2-up on mobile */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px,1fr))', gap: 12, maxWidth: 560, margin: '0 auto 22px' }}>
         {stats.map(s => (
-          <div key={s.label} style={{ padding: '12px 20px', borderRadius: 12, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div key={s.label} style={{ padding: '12px 16px', borderRadius: 12, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             <span style={{ fontFamily: "'Cinzel Decorative',serif", fontSize: 22, fontWeight: 900, color: s.color }}>{s.value}</span>
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', fontWeight: 600 }}>{s.label}</span>
           </div>
