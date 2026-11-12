@@ -7,7 +7,7 @@ import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay, { centsToDisplay } from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
 import { getMyGameAccounts } from '../../lib/wallet'
-import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents } from '../../components/ui/kit'
+import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents, WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
 
 const QUICK = [10, 20, 50, 100]
 
@@ -21,6 +21,7 @@ export default function LoadGame() {
   const [amount, setAmount] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState(null)
+  const [popup, setPopup] = useState(null)
 
   async function load() {
     const [accs, { data: w }, { data: h }] = await Promise.all([
@@ -48,13 +49,14 @@ export default function LoadGame() {
     const { error } = await supabase.rpc('request_game_load', { p_game_account_id: acct, p_amount_cents: cents })
     setBusy(false)
     if (error) return setMsg({ kind: 'error', text: error.message })
-    setMsg({ kind: 'success', text: 'Load requested. Credits are added to your game once our team processes it.' })
+    setPopup(WAIT_MESSAGES.scores)
     setAmount(''); load()
   }
 
   return (
     <PlayerLayout>
       <Head><title>Load Game — Casinoze Room</title></Head>
+      <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <Title sub="Move cash from your wallet into a game account">Load Game</Title>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 20 }}>
         <form onSubmit={submit} style={card}>

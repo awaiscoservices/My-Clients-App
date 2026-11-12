@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
-import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents } from '../../components/ui/kit'
+import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents, WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
 
 // The methods come from the casino's own Payment Methods, filtered to those
 // marked allow_withdraw. They were a hardcoded list here, which is why the
@@ -26,6 +26,7 @@ export default function Withdraw() {
   const [uploading, setUploading] = useState(false)
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState(null)
+  const [popup, setPopup] = useState(null)
 
   async function load() {
     const { data: { session } } = await supabase.auth.getSession()
@@ -105,7 +106,7 @@ export default function Withdraw() {
     const d = await res.json()
     setBusy(false)
     if (!res.ok) return setMsg({ kind: 'error', text: d.error || 'Could not submit' })
-    setMsg({ kind: 'success', text: 'Withdrawal requested. The amount is held until it is reviewed.' })
+    setPopup(WAIT_MESSAGES.withdraw)
     setAmount(''); setDest(''); setQr(null); load()
   }
 
@@ -113,6 +114,7 @@ export default function Withdraw() {
   return (
     <PlayerLayout>
       <Head><title>Withdraw — Casinoze Room</title></Head>
+      <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <Title sub="Send your withdrawable balance to your own account">Withdraw</Title>
       {kyc && !verified && (
         <Notice kind="info">Identity verification is required before you can withdraw. <Link href="/dashboard/kyc" style={{ color: '#fbbf24', fontWeight: 800 }}>Verify now →</Link></Notice>

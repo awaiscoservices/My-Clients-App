@@ -8,7 +8,7 @@ import StatusBadge from '../../components/ui/StatusBadge'
 
 // ─── STEP INDICATOR ─────────────────────────────────────────
 function Steps({ current }) {
-  const steps = ['Select Method', 'Enter Amount', 'Upload Proof', 'Confirm']
+  const steps = ['Select Method', 'Enter Amount', 'Account Details', 'Upload Proof', 'Confirm']
   return (
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 32, gap: 0 }}>
       {steps.map((s, i) => (
@@ -65,16 +65,6 @@ function MethodCard({ method, selected, onSelect, bonusPct }) {
           </div>
         )}
       </div>
-      {selected && method.account_details && (
-        <div style={{ marginTop: 12, padding: '12px 14px', background: 'rgba(251,191,36,.1)', borderRadius: 10, border: '1px solid rgba(251,191,36,.2)' }}>
-          {Object.entries(method.account_details).map(([k, v]) => (
-            <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-              <span style={{ fontSize: 11, color: 'rgba(255,255,255,.45)', textTransform: 'capitalize', fontWeight: 600 }}>{k.replace(/_/g, ' ')}</span>
-              <span style={{ fontSize: 12, color: '#fff', fontWeight: 700 }}>{v}</span>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }
@@ -152,7 +142,7 @@ export default function DepositPage() {
       if (selectedMethod && amountCents < selectedMethod.min_deposit_cents) { setError(`Minimum deposit is $${(selectedMethod.min_deposit_cents / 100).toFixed(2)}`); return false }
       if (selectedMethod && amountCents > selectedMethod.max_deposit_cents) { setError(`Maximum deposit is $${(selectedMethod.max_deposit_cents / 100).toFixed(2)}`); return false }
     }
-    if (step === 2 && !screenshot && !reference) { setError('Please upload a screenshot or enter transaction reference'); return false }
+    if (step === 3 && !screenshot && !reference) { setError('Please upload a screenshot or enter transaction reference'); return false }
     setError('')
     return true
   }
@@ -237,9 +227,12 @@ export default function DepositPage() {
       <div style={{ maxWidth: 520, margin: '40px auto', textAlign: 'center' }}>
         <div style={{ fontSize: 64, marginBottom: 20 }}>✅</div>
         <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Deposit Submitted!</h2>
-        <p style={{ color: 'rgba(255,255,255,.5)', fontSize: 15, marginBottom: 28, lineHeight: 1.7 }}>
+        <p style={{ color: 'rgba(255,255,255,.5)', fontSize: 15, marginBottom: 20, lineHeight: 1.7 }}>
           Your deposit request has been submitted and is pending review by our team. You will be notified once it's approved.
         </p>
+        <div style={{ background: 'rgba(251,191,36,.08)', border: '1px solid rgba(251,191,36,.25)', borderRadius: 12, padding: '14px 18px', marginBottom: 28, fontSize: 14, color: 'rgba(255,255,255,.7)', lineHeight: 1.6 }}>
+          ⏳ Please allow at least <strong style={{ color: '#fbbf24' }}>3 to 5 minutes</strong> for your deposit to be approved before contacting customer support.
+        </div>
         <div style={{ background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.25)', borderRadius: 16, padding: '24px', marginBottom: 28 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px,100%), 1fr))', gap: 16, textAlign: 'left' }}>
             {[
@@ -376,8 +369,41 @@ export default function DepositPage() {
             </div>
           )}
 
-          {/* ── STEP 2: Upload proof ── */}
-          {step === 2 && (
+          {/* ── STEP 2: Account Details (where/how to pay) ── */}
+          {step === 2 && selectedMethod && (
+            <div>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 6 }}>Send Your Payment</h3>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', marginBottom: 20 }}>
+                Send <strong style={{ color: '#fbbf24' }}>${(amountCents / 100).toFixed(2)}</strong> via <strong style={{ color: '#fff' }}>{selectedMethod.name}</strong> using the details below, then continue to upload your proof.
+              </p>
+
+              {selectedMethod.account_details?.text ? (
+                <div style={{ background: 'rgba(251,191,36,.08)', border: '1px solid rgba(251,191,36,.25)', borderRadius: 14, padding: '16px 18px', marginBottom: 16, whiteSpace: 'pre-wrap', fontSize: 14, color: '#fff', lineHeight: 1.7, fontFamily: "'Outfit',sans-serif" }}>
+                  {selectedMethod.account_details.text}
+                </div>
+              ) : (
+                <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 14, padding: '16px 18px', marginBottom: 16, fontSize: 13, color: 'rgba(255,255,255,.5)' }}>
+                  Payment details will be shared by our team. If you are unsure where to send, please contact support.
+                </div>
+              )}
+
+              {selectedMethod.account_details?.qr_image_url && (
+                <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', marginBottom: 10 }}>Scan to pay</div>
+                  <img src={selectedMethod.account_details.qr_image_url} alt="Payment QR" style={{ maxWidth: 220, width: '100%', borderRadius: 14, border: '1px solid rgba(255,255,255,.12)' }} />
+                </div>
+              )}
+
+              {selectedMethod.instructions && (
+                <div style={{ background: 'rgba(59,130,246,.08)', border: '1px solid rgba(59,130,246,.2)', borderRadius: 12, padding: '14px 16px', fontSize: 13, color: 'rgba(255,255,255,.6)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                  {selectedMethod.instructions}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── STEP 3: Upload proof ── */}
+          {step === 3 && (
             <div>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 6 }}>Upload Payment Proof</h3>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', marginBottom: 24 }}>
@@ -436,8 +462,8 @@ export default function DepositPage() {
             </div>
           )}
 
-          {/* ── STEP 3: Confirm ── */}
-          {step === 3 && (
+          {/* ── STEP 4: Confirm ── */}
+          {step === 4 && (
             <div>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 20 }}>Review & Confirm</h3>
 
@@ -483,7 +509,7 @@ export default function DepositPage() {
               ← {step === 0 ? 'Cancel' : 'Back'}
             </button>
 
-            {step < 3 ? (
+            {step < 4 ? (
               <button onClick={handleNext}
                 style={{ padding: '12px 32px', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', border: 'none', borderRadius: 12, color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
                 Continue →

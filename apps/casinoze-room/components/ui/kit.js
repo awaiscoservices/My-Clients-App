@@ -55,5 +55,33 @@ export function Empty({ icon = '📭', text }) {
   return <div style={{ padding: '36px 16px', textAlign: 'center', color: 'rgba(255,255,255,.35)', fontSize: 13 }}><div style={{ fontSize: 30, marginBottom: 8 }}>{icon}</div>{text}</div>
 }
 
+// Confirmation popup shown after a request is submitted, telling the player
+// how long to wait before contacting support. `data` is { title, text } or
+// null (hidden).
+export function WaitPopup({ data, onClose, emoji = '✅' }) {
+  if (!data) return null
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#0e1a2e', border: '1px solid rgba(251,191,36,.3)', borderRadius: 20, padding: '30px 28px', width: '100%', maxWidth: 420, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,.5)' }}>
+        <div style={{ fontSize: 46, marginBottom: 14 }}>{emoji}</div>
+        <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: '#fff', margin: '0 0 10px' }}>{data.title}</h3>
+        <p style={{ fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,.6)', margin: '0 0 22px' }}>{data.text}</p>
+        <Btn onClick={onClose} style={{ width: '100%' }}>Got it</Btn>
+      </div>
+    </div>
+  )
+}
+
+// Standard wait messages, one per request type.
+export const WAIT_MESSAGES = {
+  deposit:  { title: 'Deposit Received', text: 'Your deposit request has been received. Please allow at least 3 to 5 minutes for it to be approved before contacting customer support.' },
+  scores:   { title: 'Scores Request Received', text: 'Your scores request has been received. Please allow at least 3 to 5 minutes for the scores to be added before contacting customer support.' },
+  redeem:   { title: 'Redeem Request Received', text: 'Your redeem request has been received. Please allow at least 3 to 5 minutes for it to be reviewed before contacting customer support.' },
+  withdraw: { title: 'Withdraw Request Received', text: 'Your withdraw request has been received and your details will now be reviewed, then your withdraw will be processed. Please allow 5 to 10 minutes for the withdraw to process before contacting customer support.' },
+  game_account: { title: 'Account Requested', text: 'Your game account request has been received. Our team is setting it up and your login details will be ready shortly — thank you for your patience.' },
+  game_password: { title: 'Reset Requested', text: 'Your game password reset request has been received. Our team will update your login shortly — thank you for your patience.' },
+  password: { title: 'Password Updated', text: 'Your password has been updated successfully. Please use your new password the next time you sign in.' },
+}
+
 export const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 export const toCents = (v) => Math.round(parseFloat(v) * 100)

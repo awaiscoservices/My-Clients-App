@@ -22,6 +22,7 @@ import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import StatusBadge from '../../components/ui/StatusBadge'
 import GameIcon from '../../components/ui/GameIcon'
+import { WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
 
 // The same colour pairs the dashboard tiles cycle through, so a game looks
 // the same in both places.
@@ -214,6 +215,7 @@ export default function GamesPage() {
   const [requesting, setRequesting] = useState(null)
   const [pwRequesting, setPwRequesting] = useState(null)
   const [toast, setToast]           = useState(null)
+  const [popup, setPopup]           = useState(null)
   const [tab, setTab]               = useState('all')
   const [showAll, setShowAll]       = useState(false)
   const [isNarrow, setIsNarrow]     = useState(false)
@@ -297,7 +299,7 @@ export default function GamesPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Request failed')
-      showToast(`${game.name} account requested. Our team will set it up shortly.`, 'success')
+      setPopup(WAIT_MESSAGES.game_account)
       loadData()
     } catch (err) {
       showToast(err.message || 'Something went wrong', 'error')
@@ -319,7 +321,7 @@ export default function GamesPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Request failed')
-      showToast(data.message, 'success')
+      setPopup(WAIT_MESSAGES.game_password)
       loadData()
     } catch (err) {
       showToast(err.message || 'Something went wrong', 'error')
@@ -353,6 +355,7 @@ export default function GamesPage() {
   return (
     <PlayerLayout>
       <Head><title>Games — Casinoze Room</title></Head>
+      <WaitPopup data={popup} onClose={() => setPopup(null)} />
 
       <style>{`
         /* Seven across, which is what fits a desktop without the row sliding

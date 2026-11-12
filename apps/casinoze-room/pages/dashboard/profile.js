@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import { supabase } from '../../lib/supabase'
+import { WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
 
 const gold = '#fbbf24'; const green = '#22c55e'; const red = '#ef4444'; const purple = '#a855f7'
 
@@ -35,6 +36,7 @@ export default function ProfilePage() {
   const [pwSaving, setPwSaving] = useState(false)
   const [pwMsg, setPwMsg] = useState('')
   const [pwSuccess, setPwSuccess] = useState(false)
+  const [popup, setPopup] = useState(null)
 
   useEffect(() => {
     const init = async () => {
@@ -62,7 +64,7 @@ export default function ProfilePage() {
     const { error } = await supabase.auth.updateUser({ password: pwForm.new_password })
     setPwSaving(false)
     if (error) setPwMsg(error.message)
-    else { setPwSuccess(true); setPwForm({ new_password: '', confirm_password: '' }) }
+    else { setPwSuccess(true); setPwForm({ new_password: '', confirm_password: '' }); setPopup(WAIT_MESSAGES.password) }
   }
 
   if (loading) return (
@@ -73,6 +75,7 @@ export default function ProfilePage() {
 
   return (
     <PlayerLayout>
+      <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <div style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', maxWidth: 640, margin: '0 auto' }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: gold, marginBottom: 24 }}>👤 My Profile</h1>
 

@@ -5,7 +5,7 @@ import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
 import { getMyGameAccounts } from '../../lib/wallet'
-import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents } from '../../components/ui/kit'
+import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents, WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
 import Link from 'next/link'
 
 export default function Redeem() {
@@ -17,6 +17,7 @@ export default function Redeem() {
   const [notes, setNotes] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState(null)
+  const [popup, setPopup] = useState(null)
 
   async function load() {
     const [accs, { data: h }] = await Promise.all([
@@ -38,13 +39,14 @@ export default function Redeem() {
     const { error } = await supabase.rpc('request_redemption', { p_game_account_id: acct, p_amount_cents: cents, p_notes: notes || null })
     setBusy(false)
     if (error) return setMsg({ kind: 'error', text: error.message })
-    setMsg({ kind: 'success', text: 'Redemption requested. Our team will review it shortly.' })
+    setPopup(WAIT_MESSAGES.redeem)
     setAmount(''); setNotes(''); load()
   }
 
   return (
     <PlayerLayout>
       <Head><title>Redeem — Casinoze Room</title></Head>
+      <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <Title sub="Cash out your winnings from a game account">Redeem</Title>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 20 }}>
         <form onSubmit={submit} style={card}>
