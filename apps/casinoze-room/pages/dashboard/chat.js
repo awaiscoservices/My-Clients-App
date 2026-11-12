@@ -180,11 +180,17 @@ export default function PlayerChat() {
   // scroll through the whole history. New messages while open glide in.
   useEffect(() => {
     if (!messages.length) return
+    const end = bottomRef.current
+    if (!end) return
     if (justOpenedRef.current) {
-      bottomRef.current?.scrollIntoView()
       justOpenedRef.current = false
+      // Set scrollTop directly so the jump is instant even though the app sets
+      // scroll-behavior:smooth — scrollIntoView() would otherwise animate.
+      const box = end.parentElement
+      if (box) box.scrollTop = box.scrollHeight
+      else end.scrollIntoView()
     } else {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+      end.scrollIntoView({ behavior: 'smooth' })
     }
   }, [messages])
 
@@ -234,17 +240,22 @@ export default function PlayerChat() {
   return (
     <PlayerLayout>
       <Head><title>Support Chat</title></Head>
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '12px 16px', width: '100%', boxSizing: 'border-box' }}>
-        <div style={{ marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: '#fff', margin: 0 }}>Support Chat</h1>
-        </div>
-        <div style={{ ...PANEL, display: 'flex', flexDirection: 'column', height: 'calc(100dvh - 190px)', minHeight: 380 }}>
-          <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,.08)', display: 'flex', alignItems: 'center', gap: 10 }}>
+      {/* On the chat route, lock the whole screen to the viewport so only the
+          message list scrolls — the input bar then stays put on mobile instead
+          of sliding away with a page scroll. These override the layout's own
+          scrolling and only apply while this page is mounted. */}
+      <style>{`
+        .player-main { height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+        .player-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+      `}</style>
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: 0, width: '100%', boxSizing: 'border-box', flex: '1 1 auto', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ ...PANEL, display: 'flex', flexDirection: 'column', flex: '1 1 auto', minHeight: 0 }}>
+          <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,.08)', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
             <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e' }} />
             <span style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>Support is online</span>
           </div>
 
-          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '16px 20px' }}>
             {loading && <div style={{ textAlign: 'center', color: 'rgba(255,255,255,.4)', fontSize: 13, padding: 32 }}>Connecting…</div>}
             {!loading && messages.length === 0 && <div style={{ textAlign: 'center', color: 'rgba(255,255,255,.4)', fontSize: 13, padding: 32 }}>👋 Hi! Send a message to start chatting with our support team.</div>}
             {messages.map(m => <Bubble key={m.id} msg={m} />)}
