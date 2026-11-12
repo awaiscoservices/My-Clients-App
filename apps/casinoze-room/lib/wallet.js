@@ -72,7 +72,7 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
   const need = offset + limit          // enough from each table to fill this page
   const empty = Promise.resolve({ data: [] })
 
-  const [dep, wd, rd, gl] = await Promise.all([
+  const [dep, wd, rd, gl, led] = await Promise.all([
     want('deposit') ? supabase.from('deposits')
       .select('id, amount_cents, status, created_at, rejection_reason, payment_methods(name)')
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
@@ -85,17 +85,37 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
     want('game_load') ? supabase.from('game_loads')
       .select('id, amount_cents, status, created_at, rejection_reason, game_accounts(game_panels(name))')
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
+    // The running wallet balance after each settled request, from the ledger.
+    supabase.from('ledger')
+      .select('balance_after_cents, wallet_bucket, deposit_id, withdrawal_id, redeem_id, game_load_id')
+      .eq('user_id', userId).order('created_at', { ascending: false }).limit(1000),
   ])
+
+  // Map each request to its "after" balance. Latest ledger row wins, but a
+  // cash-bucket row is preferred (a deposit writes both a cash and a bonus
+  // entry, and the cash balance is the one the player wants to see).
+  const afterBal = {}
+  const put = (id, l) => {
+    if (!id) return
+    const cur = afterBal[id]
+    if (cur === undefined || (cur.bucket !== 'cash' && l.wallet_bucket === 'cash')) {
+      afterBal[id] = { cents: l.balance_after_cents, bucket: l.wallet_bucket }
+    }
+  }
+  for (const l of led.data || []) {
+    put(l.deposit_id, l); put(l.withdrawal_id, l); put(l.redeem_id, l); put(l.game_load_id, l)
+  }
+  const after = id => (afterBal[id] ? afterBal[id].cents : null)
 
   // A deposit is "approved" in the DB but the player sees it as "Completed",
   // like scores and redeems; withdraw keeps its own "Paid".
   const normDeposit = s => (s === 'approved' ? 'completed' : s)
 
   const rows = [
-    ...(dep.data || []).map(r => ({ id: 'dep-' + r.id, kind: 'deposit', label: 'Deposit', game_name: r.payment_methods?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: normDeposit(r.status), created_at: r.created_at, rejection_reason: r.rejection_reason })),
-    ...(wd.data || []).map(r => ({ id: 'wd-' + r.id, kind: 'withdrawal', label: 'Withdrawal', game_name: r.method || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason })),
-    ...(rd.data || []).map(r => ({ id: 'rd-' + r.id, kind: 'redeem', label: 'Redeem', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason })),
-    ...(gl.data || []).map(r => ({ id: 'gl-' + r.id, kind: 'game_load', label: 'Scores', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason })),
+    ...(dep.data || []).map(r => ({ id: 'dep-' + r.id, kind: 'deposit', label: 'Deposit', game_name: r.payment_methods?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: normDeposit(r.status), created_at: r.created_at, rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(wd.data || []).map(r => ({ id: 'wd-' + r.id, kind: 'withdrawal', label: 'Withdrawal', game_name: r.method || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(rd.data || []).map(r => ({ id: 'rd-' + r.id, kind: 'redeem', label: 'Redeem', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(gl.data || []).map(r => ({ id: 'gl-' + r.id, kind: 'game_load', label: 'Scores', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
   ]
 
   rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))

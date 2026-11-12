@@ -208,6 +208,13 @@ export default function WalletPage() {
                   <div style={{ marginTop: 6, display: 'flex', justifyContent: 'flex-end' }}>
                     <StatusBadge status={tx.status} size="xs" />
                   </div>
+                  {tx.balance_after_cents != null && (
+                    <div style={{ marginTop: 4 }}>
+                      <span style={{ fontSize: 10, color: 'rgba(255,255,255,.25)' }}>
+                        After: <MoneyDisplay cents={tx.balance_after_cents} size="xs" color="rgba(255,255,255,.35)" />
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
