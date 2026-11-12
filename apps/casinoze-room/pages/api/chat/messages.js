@@ -92,7 +92,9 @@ async function sendMessage(req, res) {
     .maybeSingle()
 
   if (!conv) return res.status(404).json({ error: 'Conversation not found' })
-  if (conv.status === 'closed') return res.status(409).json({ error: 'Conversation is closed' })
+  // A closed conversation is NOT a dead end. The player sending again reopens
+  // it so support sees the new message — closing was "resolved for now", not
+  // "blocked forever". (Handled by the status:'open' update below.)
 
   const { data: message, error } = await sb
     .from('chat_messages')
@@ -111,10 +113,11 @@ async function sendMessage(req, res) {
 
   if (error) return res.status(500).json({ error: error.message })
 
-  // Update last_message_at (anon key — RLS allows update on own conversation)
+  // Bump last_message_at and reopen if it was closed, so the conversation
+  // returns to the admin's open list with the new message.
   await sb
     .from('chat_conversations')
-    .update({ last_message_at: new Date().toISOString() })
+    .update({ last_message_at: new Date().toISOString(), status: 'open' })
     .eq('id', conversationId)
     .eq('user_id', session.user.id)
 
