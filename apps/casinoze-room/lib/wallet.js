@@ -55,6 +55,54 @@ export async function getMyTransactions(userId, { limit = 20, offset = 0, type }
 }
 
 /**
+ * Unified activity feed for the wallet: deposits, withdrawals, redeems and
+ * scores (game loads) in one list, each carrying its live status so the player
+ * sees a pending request the moment they make it — not only after it settles.
+ *
+ * The ledger only holds money that has already moved, so a pending deposit or
+ * withdrawal never appeared there. These rows come straight from the request
+ * tables instead, which is where the status lives.
+ *
+ * `kind` filters to one type ('deposit' | 'withdrawal' | 'redeem' |
+ * 'game_load'); omit it for everything. Paginated by created_at across all
+ * four tables.
+ */
+export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {}) {
+  const want = k => !kind || kind === k
+  const need = offset + limit          // enough from each table to fill this page
+  const empty = Promise.resolve({ data: [] })
+
+  const [dep, wd, rd, gl] = await Promise.all([
+    want('deposit') ? supabase.from('deposits')
+      .select('id, amount_cents, status, created_at, rejection_reason, payment_methods(name)')
+      .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
+    want('withdrawal') ? supabase.from('withdrawals')
+      .select('id, amount_cents, status, created_at, rejection_reason, method')
+      .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
+    want('redeem') ? supabase.from('redemptions')
+      .select('id, amount_cents, status, created_at, rejection_reason, game_accounts(game_panels(name))')
+      .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
+    want('game_load') ? supabase.from('game_loads')
+      .select('id, amount_cents, status, created_at, rejection_reason, game_accounts(game_panels(name))')
+      .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
+  ])
+
+  // A deposit is "approved" in the DB but the player sees it as "Completed",
+  // like scores and redeems; withdraw keeps its own "Paid".
+  const normDeposit = s => (s === 'approved' ? 'completed' : s)
+
+  const rows = [
+    ...(dep.data || []).map(r => ({ id: 'dep-' + r.id, kind: 'deposit', label: 'Deposit', game_name: r.payment_methods?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: normDeposit(r.status), created_at: r.created_at, rejection_reason: r.rejection_reason })),
+    ...(wd.data || []).map(r => ({ id: 'wd-' + r.id, kind: 'withdrawal', label: 'Withdrawal', game_name: r.method || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason })),
+    ...(rd.data || []).map(r => ({ id: 'rd-' + r.id, kind: 'redeem', label: 'Redeem', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason })),
+    ...(gl.data || []).map(r => ({ id: 'gl-' + r.id, kind: 'game_load', label: 'Scores', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: r.created_at, rejection_reason: r.rejection_reason })),
+  ]
+
+  rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  return rows.slice(offset, offset + limit)
+}
+
+/**
  * Get recent deposits for a user
  */
 export async function getMyDeposits(userId, { limit = 10 } = {}) {

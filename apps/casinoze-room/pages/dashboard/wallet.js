@@ -14,15 +14,14 @@ import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
-import { getMyTransactions, txTypeLabel, txTypeColor } from '../../lib/wallet'
+import { getMyActivity } from '../../lib/wallet'
 
 const TX_FILTERS = [
-  { key: 'all',           label: 'All'        },
-  { key: 'deposit_bonus', label: 'Bonuses'    },
-  { key: 'deposit',       label: 'Deposits'   },
-  { key: 'game_load',     label: 'Scores'     },
-  { key: 'redeem',        label: 'Redeems'    },
-  { key: 'withdrawal',    label: 'Withdrawals'},
+  { key: 'all',        label: 'All'        },
+  { key: 'deposit',    label: 'Deposits'   },
+  { key: 'game_load',  label: 'Scores'     },
+  { key: 'redeem',     label: 'Redeems'    },
+  { key: 'withdrawal', label: 'Withdrawals'},
 ]
 
 // ─── Balance card ─────────────────────────────────────────────────────────────
@@ -68,9 +67,9 @@ export default function WalletPage() {
     if (!user) return
     setTxLoading(true)
     try {
-      const txs = await getMyTransactions(user.id, {
+      const txs = await getMyActivity(user.id, {
         limit: LIMIT, offset: pageNum * LIMIT,
-        type: filter === 'all' ? undefined : filter,
+        kind: filter === 'all' ? undefined : filter,
       })
       if (pageNum === 0) setTransactions(txs)
       else setTransactions(p => [...p, ...txs])
@@ -185,37 +184,29 @@ export default function WalletPage() {
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,.02)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 12, background: txTypeColor(tx.type) === '#10b981' ? 'rgba(16,185,129,.12)' : 'rgba(248,113,113,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: tx.direction === 'credit' ? 'rgba(16,185,129,.12)' : 'rgba(248,113,113,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
                     {tx.direction === 'credit' ? '⬆️' : '⬇️'}
                   </div>
                   <div>
-                    {/* The game's name sits on the title line, where it is
-                        read first — "Game Load · Fire Kirin" answers the
-                        question the reference number never did. It comes
-                        from the linked load or redemption, so entries
-                        written before the name existed show it too. */}
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>
-                      {txTypeLabel(tx.type)}
+                      {tx.label}
                       {tx.game_name && <span style={{ color: '#fbbf24' }}> · {tx.game_name}</span>}
                     </div>
-                    {tx.description && <div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)', marginTop: 2 }}>{tx.description}</div>}
+                    {tx.status === 'rejected' && tx.rejection_reason && (
+                      <div style={{ fontSize: 11, color: '#f87171', marginTop: 2 }}>Reason: {tx.rejection_reason}</div>
+                    )}
                     <div style={{ fontSize: 11, color: 'rgba(255,255,255,.25)', marginTop: 2 }}>
                       {new Date(tx.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 16 }}>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: txTypeColor(tx.type) }}>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: tx.direction === 'credit' ? '#10b981' : '#f87171' }}>
                     {tx.direction === 'credit' ? '+' : '-'}
-                    <MoneyDisplay cents={tx.amount_cents} size="md" color={txTypeColor(tx.type)} />
+                    <MoneyDisplay cents={tx.amount_cents} size="md" color={tx.direction === 'credit' ? '#10b981' : '#f87171'} />
                   </div>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,.25)', textTransform: 'uppercase', letterSpacing: '.06em', marginTop: 2 }}>
-                    {tx.wallet_bucket} wallet
-                  </div>
-                  <div style={{ marginTop: 4 }}>
-                    <span style={{ fontSize: 10, color: 'rgba(255,255,255,.2)' }}>
-                      After: <MoneyDisplay cents={tx.balance_after_cents} size="xs" color="rgba(255,255,255,.3)" />
-                    </span>
+                  <div style={{ marginTop: 6, display: 'flex', justifyContent: 'flex-end' }}>
+                    <StatusBadge status={tx.status} size="xs" />
                   </div>
                 </div>
               </div>
