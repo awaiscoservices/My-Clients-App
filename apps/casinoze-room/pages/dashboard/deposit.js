@@ -35,7 +35,7 @@ function Steps({ current }) {
 }
 
 // ─── PAYMENT METHOD CARD ─────────────────────────────────────
-function MethodCard({ method, selected, onSelect }) {
+function MethodCard({ method, selected, onSelect, bonusPct }) {
   const icons = { cashapp: '💸', zelle: '⚡', venmo: '💜', crypto: '₿', bank_transfer: '🏦', money_order: '📮', other: '💳' }
   return (
     <div onClick={() => onSelect(method)} style={{
@@ -59,9 +59,9 @@ function MethodCard({ method, selected, onSelect }) {
             </div>
           </div>
         </div>
-        {method.default_bonus_pct > 0 && (
+        {bonusPct > 0 && (
           <div style={{ background: 'linear-gradient(135deg,#10b981,#059669)', color: '#fff', fontSize: 12, fontWeight: 800, padding: '4px 12px', borderRadius: 99 }}>
-            +{method.default_bonus_pct}% BONUS
+            +{bonusPct}% BONUS
           </div>
         )}
       </div>
@@ -97,6 +97,11 @@ export default function DepositPage() {
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
   const [myDeposits, setMyDeposits] = useState([])
+  // Bonus % per payment method, from the player_bonuses grid for THIS player's
+  // level and today — the same source the server credits from. (The old badge
+  // showed payment_methods.default_bonus_pct, a different number, so a player
+  // could be shown 20% and credited 3%.)
+  const [bonusMap, setBonusMap] = useState({})
 
   useEffect(() => { loadData() }, [])
 
@@ -109,17 +114,34 @@ export default function DepositPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/auth/login'); return }
 
-    const [{ data: methodsData }, { data: depositsData }] = await Promise.all([
+    const [{ data: methodsData }, { data: depositsData }, { data: profile }] = await Promise.all([
       supabase.from('payment_methods').select('*').eq('is_active', true).order('sort_order'),
       supabase.from('deposits').select('*, payment_methods(name)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5),
+      supabase.from('profiles').select('player_level_id').eq('id', user.id).single(),
     ])
     setMethods(methodsData || [])
     setMyDeposits(depositsData || [])
+
+    // Load the real bonus for each method from the player_bonuses grid, keyed
+    // the exact way the server keys it: method × level × today's day_number.
+    if (profile?.player_level_id) {
+      const jsDay = new Date().getDay()          // 0=Sun … 6=Sat
+      const dayNumber = jsDay === 0 ? 7 : jsDay   // 1=Mon … 7=Sun (matches server)
+      const { data: bonusRows } = await supabase
+        .from('player_bonuses')
+        .select('payment_method_id, bonus_percent')
+        .eq('player_level_id', profile.player_level_id)
+        .eq('day_number', dayNumber)
+        .eq('is_active', true)
+      const map = {}
+      for (const b of bonusRows || []) map[b.payment_method_id] = parseFloat(b.bonus_percent) || 0
+      setBonusMap(map)
+    }
   }
 
   // Amount in cents (integer)
   const amountCents = Math.round(parseFloat(amountInput || 0) * 100)
-  const bonusPct = selectedMethod?.default_bonus_pct || 0
+  const bonusPct = (selectedMethod && bonusMap[selectedMethod.id]) || 0
   const bonusCents = Math.floor(amountCents * (bonusPct / 100))
   const totalCents = amountCents + bonusCents
 
@@ -278,7 +300,7 @@ export default function DepositPage() {
                 <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,.3)' }}>No payment methods available. Please contact support.</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {methods.map(m => <MethodCard key={m.id} method={m} selected={selectedMethod?.id === m.id} onSelect={setSelectedMethod} />)}
+                  {methods.map(m => <MethodCard key={m.id} method={m} selected={selectedMethod?.id === m.id} onSelect={setSelectedMethod} bonusPct={bonusMap[m.id] || 0} />)}
                 </div>
               )}
             </div>
