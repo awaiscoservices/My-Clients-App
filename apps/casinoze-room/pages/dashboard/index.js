@@ -600,20 +600,14 @@ export default function Dashboard() {
     <PlayerLayout>
       <Head><title>Dashboard — Casinoze Room</title></Head>
 
-      {/* WELCOME */}
-      <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-        <div style={{ minWidth: 0 }}>
+      {/* WELCOME — notifications live in the topbar bell, not here */}
+      <div style={{ marginBottom: 20, minWidth: 0 }}>
         <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(20px,3vw,28px)', fontWeight: 700, color: '#fff', marginBottom: 4 }}>
           Welcome back, {profile?.full_name?.split(' ')[0] || 'Player'} 👋
         </h1>
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>
           {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
-        </div>
-        <Link href="/dashboard/notifications" aria-label={`Notifications${unread ? `, ${unread} unread` : ''}`} style={{ position: 'relative', flexShrink: 0, width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(251,191,36,.25)', color: '#fbbf24' }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 003.4 0" /></svg>
-          {unread > 0 && <span style={{ position: 'absolute', top: -6, right: -6, minWidth: 18, textAlign: 'center', background: '#fbbf24', color: '#000', fontSize: 10, fontWeight: 800, padding: '2px 5px', borderRadius: 99 }}>{unread > 99 ? '99+' : unread}</span>}
-        </Link>
       </div>
 
       {/* KYC BANNER */}

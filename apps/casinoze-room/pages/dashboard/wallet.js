@@ -18,8 +18,8 @@ import { getMyTransactions, txTypeLabel, txTypeColor } from '../../lib/wallet'
 
 const TX_FILTERS = [
   { key: 'all',           label: 'All'        },
-  { key: 'deposit',       label: 'Deposits'   },
   { key: 'deposit_bonus', label: 'Bonuses'    },
+  { key: 'deposit',       label: 'Deposits'   },
   { key: 'game_load',     label: 'Scores'     },
   { key: 'redeem',        label: 'Redeems'    },
   { key: 'withdrawal',    label: 'Withdrawals'},
@@ -157,9 +157,9 @@ export default function WalletPage() {
 
       {/* Transaction history */}
       <div style={{ background: 'rgba(255,255,255,.02)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 18, overflow: 'hidden' }}>
-        <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,.06)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>Transaction History</span>
-          <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,.05)', padding: 4, borderRadius: 10, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,.05)', padding: 4, borderRadius: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
             {TX_FILTERS.map(f => (
               <button key={f.key} onClick={() => setFilter(f.key)} style={{
                 padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer',
@@ -201,7 +201,6 @@ export default function WalletPage() {
                     {tx.description && <div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)', marginTop: 2 }}>{tx.description}</div>}
                     <div style={{ fontSize: 11, color: 'rgba(255,255,255,.25)', marginTop: 2 }}>
                       {new Date(tx.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                      {tx.reference_id && <span style={{ marginLeft: 8, color: '#fbbf24' }}>#{tx.reference_id}</span>}
                     </div>
                   </div>
                 </div>
