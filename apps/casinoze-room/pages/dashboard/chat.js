@@ -118,6 +118,7 @@ export default function PlayerChat() {
   const bottomRef               = useRef(null)
   const channelRef              = useRef(null)
   const fileRef                 = useRef(null)
+  const justOpenedRef           = useRef(false)  // jump to newest instantly on open
 
   useEffect(() => {
     async function init() {
@@ -130,6 +131,7 @@ export default function PlayerChat() {
         const mr = await fetch(`/api/chat/messages?conversationId=${cd.conversation.id}`)
         const md = await mr.json()
         if (md.error) { setError(md.error); setLoading(false); return }
+        justOpenedRef.current = true          // first paint jumps straight to newest
         setMessages(md.messages ?? [])
       } catch { setError('Failed to load chat. Please refresh.') }
       setLoading(false)
@@ -174,7 +176,17 @@ export default function PlayerChat() {
     return () => clearInterval(poll)
   }, [conv?.id])
 
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
+  // On open, snap straight to the newest message (like WhatsApp) — no animated
+  // scroll through the whole history. New messages while open glide in.
+  useEffect(() => {
+    if (!messages.length) return
+    if (justOpenedRef.current) {
+      bottomRef.current?.scrollIntoView()
+      justOpenedRef.current = false
+    } else {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages])
 
   async function handleSend(e) {
     e.preventDefault()
@@ -222,12 +234,11 @@ export default function PlayerChat() {
   return (
     <PlayerLayout>
       <Head><title>Support Chat</title></Head>
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 32px', width: '100%', boxSizing: 'border-box' }}>
-        <div style={{ marginBottom: 20 }}>
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: '12px 16px', width: '100%', boxSizing: 'border-box' }}>
+        <div style={{ marginBottom: 12 }}>
           <h1 style={{ fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: '#fff', margin: 0 }}>Support Chat</h1>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginTop: 4 }}>Chat with our support team — we typically reply within a few minutes.</p>
         </div>
-        <div style={{ ...PANEL, display: 'flex', flexDirection: 'column', height: '65vh', minHeight: 400 }}>
+        <div style={{ ...PANEL, display: 'flex', flexDirection: 'column', height: 'calc(100dvh - 190px)', minHeight: 380 }}>
           <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,.08)', display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e' }} />
             <span style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>Support is online</span>
