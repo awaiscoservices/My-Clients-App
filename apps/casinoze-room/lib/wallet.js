@@ -128,7 +128,7 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
 
   const rows = [
     ...(dep.data || []).map(r => ({ id: 'dep-' + r.id, kind: 'deposit', label: 'Deposit', game_name: r.payment_methods?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: normDeposit(r.status), created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
-    ...(wd.data || []).map(r => ({ id: 'wd-' + r.id, kind: 'withdrawal', label: 'Withdrawal', game_name: r.method || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(wd.data || []).map(r => ({ id: 'wd-' + r.id, kind: 'withdrawal', label: 'Withdraw', game_name: r.method || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
     ...(rd.data || []).map(r => ({ id: 'rd-' + r.id, kind: 'redeem', label: 'Redeem', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id), source_bucket: r.source_bucket || null, source_label: srcTag(r.source_bucket) ? `${srcTag(r.source_bucket)} winnings` : null })),
     ...(gl.data || []).map(r => ({ id: 'gl-' + r.id, kind: 'game_load', label: 'Scores', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id), source_bucket: r.wallet_bucket || null, source_label: srcTag(r.wallet_bucket) ? `from ${srcTag(r.wallet_bucket)}` : null })),
     ...(spin.data || []).map(r => ({
@@ -233,12 +233,12 @@ export function txTypeLabel(type) {
     game_load:                  'Game Load',
     game_load_reserve:          'Load Reserved',
     game_load_reserve_release:  'Load Released',
-    redeem:                     'Redemption',
+    redeem:                     'Redeem',
     redeem_reserve:             'Redeem Reserved',
     redeem_reserve_release:     'Redeem Released',
-    withdrawal:                 'Withdrawal',
-    withdrawal_reserve:         'Withdrawal Reserved',
-    withdrawal_reserve_release: 'Withdrawal Released',
+    withdrawal:                 'Withdraw',
+    withdrawal_reserve:         'Withdraw Reserved',
+    withdrawal_reserve_release: 'Withdraw Released',
     referral_bonus:             'Referral Bonus',
     level_bonus:                'Level Bonus',
     adjustment_credit:          'Admin Credit',

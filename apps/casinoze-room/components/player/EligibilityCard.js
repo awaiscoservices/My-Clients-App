@@ -52,7 +52,7 @@ export default function EligibilityCard({ account }) {
       {eligibleCents > 0 && (
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,.3)' }}>Redemption used</span>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,.3)' }}>Redeem used</span>
             <span style={{ fontSize: 10, color: 'rgba(255,255,255,.5)', fontWeight: 700 }}>{usedPct}%</span>
           </div>
           <div style={{ height: 6, borderRadius: 99, background: 'rgba(255,255,255,.06)', overflow: 'hidden' }}>

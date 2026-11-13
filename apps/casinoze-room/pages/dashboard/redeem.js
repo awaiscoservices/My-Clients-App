@@ -63,7 +63,7 @@ export default function Redeem() {
               <input type="number" min="1" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" style={input} /></div>
             <div style={{ marginBottom: 20 }}><Label>Notes (optional)</Label>
               <textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)} style={{ ...input, resize: 'vertical' }} /></div>
-            <Btn type="submit" disabled={busy} style={{ width: '100%' }}>{busy ? 'Submitting…' : 'Request Redemption'}</Btn>
+            <Btn type="submit" disabled={busy} style={{ width: '100%' }}>{busy ? 'Submitting…' : 'Request Redeem'}</Btn>
           </>)}
         </form>
         <div style={{ ...card, padding: 0, overflow: 'hidden' }}>

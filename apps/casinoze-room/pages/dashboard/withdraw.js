@@ -156,7 +156,7 @@ export default function Withdraw() {
           </div>
           <div style={{ marginBottom: 20 }}><Label>Amount (USD)</Label>
             <input type="number" min="1" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" style={input} /></div>
-          <Btn type="submit" disabled={busy || !verified} style={{ width: '100%' }}>{busy ? 'Submitting…' : 'Request Withdrawal'}</Btn>
+          <Btn type="submit" disabled={busy || !verified} style={{ width: '100%' }}>{busy ? 'Submitting…' : 'Request Withdraw'}</Btn>
         </form>
         <div style={{ ...card, padding: 0, overflow: 'hidden' }}>
           <div style={{ padding: '16px 20px', fontWeight: 700, borderBottom: '1px solid rgba(255,255,255,.06)' }}>Recent requests</div>

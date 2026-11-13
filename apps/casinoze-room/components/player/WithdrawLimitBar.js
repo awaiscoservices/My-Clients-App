@@ -21,7 +21,7 @@ export default function WithdrawLimitBar({ withdrawalToday, level }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <div>
           <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.3)', marginBottom: 2 }}>
-            Daily Withdrawal Limit
+            Daily Withdraw Limit
           </div>
           {level && (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)' }}>

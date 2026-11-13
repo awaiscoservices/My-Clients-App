@@ -73,7 +73,7 @@ export default async function handler(req, res) {
 
   if (existing) {
     return res.status(200).json({
-      message: 'Withdrawal already submitted',
+      message: 'Withdraw already submitted',
       withdrawal: existing,
       duplicate: true,
     })
@@ -101,7 +101,7 @@ export default async function handler(req, res) {
 
   // ── Task 38: allow_withdraw check ─────────────────────────────────────────
   if (!method.allow_withdraw)
-    return res.status(400).json({ error: 'Withdrawals are not currently accepted via this payment method' })
+    return res.status(400).json({ error: 'Withdraws are not currently accepted via this payment method' })
 
   // The minimum and maximum for a single withdrawal come from the player's
   // level, applied below. There were checks here against columns the
@@ -275,13 +275,13 @@ export default async function handler(req, res) {
     tenant_id: profile?.tenant_id || null,
     user_id: user.id,
     type:    'general',
-    title:   'Withdrawal Submitted',
+    title:   'Withdraw Submitted',
     message: `Your withdrawal of $${(amount_cents / 100).toFixed(2)} (${withdrawal.reference_id}) has been submitted and is pending review.`,
     reference_id: withdrawal.reference_id,
   }).then(() => {}, () => {})
 
   return res.status(201).json({
-    message: 'Withdrawal submitted successfully',
+    message: 'Withdraw submitted successfully',
     withdrawal: {
       id:                        withdrawal.id,
       reference_id:              withdrawal.reference_id,

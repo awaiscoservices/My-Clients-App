@@ -699,8 +699,8 @@ export default function Dashboard() {
           </div>
           <PendingCard label="Deposits"    count={pending.deposits}    href="/dashboard/deposit"       color="#10b981" />
           <PendingCard label="Game Loads"  count={pending.loads}       href="/dashboard/games?tab=mine" color="#fbbf24" />
-          <PendingCard label="Redemptions" count={pending.redeems}     href="/dashboard/redeem"        color="#f59e0b" />
-          <PendingCard label="Withdrawals" count={pending.withdrawals} href="/dashboard/withdraw"      color="#3b82f6" />
+          <PendingCard label="Redeems" count={pending.redeems}     href="/dashboard/redeem"        color="#f59e0b" />
+          <PendingCard label="Withdraws" count={pending.withdrawals} href="/dashboard/withdraw"      color="#3b82f6" />
         </div>
       )}
 

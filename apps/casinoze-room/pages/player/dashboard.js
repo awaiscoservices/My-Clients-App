@@ -83,7 +83,7 @@ export default function PlayerDashboard() {
       {/* Daily withdrawal summary */}
       {withdrawal_today && (
         <div style={{ marginBottom: 24 }}>
-          <SectionTitle>Today's Withdrawals</SectionTitle>
+          <SectionTitle>Today's Withdraws</SectionTitle>
           <WithdrawSummaryInline w={withdrawal_today} level={level} />
         </div>
       )}

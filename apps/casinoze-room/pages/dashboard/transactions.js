@@ -12,8 +12,8 @@ const TYPE_META = {
   game_load:        { label: 'Game Load',    icon: '🎮', color: purple },
   game_load_return: { label: 'Load Return',  icon: '↩️', color: blue },
   redemption:       { label: 'Redeem',       icon: '💰', color: gold },
-  withdrawal:       { label: 'Withdrawal',   icon: '⬆️', color: red },
-  withdrawal_hold:  { label: 'Withdrawal',   icon: '⬆️', color: red },
+  withdrawal:       { label: 'Withdraw',   icon: '⬆️', color: red },
+  withdrawal_hold:  { label: 'Withdraw',   icon: '⬆️', color: red },
   adjustment:       { label: 'Adjustment',   icon: '⚙️', color: 'rgba(255,255,255,0.5)' },
   bonus:            { label: 'Bonus',        icon: '🎁', color: gold },
   referral:         { label: 'Referral',     icon: '👥', color: green },
@@ -43,9 +43,9 @@ function StatusPill({ status }) {
 const TABS = [
   { key: 'all',         label: 'All' },
   { key: 'deposits',    label: 'Deposits' },
-  { key: 'withdrawals', label: 'Withdrawals' },
+  { key: 'withdrawals', label: 'Withdraws' },
   { key: 'loads',       label: 'Game Loads' },
-  { key: 'redemptions', label: 'Redemptions' },
+  { key: 'redemptions', label: 'Redeems' },
 ]
 
 export default function TransactionsPage() {
@@ -80,14 +80,14 @@ export default function TransactionsPage() {
     if (!data) return []
     const { deposits, withdrawals, loads, redemptions } = data.recent
     if (tab === 'deposits')    return deposits.map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' }))
-    if (tab === 'withdrawals') return withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdrawal', _dir: 'debit' }))
+    if (tab === 'withdrawals') return withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' }))
     if (tab === 'loads')       return loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Game Load',    _dir: 'debit' }))
-    if (tab === 'redemptions') return redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redemption',   _dir: 'credit' }))
+    if (tab === 'redemptions') return redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' }))
     const all = [
       ...deposits.map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' })),
-      ...withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdrawal', _dir: 'debit' })),
+      ...withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' })),
       ...loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Game Load',    _dir: 'debit' })),
-      ...redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redemption',   _dir: 'credit' })),
+      ...redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' })),
     ]
     return all.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
   }
@@ -131,7 +131,7 @@ export default function TransactionsPage() {
               ))}
               {data.pending.withdrawals.map(w => (
                 <div key={w.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-                  <span>⬆️ Withdrawal <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{w.reference_id}</span></span>
+                  <span>⬆️ Withdraw <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{w.reference_id}</span></span>
                   <span style={{ color: red, fontWeight: 700 }}>−{fmt(w.amount_cents)}</span>
                 </div>
               ))}
@@ -143,7 +143,7 @@ export default function TransactionsPage() {
               ))}
               {data.pending.redemptions.map(r => (
                 <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-                  <span>💰 Redemption <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{r.reference_id}</span></span>
+                  <span>💰 Redeem <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{r.reference_id}</span></span>
                   <span style={{ color: gold, fontWeight: 700 }}>{fmt(r.amount_cents)}</span>
                 </div>
               ))}

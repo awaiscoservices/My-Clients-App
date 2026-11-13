@@ -21,7 +21,7 @@ const TX_FILTERS = [
   { key: 'deposit',    label: 'Deposits'   },
   { key: 'game_load',  label: 'Scores'     },
   { key: 'redeem',     label: 'Redeems'    },
-  { key: 'withdrawal', label: 'Withdrawals'},
+  { key: 'withdrawal', label: 'Withdraws'},
   { key: 'spinner',    label: 'Wheel'      },
 ]
 

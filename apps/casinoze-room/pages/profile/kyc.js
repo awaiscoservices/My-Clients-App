@@ -67,7 +67,7 @@ export default function KycSubmit() {
           </div>
         )}
         {latest?.status === 'pending' && <Notice>Your documents are under review. You can’t submit again until we’ve checked them.</Notice>}
-        {latest?.status === 'verified' && <Notice kind="success">You’re verified. Withdrawals are unlocked. <Link href="/dashboard/withdraw" style={{ color: '#10b981', fontWeight: 800 }}>Go to Withdraw →</Link></Notice>}
+        {latest?.status === 'verified' && <Notice kind="success">You’re verified. Withdraws are unlocked. <Link href="/dashboard/withdraw" style={{ color: '#10b981', fontWeight: 800 }}>Go to Withdraw →</Link></Notice>}
         {latest && ['rejected', 'more_info_required'].includes(latest.status) && <Notice kind="error">{latest.status === 'rejected' ? 'Your last submission was rejected' : 'We need more information'}{latest.rejection_reason ? `: ${latest.rejection_reason}` : '.'} Please submit again below.</Notice>}
 
         <form onSubmit={submit} style={{ ...card, opacity: locked ? .5 : 1 }}>
