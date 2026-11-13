@@ -103,7 +103,9 @@ async function sendMessage(req, res) {
       conversation_id: conversationId,
       sender_id:       session.user.id,
       sender_type:     'player',
-      body:            (body ?? '').trim(),
+      // NULL (not '') for an attachment-only message — the DB check requires
+      // a body of 1+ chars, and NULL passes it while '' does not.
+      body:            (body ?? '').trim() || null,
       file_url:        fileUrl ?? null,
       file_name:       fileName ?? null,
       file_type:       fileType ?? null,
