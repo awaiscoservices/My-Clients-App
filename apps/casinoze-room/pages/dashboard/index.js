@@ -10,17 +10,20 @@ import { getMyPendingCounts, getMyGameAccounts, getMyLoadCounts } from '../../li
 import { gameLogoFor } from '../../lib/gameCatalog'
 
 // ─── WHEEL OF FORTUNE ─────────────────────────────────────────────────────────
+// House-favoured wheel: multipliers sum to 9.0 across 10 equal segments →
+// 90% RTP (10% house edge). Order MUST match v_mults in the spin_wheel RPC,
+// since the server returns a segment index that this array renders.
 const SEGMENTS = [
   { label: '0.2×', multiplier: 0.2, color: '#1e3a5f' },
-  { label: '4×',   multiplier: 4,   color: '#7c2d12' },
-  { label: '0.4×', multiplier: 0.4, color: '#14532d' },
-  { label: '1.8×', multiplier: 1.8, color: '#4c1d95' },
-  { label: '0.6×', multiplier: 0.6, color: '#1e3a5f' },
   { label: '3×',   multiplier: 3,   color: '#7c2d12' },
-  { label: '1×',   multiplier: 1,   color: '#14532d' },
-  { label: '2.6×', multiplier: 2.6, color: '#4c1d95' },
-  { label: '1.2×', multiplier: 1.2, color: '#1e3a5f' },
-  { label: '1.6×', multiplier: 1.6, color: '#7c2d12' },
+  { label: '0.5×', multiplier: 0.5, color: '#14532d' },
+  { label: '1×',   multiplier: 1,   color: '#4c1d95' },
+  { label: '0.8×', multiplier: 0.8, color: '#1e3a5f' },
+  { label: '0.4×', multiplier: 0.4, color: '#7c2d12' },
+  { label: '1.5×', multiplier: 1.5, color: '#14532d' },
+  { label: '0.3×', multiplier: 0.3, color: '#4c1d95' },
+  { label: '0.6×', multiplier: 0.6, color: '#1e3a5f' },
+  { label: '0.7×', multiplier: 0.7, color: '#7c2d12' },
 ]
 const SEG_ANGLE = (Math.PI * 2) / SEGMENTS.length
 
