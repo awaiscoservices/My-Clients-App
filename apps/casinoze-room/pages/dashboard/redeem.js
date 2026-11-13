@@ -18,6 +18,7 @@ export default function Redeem() {
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState(null)
   const [popup, setPopup] = useState(null)
+  const [preview, setPreview] = useState(null)   // { bucket, pct } for the chosen account
 
   async function load() {
     const [accs, { data: h }] = await Promise.all([
@@ -28,6 +29,20 @@ export default function Redeem() {
     setHistory(h || [])
   }
   useEffect(() => { if (user) load() }, [user])
+
+  // When a game account is picked, find out how its redeem works (bonus-funded
+  // pays a % of the winnings the player enters; cash-funded pays the amount).
+  useEffect(() => {
+    setPreview(null)
+    if (!acct) return
+    supabase.rpc('redeem_preview', { p_game_account_id: acct })
+      .then(({ data }) => setPreview(data || null), () => setPreview(null))
+  }, [acct])
+
+  const isBonus = preview?.bucket === 'bonus'
+  const pct     = Number(preview?.redeemable_pct) || 0
+  const entered = parseFloat(amount) || 0
+  const payout  = isBonus ? Math.floor(entered * pct) / 100 : entered
 
   async function submit(e) {
     e.preventDefault()
@@ -59,8 +74,16 @@ export default function Redeem() {
                 <option value="">Select…</option>
                 {accounts.map(a => <option key={a.id} value={a.id}>{a.game_panels?.name} — {a.game_username}</option>)}
               </select></div>
-            <div style={{ marginBottom: 16 }}><Label>Amount (USD)</Label>
+            <div style={{ marginBottom: isBonus && entered > 0 ? 10 : 16 }}>
+              <Label>{isBonus ? 'Winnings amount (USD)' : 'Amount (USD)'}</Label>
               <input type="number" min="1" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" style={input} /></div>
+            {isBonus && entered > 0 && (
+              <div style={{ marginBottom: 20, padding: '12px 14px', borderRadius: 12, background: 'rgba(251,191,36,.08)', border: '1px solid rgba(251,191,36,.25)' }}>
+                <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.7)' }}>You'll get </span>
+                <span style={{ fontSize: 16, fontWeight: 800, color: '#fbbf24' }}>${payout.toFixed(2)}</span>
+                <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.7)' }}> ({pct}% of ${entered.toFixed(2)})</span>
+              </div>
+            )}
             <div style={{ marginBottom: 20 }}><Label>Notes (optional)</Label>
               <textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)} style={{ ...input, resize: 'vertical' }} /></div>
             <Btn type="submit" disabled={busy} style={{ width: '100%' }}>{busy ? 'Submitting…' : 'Request Redeem'}</Btn>
