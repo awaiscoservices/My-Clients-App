@@ -86,9 +86,9 @@ export default function Referrals() {
       <div style={card}>
         <Label>Referred users</Label>
         {loading ? (
-          <Empty icon="⏳" text="Loading…" />
+          <Empty icon="clock" text="Loading…" />
         ) : refs.length === 0 ? (
-          <Empty icon="👥" text="No referrals yet — share your code to get started." />
+          <Empty icon="users" text="No referrals yet — share your code to get started." />
         ) : (
           <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {refs.map((r, i) => (

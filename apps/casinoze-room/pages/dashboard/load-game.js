@@ -88,7 +88,7 @@ export default function LoadGame() {
           </div>
           <Notice kind={msg?.kind}>{msg?.text}</Notice>
           {accounts.length === 0 ? (
-            <Empty icon="🎮" text={<>You need an active game account first. <Link href="/dashboard/games" style={{ color: '#fbbf24' }}>Browse games →</Link></>} />
+            <Empty icon="gamepad" text={<>You need an active game account first. <Link href="/dashboard/games" style={{ color: '#fbbf24' }}>Browse games →</Link></>} />
           ) : (<>
             <div style={{ marginBottom: 16 }}><Label>Game account</Label>
               <select value={acct} onChange={e => setAcct(e.target.value)} style={input}>

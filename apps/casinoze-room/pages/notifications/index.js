@@ -32,7 +32,7 @@ export default function Notifications() {
         {unread.length > 0 && <Btn ghost onClick={() => markRead(unread)}>Mark all read</Btn>}
       </div>
       <div style={{ ...card, padding: 0, overflow: 'hidden' }}>
-        {loaded && rows.length === 0 ? <Empty icon="🔔" text="You're all caught up" /> : rows.map((n, i) => (
+        {loaded && rows.length === 0 ? <Empty icon="bell" text="You're all caught up" /> : rows.map((n, i) => (
           <div key={n.id} onClick={() => !n.is_read && markRead([n.id])} style={{ padding: '16px 20px', cursor: n.is_read ? 'default' : 'pointer', borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,.05)' : 'none', background: n.is_read ? 'transparent' : 'rgba(251,191,36,.05)', display: 'flex', gap: 12 }}>
             <span style={{ width: 8, height: 8, borderRadius: '50%', marginTop: 6, flexShrink: 0, background: n.is_read ? 'transparent' : G }} />
             <div style={{ minWidth: 0 }}>

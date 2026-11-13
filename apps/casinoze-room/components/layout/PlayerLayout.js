@@ -23,6 +23,8 @@ const ICONS = {
   bell:     'M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 003.4 0',
   logout:   'M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9',
   menu:     'M3 6h18M3 12h18M3 18h18',
+  trophy:   'M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4zM17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3',
+  gift:     'M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H8.5a2.5 2.5 0 110-5C11 2 12 7 12 7zM12 7h3.5a2.5 2.5 0 100-5C13 2 12 7 12 7z',
 }
 
 function Icon({ name, size = 18, color = 'currentColor' }) {
@@ -81,7 +83,7 @@ function WinsTicker() {
       <div className="wins-track" style={{ display: 'inline-flex', gap: 40 }}>
         {row.map((w, i) => (
           <span key={i} style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>
-            <span style={{ color: GOLD }}>🏆</span> {w.masked_name} <span style={{ opacity: .6 }}>WON</span> <span style={{ color: GOLD }}>{centsToDisplay(w.amount_cents)}</span>
+            <span style={{ display: 'inline-flex', verticalAlign: '-2px', color: GOLD }}><Icon name="trophy" size={13} /></span> {w.masked_name} <span style={{ opacity: .6 }}>WON</span> <span style={{ color: GOLD }}>{centsToDisplay(w.amount_cents)}</span>
           </span>
         ))}
       </div>
@@ -240,7 +242,7 @@ export default function PlayerLayout({ children }) {
         <WinsTicker />
         {showPromo && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '10px 40px 10px 16px', position: 'relative', background: 'linear-gradient(90deg,rgba(251,191,36,.14),rgba(245,158,11,.06),rgba(251,191,36,.14))', borderBottom: '1px solid rgba(251,191,36,.18)', fontSize: 13, fontWeight: 600, textAlign: 'center' }}>
-            <span style={{ color: GOLD }}>🎁</span> {PROMO_TEXT}
+            <span style={{ display: 'inline-flex', verticalAlign: '-3px', color: GOLD }}><Icon name="gift" size={15} /></span> {PROMO_TEXT}
             <button onClick={() => setPromoOpen(false)} aria-label="Dismiss" style={{ position: 'absolute', right: 14, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', fontSize: 18, cursor: 'pointer' }}>×</button>
           </div>
         )}

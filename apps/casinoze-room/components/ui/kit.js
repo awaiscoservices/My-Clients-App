@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
+import Icon from './Icon'
 
 export const G = '#fbbf24'
 export const card = { background: 'rgba(255,255,255,.03)', border: '1px solid rgba(251,191,36,.14)', borderRadius: 18, padding: 22 }
@@ -51,20 +52,20 @@ export function Notice({ kind = 'info', children }) {
   return <div style={{ padding: '12px 16px', borderRadius: 12, marginBottom: 16, fontSize: 13, fontWeight: 600, background: `rgba(${c[0]},.1)`, border: `1px solid rgba(${c[0]},.3)`, color: c[1] }}>{children}</div>
 }
 
-export function Empty({ icon = '📭', text }) {
-  return <div style={{ padding: '36px 16px', textAlign: 'center', color: 'rgba(255,255,255,.35)', fontSize: 13 }}><div style={{ fontSize: 30, marginBottom: 8 }}>{icon}</div>{text}</div>
+export function Empty({ icon = 'inbox', text }) {
+  return <div style={{ padding: '36px 16px', textAlign: 'center', color: 'rgba(255,255,255,.35)', fontSize: 13 }}><div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}><Icon name={icon} size={30} /></div>{text}</div>
 }
 
 // Confirmation popup shown after a request is submitted, telling the player
 // how long to wait before contacting support. `data` is { title, text } or
 // null (hidden).
-export function WaitPopup({ data, onClose, emoji = '✅' }) {
+export function WaitPopup({ data, onClose, icon = 'checkCircle' }) {
   if (!data) return null
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <div onClick={e => e.stopPropagation()} style={{ position: 'relative', background: '#0e1a2e', border: '1px solid rgba(251,191,36,.3)', borderRadius: 20, padding: '30px 28px', width: '100%', maxWidth: 420, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,.5)' }}>
         <button onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', fontSize: 22, lineHeight: 1, cursor: 'pointer' }}>✕</button>
-        <div style={{ fontSize: 46, marginBottom: 14 }}>{emoji}</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14, color: '#10b981' }}><Icon name={icon} size={46} /></div>
         <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: '#fff', margin: '0 0 10px' }}>{data.title}</h3>
         <p style={{ fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,.6)', margin: '0 0 22px' }}>{data.text}</p>
         <Btn onClick={onClose} style={{ width: '100%' }}>Got it</Btn>

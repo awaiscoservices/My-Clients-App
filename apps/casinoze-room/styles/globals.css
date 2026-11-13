@@ -8,14 +8,21 @@
   padding: 0;
 }
 
-/* ── THEME: change these two lines to recolor the whole site ── */
+/* ── THEME: rich black-and-gold casino luxury with layered glow ── */
 :root {
+  /* Jewel-tone base with a gold crown glow, plus faint violet + teal
+     corner lights so the dark background reads deep rather than flat. */
   --bg-gradient:
-    radial-gradient(ellipse 80% 50% at 50% -8%, rgba(251,191,36,.14), transparent 60%),
-    linear-gradient(160deg, #07090f 0%, #0e1a2e 45%, #1c1507 100%);
-  --panel-gradient: linear-gradient(180deg, rgba(15,24,44,.96), rgba(8,12,22,.97));
+    radial-gradient(1200px 620px at 50% -12%, rgba(251,191,36,.22), transparent 58%),
+    radial-gradient(880px 520px at 100% 0%, rgba(139,92,246,.14), transparent 60%),
+    radial-gradient(900px 640px at 0% 104%, rgba(45,212,191,.12), transparent 58%),
+    linear-gradient(158deg, #080a12 0%, #0c1324 38%, #120f20 68%, #191206 100%);
+  --panel-gradient:
+    linear-gradient(180deg, rgba(23,33,58,.96), rgba(9,13,24,.975));
+  --gold-sheen: linear-gradient(135deg, #fde68a 0%, #fbbf24 42%, #f59e0b 72%, #d97706 100%);
+  --gold: #fbbf24;
 }
-html { background: #07090f; }
+html { background: #080a12; }
 
 body {
   background: var(--bg-gradient);
@@ -24,6 +31,42 @@ body {
   color: #ffffff;
   font-family: 'Inter', -apple-system, sans-serif;
 }
+
+/* ── SHINE HELPERS (opt-in, shared) ── */
+/* Gold gradient text — use on headings/amounts you want to pop. */
+.shine-text {
+  background: linear-gradient(100deg, #fff7e0, #fbbf24 45%, #f59e0b 70%, #fff7e0);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: shineSlide 6s linear infinite;
+}
+@keyframes shineSlide { to { background-position: 200% center; } }
+
+/* Gold gradient fill (buttons, chips, active pills). */
+.gold-fill {
+  background: var(--gold-sheen) !important;
+  color: #1a1206 !important;
+  box-shadow: 0 6px 20px rgba(251,191,36,.28), inset 0 1px 0 rgba(255,255,255,.4);
+}
+
+/* Lift + gold glow on interactive cards. */
+.glow-card { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.glow-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(251,191,36,.5) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.45), 0 0 26px rgba(251,191,36,.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shine-text { animation: none; }
+  .glow-card:hover { transform: none; }
+}
+
+/* Slimmer gold-tinted scrollbars to match the theme. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(251,191,36,.5), rgba(245,158,11,.3)); border-radius: 99px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,.03); }
 
 @layer components {
   .btn-primary {

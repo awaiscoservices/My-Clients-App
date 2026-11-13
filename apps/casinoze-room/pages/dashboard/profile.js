@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import { supabase } from '../../lib/supabase'
 import { WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
+import Icon from '../../components/ui/Icon'
 
 const gold = '#fbbf24'; const green = '#22c55e'; const red = '#ef4444'; const purple = '#a855f7'
 
@@ -77,7 +78,7 @@ export default function ProfilePage() {
     <PlayerLayout>
       <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <div style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', maxWidth: 640, margin: '0 auto' }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: gold, marginBottom: 24 }}>👤 My Profile</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: gold, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 9 }}><Icon name="user" size={20} color={gold} /> My Profile</h1>
 
         {/* Profile Info */}
         <Section title="Account Details">
@@ -85,7 +86,7 @@ export default function ProfilePage() {
           <InputRow label="Email Address" value={profile?.email} readOnly />
           <InputRow label="Username" value={profile?.username} readOnly />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-            <InputRow label="KYC Status" value={profile?.kyc_verified ? '✅ Verified' : '⏳ Pending'} readOnly />
+            <InputRow label="KYC Status" value={profile?.kyc_verified ? 'Verified' : 'Pending'} readOnly />
             <InputRow label="Member Since" value={profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '—'} readOnly />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -102,10 +103,10 @@ export default function ProfilePage() {
 
 
         {/* Change Password */}
-        <Section title="🔐 Change Password">
+        <Section title="Change Password">
           {pwSuccess && (
             <div style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10, padding: '12px 16px', marginBottom: 16 }}>
-              <p style={{ color: green, fontSize: 13, margin: 0 }}>✅ Password updated successfully!</p>
+              <p style={{ color: green, fontSize: 13, margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="checkCircle" size={15} /> Password updated successfully!</p>
             </div>
           )}
           <div style={{ marginBottom: 14 }}>
@@ -118,7 +119,7 @@ export default function ProfilePage() {
             <input type="password" value={pwForm.confirm_password} onChange={e => setPwForm(f => ({ ...f, confirm_password: e.target.value }))} placeholder="Repeat new password"
               style={{ width: '100%', padding: '10px 14px', borderRadius: 10, boxSizing: 'border-box', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', fontSize: 14, fontFamily: 'Outfit, sans-serif', outline: 'none' }} />
           </div>
-          {pwMsg && <div style={{ color: red, fontSize: 12, marginBottom: 12 }}>⚠ {pwMsg}</div>}
+          {pwMsg && <div style={{ color: red, fontSize: 12, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {pwMsg}</div>}
           <button onClick={changePassword} disabled={pwSaving} style={{ width: '100%', padding: '12px', borderRadius: 10, border: 'none', background: pwSaving ? 'rgba(251,191,36,0.2)' : `linear-gradient(135deg, #b45309, ${gold})`, color: pwSaving ? 'rgba(255,255,255,0.4)' : '#000', fontSize: 15, fontWeight: 700, cursor: pwSaving ? 'not-allowed' : 'pointer', fontFamily: 'Outfit, sans-serif' }}>
             {pwSaving ? 'Updating…' : 'Update Password'}
           </button>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import { supabase } from '../../lib/supabase'
+import Icon from '../../components/ui/Icon'
 
 const gold = '#fbbf24'; const green = '#22c55e'; const red = '#ef4444'; const purple = '#a855f7'; const blue = '#3b82f6'
 
@@ -8,25 +9,25 @@ const fmt = (cents) => '$' + (Math.abs(cents) / 100).toLocaleString('en-US', { m
 const fmtDate = (d) => d ? new Date(d).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
 
 const TYPE_META = {
-  deposit:          { label: 'Deposit',      icon: '⬇️', color: green },
-  game_load:        { label: 'Game Load',    icon: '🎮', color: purple },
-  game_load_return: { label: 'Load Return',  icon: '↩️', color: blue },
-  redemption:       { label: 'Redeem',       icon: '💰', color: gold },
-  withdrawal:       { label: 'Withdraw',   icon: '⬆️', color: red },
-  withdrawal_hold:  { label: 'Withdraw',   icon: '⬆️', color: red },
-  adjustment:       { label: 'Adjustment',   icon: '⚙️', color: 'rgba(255,255,255,0.5)' },
-  bonus:            { label: 'Bonus',        icon: '🎁', color: gold },
-  referral:         { label: 'Referral',     icon: '👥', color: green },
+  deposit:          { label: 'Deposit',      icon: 'arrowDown', color: green },
+  game_load:        { label: 'Game Load',    icon: 'gamepad',   color: purple },
+  game_load_return: { label: 'Load Return',  icon: 'arrow',     color: blue },
+  redemption:       { label: 'Redeem',       icon: 'coins',     color: gold },
+  withdrawal:       { label: 'Withdraw',     icon: 'arrowUp',   color: red },
+  withdrawal_hold:  { label: 'Withdraw',     icon: 'arrowUp',   color: red },
+  adjustment:       { label: 'Adjustment',   icon: 'gear',      color: 'rgba(255,255,255,0.5)' },
+  bonus:            { label: 'Bonus',        icon: 'gift',      color: gold },
+  referral:         { label: 'Referral',     icon: 'users',     color: green },
   // Ledger-only credits/debits (no dedicated request table)
-  deposit_bonus:     { label: 'Deposit Bonus',  icon: '🎁', color: gold },
-  referral_bonus:    { label: 'Referral Bonus', icon: '👥', color: green },
-  level_bonus:       { label: 'Level Bonus',    icon: '⭐', color: gold },
-  promotion_credit:  { label: 'Promo Bonus',    icon: '🎁', color: gold },
-  spin_win:          { label: 'Spin Win',       icon: '🎡', color: gold },
-  spin_bet:          { label: 'Spin Bet',       icon: '🎡', color: purple },
-  refund:            { label: 'Refund',         icon: '↩️', color: blue },
-  adjustment_credit: { label: 'Adjustment',     icon: '⚙️', color: green },
-  adjustment_debit:  { label: 'Adjustment',     icon: '⚙️', color: red },
+  deposit_bonus:     { label: 'Deposit Bonus',  icon: 'gift',    color: gold },
+  referral_bonus:    { label: 'Referral Bonus', icon: 'users',   color: green },
+  level_bonus:       { label: 'Level Bonus',    icon: 'star',    color: gold },
+  promotion_credit:  { label: 'Promo Bonus',    icon: 'gift',    color: gold },
+  spin_win:          { label: 'Spin Win',       icon: 'wheel',   color: gold },
+  spin_bet:          { label: 'Spin Bet',       icon: 'wheel',   color: purple },
+  refund:            { label: 'Refund',         icon: 'arrow',   color: blue },
+  adjustment_credit: { label: 'Adjustment',     icon: 'gear',    color: green },
+  adjustment_debit:  { label: 'Adjustment',     icon: 'gear',    color: red },
 }
 
 // Ledger types surfaced here directly (the rest come from the request tables
@@ -139,7 +140,7 @@ export default function TransactionsPage() {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: gold, margin: 0 }}>📋 My Transactions</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: gold, margin: 0, display: 'flex', alignItems: 'center', gap: 9 }}><Icon name="clipboard" size={20} color={gold} /> My Transactions</h1>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: '4px 0 0' }}>Track all your deposits, withdrawals, game loads and redemptions.</p>
           </div>
           <button onClick={() => fetchData(token)} style={{ padding: '8px 16px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: 'pointer', fontFamily: 'Outfit, sans-serif' }}>↻ Refresh</button>
@@ -152,25 +153,25 @@ export default function TransactionsPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {data.pending.deposits.map(d => (
                 <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-                  <span>⬇️ Deposit <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{d.reference_id}</span></span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Icon name="arrowDown" size={14} color={green} /> Deposit <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{d.reference_id}</span></span>
                   <span style={{ color: green, fontWeight: 700 }}>{fmt(d.amount_cents)}</span>
                 </div>
               ))}
               {data.pending.withdrawals.map(w => (
                 <div key={w.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-                  <span>⬆️ Withdraw <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{w.reference_id}</span></span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Icon name="arrowUp" size={14} color={red} /> Withdraw <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{w.reference_id}</span></span>
                   <span style={{ color: red, fontWeight: 700 }}>−{fmt(w.amount_cents)}</span>
                 </div>
               ))}
               {data.pending.loads.map(l => (
                 <div key={l.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-                  <span>🎮 Game Load <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{l.reference_id}</span></span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Icon name="gamepad" size={14} color={purple} /> Game Load <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{l.reference_id}</span></span>
                   <span style={{ color: purple, fontWeight: 700 }}>−{fmt(l.amount_cents)}</span>
                 </div>
               ))}
               {data.pending.redemptions.map(r => (
                 <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-                  <span>💰 Redeem <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{r.reference_id}</span></span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Icon name="coins" size={14} color={gold} /> Redeem <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{r.reference_id}</span></span>
                   <span style={{ color: gold, fontWeight: 700 }}>{fmt(r.amount_cents)}</span>
                 </div>
               ))}
@@ -192,7 +193,7 @@ export default function TransactionsPage() {
           <div style={{ textAlign: 'center', padding: '80px 0', color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>Loading…</div>
         ) : rows.length === 0 ? (
           <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '60px 24px', textAlign: 'center' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>📭</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12, color: 'rgba(255,255,255,0.3)' }}><Icon name="inbox" size={34} /></div>
             <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.35)' }}>No transactions yet.</div>
           </div>
         ) : (
@@ -217,8 +218,8 @@ export default function TransactionsPage() {
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                   {/* Type + desc */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 9, background: `${meta.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
-                      {meta.icon}
+                    <div style={{ width: 36, height: 36, borderRadius: 9, background: `${meta.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: meta.color, flexShrink: 0 }}>
+                      <Icon name={meta.icon} size={18} color={meta.color} />
                     </div>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600 }}>{meta.label}</div>

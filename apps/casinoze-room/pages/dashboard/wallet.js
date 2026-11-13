@@ -14,6 +14,7 @@ import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
+import Icon from '../../components/ui/Icon'
 import { getMyActivity } from '../../lib/wallet'
 
 const TX_FILTERS = [
@@ -30,7 +31,7 @@ function BucketCard({ label, cents, color, icon, desc }) {
   return (
     <div style={{ padding: '20px', borderRadius: 16, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', flex: 1, minWidth: 150 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-        <span style={{ fontSize: 18 }}>{icon}</span>
+        <span style={{ display: 'inline-flex', color }}><Icon name={icon} size={18} color={color} /></span>
         <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)' }}>{label}</span>
       </div>
       <MoneyDisplay cents={cents} size="xl" color={color} />
@@ -90,13 +91,13 @@ export default function WalletPage() {
   // 4 action buttons — Withdraw opens inline picker
   const ACTIONS = [
     {
-      label: '➕ Deposit',
+      text: 'Deposit', icon: 'plus',
       bg: 'linear-gradient(135deg,#10b981,#059669)',
       color: '#fff',
       onClick: () => router.push('/dashboard/deposit'),
     },
     {
-      label: '💸 Withdraw',
+      text: 'Withdraw', icon: 'arrowUp',
       bg: 'linear-gradient(135deg,#3b82f6,#2563eb)',
       color: '#fff',
       // Straight to the withdraw page. This opened a method picker first,
@@ -105,13 +106,13 @@ export default function WalletPage() {
       onClick: () => router.push('/dashboard/withdraw'),
     },
     {
-      label: '🎮 Scores',
+      text: 'Scores', icon: 'gamepad',
       bg: 'linear-gradient(135deg,#fbbf24,#f59e0b)',
       color: '#050505',
       onClick: () => router.push('/dashboard/games'),
     },
     {
-      label: '🏆 Redeem',
+      text: 'Redeem', icon: 'trophy',
       bg: 'linear-gradient(135deg,#f59e0b,#d97706)',
       color: '#050505',
       onClick: () => router.push('/dashboard/redeem'),
@@ -141,8 +142,8 @@ export default function WalletPage() {
       {/* 4 Action buttons — equal-sized, centred, 2-up on mobile */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px,1fr))', gap: 10, marginBottom: 28 }}>
         {ACTIONS.map(a => (
-          <button key={a.label} onClick={a.onClick} style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 22px', borderRadius: 12,
+          <button key={a.text} onClick={a.onClick} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 22px', borderRadius: 12,
             background: a.bg, color: a.color, fontSize: 13, fontWeight: 700, border: 'none',
             cursor: 'pointer', letterSpacing: '.02em', fontFamily: "'Outfit',sans-serif",
             boxShadow: '0 2px 12px rgba(0,0,0,.3)', transition: 'opacity .15s',
@@ -150,7 +151,7 @@ export default function WalletPage() {
             onMouseEnter={e => e.currentTarget.style.opacity = '.85'}
             onMouseLeave={e => e.currentTarget.style.opacity = '1'}
           >
-            {a.label}
+            <Icon name={a.icon} size={16} color={a.color} /> {a.text}
           </button>
         ))}
       </div>
@@ -175,7 +176,7 @@ export default function WalletPage() {
 
         {transactions.length === 0 && !txLoading ? (
           <div style={{ padding: '48px 20px', textAlign: 'center' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>📋</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12, color: 'rgba(255,255,255,.3)' }}><Icon name="list" size={34} /></div>
             <div style={{ color: 'rgba(255,255,255,.3)', fontSize: 14 }}>No transactions found</div>
           </div>
         ) : (
@@ -185,8 +186,8 @@ export default function WalletPage() {
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,.02)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 12, background: tx.direction === 'credit' ? 'rgba(16,185,129,.12)' : 'rgba(248,113,113,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
-                    {tx.direction === 'credit' ? '⬆️' : '⬇️'}
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: tx.direction === 'credit' ? 'rgba(16,185,129,.12)' : 'rgba(248,113,113,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon name={tx.direction === 'credit' ? 'arrowUp' : 'arrowDown'} size={18} color={tx.direction === 'credit' ? '#10b981' : '#f87171'} />
                   </div>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>

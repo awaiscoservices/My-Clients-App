@@ -164,7 +164,7 @@ function WithdrawSummaryInline({ w, level }) {
         <div style={{ height:'100%', width:`${Math.min(100,w.pct_used)}%`, borderRadius:99, background:`linear-gradient(90deg,${color}88,${color})`, transition:'width .4s' }} />
       </div>
       {w.pct_used >= 100 && (
-        <div style={{ marginTop:10, fontSize:12, color:'#f87171', fontWeight:600, textAlign:'center' }}>⛔ Daily limit reached — resets within 24 hours</div>
+        <div style={{ marginTop:10, fontSize:12, color:'#f87171', fontWeight:600, textAlign:'center' }}>Daily limit reached — resets within 24 hours</div>
       )}
     </div>
   )

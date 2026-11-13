@@ -2,6 +2,8 @@
  * WithdrawLimitBar — shows daily withdrawal used / remaining for current level
  * Used on Withdraw screen
  */
+import Icon from '../ui/Icon'
+
 export default function WithdrawLimitBar({ withdrawalToday, level }) {
   if (!withdrawalToday) return null
 
@@ -58,8 +60,8 @@ export default function WithdrawLimitBar({ withdrawalToday, level }) {
       </div>
 
       {pct_used >= 100 && (
-        <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 8, fontSize: 12, color: '#f87171', fontWeight: 600, textAlign: 'center' }}>
-          ⛔ Daily limit reached. Resets in less than 24 hours.
+        <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 8, fontSize: 12, color: '#f87171', fontWeight: 600, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <Icon name="ban" size={14} /> Daily limit reached. Resets in less than 24 hours.
         </div>
       )}
     </div>
