@@ -17,7 +17,21 @@ const TYPE_META = {
   adjustment:       { label: 'Adjustment',   icon: '⚙️', color: 'rgba(255,255,255,0.5)' },
   bonus:            { label: 'Bonus',        icon: '🎁', color: gold },
   referral:         { label: 'Referral',     icon: '👥', color: green },
+  // Ledger-only credits/debits (no dedicated request table)
+  deposit_bonus:     { label: 'Deposit Bonus',  icon: '🎁', color: gold },
+  referral_bonus:    { label: 'Referral Bonus', icon: '👥', color: green },
+  level_bonus:       { label: 'Level Bonus',    icon: '⭐', color: gold },
+  promotion_credit:  { label: 'Promo Bonus',    icon: '🎁', color: gold },
+  spin_win:          { label: 'Spin Win',       icon: '🎡', color: gold },
+  spin_bet:          { label: 'Spin Bet',       icon: '🎡', color: purple },
+  refund:            { label: 'Refund',         icon: '↩️', color: blue },
+  adjustment_credit: { label: 'Adjustment',     icon: '⚙️', color: green },
+  adjustment_debit:  { label: 'Adjustment',     icon: '⚙️', color: red },
 }
+
+// Ledger types surfaced here directly (the rest come from the request tables
+// above, so listing them from the ledger too would double them up).
+const LEDGER_SHOW = ['deposit_bonus', 'referral_bonus', 'level_bonus', 'promotion_credit', 'spin_win', 'spin_bet', 'refund', 'adjustment_credit', 'adjustment_debit']
 
 const STATUS_STYLE = {
   pending:    { bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.35)', color: gold,                        label: 'Pending' },
@@ -46,6 +60,7 @@ const TABS = [
   { key: 'withdrawals', label: 'Withdraws' },
   { key: 'loads',       label: 'Game Loads' },
   { key: 'redemptions', label: 'Redeems' },
+  { key: 'bonuses',     label: 'Bonuses' },
 ]
 
 export default function TransactionsPage() {
@@ -67,7 +82,7 @@ export default function TransactionsPage() {
 
   const fetchData = async (tok) => {
     setLoading(true)
-    const res = await fetch('/api/player/transactions', { headers: { Authorization: `Bearer ${tok || token}` } })
+    const res = await fetch('/api/player/transactions?limit=50', { headers: { Authorization: `Bearer ${tok || token}` } })
     if (res.ok) { const d = await res.json(); setData(d) }
     setLoading(false)
   }
@@ -76,6 +91,16 @@ export default function TransactionsPage() {
     ? (data.pending.deposits.length + data.pending.withdrawals.length + data.pending.loads.length + data.pending.redemptions.length)
     : 0
 
+  // Bonuses, spin wins/bets and other ledger-only movements. These settle
+  // instantly, so they always show as Completed.
+  const ledgerRows = () => (data?.ledger || [])
+    .filter(l => LEDGER_SHOW.includes(l.type))
+    .map(l => ({
+      ...l, _type: l.type, _amount: l.amount_cents,
+      _desc: l.description || (TYPE_META[l.type]?.label ?? 'Bonus'),
+      _dir: l.direction || 'credit', status: 'completed',
+    }))
+
   const getRows = () => {
     if (!data) return []
     const { deposits, withdrawals, loads, redemptions } = data.recent
@@ -83,11 +108,13 @@ export default function TransactionsPage() {
     if (tab === 'withdrawals') return withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' }))
     if (tab === 'loads')       return loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Game Load',    _dir: 'debit' }))
     if (tab === 'redemptions') return redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' }))
+    if (tab === 'bonuses')     return ledgerRows()
     const all = [
       ...deposits.map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' })),
       ...withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' })),
       ...loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Game Load',    _dir: 'debit' })),
       ...redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' })),
+      ...ledgerRows(),
     ]
     return all.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
   }
