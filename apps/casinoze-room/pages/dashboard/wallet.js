@@ -22,6 +22,7 @@ const TX_FILTERS = [
   { key: 'game_load',  label: 'Scores'     },
   { key: 'redeem',     label: 'Redeems'    },
   { key: 'withdrawal', label: 'Withdrawals'},
+  { key: 'spinner',    label: 'Wheel'      },
 ]
 
 // ─── Balance card ─────────────────────────────────────────────────────────────
@@ -191,6 +192,7 @@ export default function WalletPage() {
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>
                       {tx.label}
                       {tx.game_name && <span style={{ color: '#fbbf24' }}> · {tx.game_name}</span>}
+                      {tx.source_label && <span style={{ color: 'rgba(255,255,255,.4)', fontWeight: 500 }}> · {tx.source_label}</span>}
                     </div>
                     {tx.status === 'rejected' && tx.rejection_reason && (
                       <div style={{ fontSize: 11, color: '#f87171', marginTop: 2 }}>Reason: {tx.rejection_reason}</div>

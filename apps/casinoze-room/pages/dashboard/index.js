@@ -173,10 +173,11 @@ function SpinnerWheel({ spinning, finalAngle, onDone, onSpin, disabled }) {
   )
 }
 
-function WheelSection({ wallet }) {
+function WheelSection({ wallet, onBalanceChange }) {
   const [betCents, setBetCents]     = useState(500)   // $5
   const [bucket, setBucket]         = useState('cash')
   const [spinning, setSpinning]     = useState(false)
+  const [starting, setStarting]     = useState(false)  // waiting on the server result
   const [finalAngle, setFinalAngle] = useState(0)
   const [result, setResult]         = useState(null)   // { seg, winCents }
   const [history, setHistory]       = useState([])
@@ -191,24 +192,23 @@ function WheelSection({ wallet }) {
   }
 
   async function spin() {
-    if (spinning) return
+    if (spinning || starting) return
     if (betCents > balance) { setErr('Insufficient balance'); return }
-    setErr('')
-    doneRef.current = false
+    setErr(''); setResult(null); doneRef.current = false
 
-    // Pick random segment
-    const idx = Math.floor(Math.random() * SEGMENTS.length)
+    // The server deducts the bet, decides the result, and credits any win to
+    // the Bonus balance. We only animate the wheel to the segment it returns.
+    setStarting(true)
+    const { data, error } = await supabase.rpc('spin_wheel', { p_bet_cents: betCents, p_bucket: bucket })
+    setStarting(false)
+    if (error || !data) { setErr(error?.message || 'Spin failed. Please try again.'); return }
+
+    const idx = ((data.segment_index % SEGMENTS.length) + SEGMENTS.length) % SEGMENTS.length
     const seg = SEGMENTS[idx]
     // Angle so pointer lands on this segment (pointer at top = -PI/2)
-    const targetAngle = -(idx * SEG_ANGLE + SEG_ANGLE / 2)
-    setFinalAngle(targetAngle)
-    setResult(null)
+    setFinalAngle(-(idx * SEG_ANGLE + SEG_ANGLE / 2))
+    doneRef.current = { seg, winCents: data.win_cents }
     setSpinning(true)
-
-    // Simulate deduct + win server-side would go here
-    // For now calculate client-side as demo
-    const winCents = Math.round(betCents * seg.multiplier)
-    doneRef.current = { seg, winCents }
   }
 
   const handleSpinDone = useCallback(() => {
@@ -217,7 +217,9 @@ function WheelSection({ wallet }) {
     setSpinning(false)
     setResult({ seg, winCents })
     setHistory(h => [{ id: Date.now(), label: seg.label, win: winCents, ts: new Date() }, ...h].slice(0, 10))
-  }, [])
+    // Balances changed on the server — pull the new cash/bonus totals.
+    onBalanceChange?.()
+  }, [onBalanceChange])
 
   const hasDeposit = wallet && (wallet.cash_balance_cents > 0 || wallet.bonus_balance_cents > 0)
   const maxMult = Math.max(...SEGMENTS.map(x => x.multiplier))
@@ -238,7 +240,7 @@ function WheelSection({ wallet }) {
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>Spin to multiply your bet, up to {maxMult}×</div>
           </div>
         </div>
-        <div style={{ fontSize: 11, padding: '5px 14px', borderRadius: 99, background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.35)', color: '#fbbf24', fontWeight: 800, letterSpacing: '.12em' }}>DEMO</div>
+        <div style={{ fontSize: 11, padding: '5px 14px', borderRadius: 99, background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.35)', color: '#fbbf24', fontWeight: 800, letterSpacing: '.12em' }}>WINS → BONUS</div>
       </div>
 
       {!hasDeposit ? (
@@ -296,8 +298,8 @@ function WheelSection({ wallet }) {
             )}
 
             {/* Spin button */}
-            <button onClick={spin} disabled={spinning} style={{ position: 'relative', overflow: 'hidden', width: '100%', padding: '15px', background: spinning ? 'rgba(255,255,255,.07)' : 'linear-gradient(135deg,#fbbf24,#d97706)', border: 'none', borderRadius: 14, fontSize: 16, fontWeight: 800, color: spinning ? 'rgba(255,255,255,.5)' : '#000', cursor: spinning ? 'not-allowed' : 'pointer', fontFamily: 'inherit', boxShadow: spinning ? 'none' : '0 12px 30px rgba(251,191,36,.25)', transition: 'transform .2s,box-shadow .2s' }}>
-              {spinning ? 'Spinning…' : 'Spin Now!'}
+            <button onClick={spin} disabled={spinning || starting} style={{ position: 'relative', overflow: 'hidden', width: '100%', padding: '15px', background: (spinning || starting) ? 'rgba(255,255,255,.07)' : 'linear-gradient(135deg,#fbbf24,#d97706)', border: 'none', borderRadius: 14, fontSize: 16, fontWeight: 800, color: (spinning || starting) ? 'rgba(255,255,255,.5)' : '#000', cursor: (spinning || starting) ? 'not-allowed' : 'pointer', fontFamily: 'inherit', boxShadow: (spinning || starting) ? 'none' : '0 12px 30px rgba(251,191,36,.25)', transition: 'transform .2s,box-shadow .2s' }}>
+              {(spinning || starting) ? 'Spinning…' : 'Spin Now!'}
             </button>
 
             {/* History */}
@@ -546,6 +548,14 @@ export default function Dashboard() {
 
   useEffect(() => { loadDashboard() }, [])
 
+  // Pull fresh cash/bonus balances after the wheel settles a spin.
+  async function reloadWallet() {
+    const { data: { user: u } } = await supabase.auth.getUser()
+    if (!u) return
+    const { data } = await supabase.from('wallets').select('*').eq('user_id', u.id).single()
+    if (data) setWallet(data)
+  }
+
   async function loadDashboard() {
     const { data: { user: u } } = await supabase.auth.getUser()
     if (!u) { router.push('/auth/login'); return }
@@ -695,7 +705,7 @@ export default function Dashboard() {
       )}
 
       {/* WHEEL OF FORTUNE */}
-      <WheelSection wallet={wallet} />
+      <WheelSection wallet={wallet} onBalanceChange={reloadWallet} />
 
       {/* MAIN GRID */}
       <div className="dash-main-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 20 }}>

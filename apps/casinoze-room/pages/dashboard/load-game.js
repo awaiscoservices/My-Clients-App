@@ -19,6 +19,7 @@ export default function LoadGame() {
   const [history, setHistory] = useState([])
   const [acct, setAcct] = useState('')
   const [amount, setAmount] = useState('')
+  const [bucket, setBucket] = useState('cash')   // fund scores from cash or bonus
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState(null)
   const [popup, setPopup] = useState(null)
@@ -39,14 +40,17 @@ export default function LoadGame() {
   const selected = accounts.find(a => a.id === acct)
   const min = selected?.game_panels?.min_load_cents || 0
 
+  const bucketBalance = bucket === 'bonus' ? (wallet?.bonus_balance_cents || 0) : (wallet?.cash_balance_cents || 0)
+
   async function submit(e) {
     e.preventDefault(); setMsg(null)
     const cents = toCents(amount)
     if (!acct) return setMsg({ kind: 'error', text: 'Choose a game account' })
     if (!cents || cents <= 0) return setMsg({ kind: 'error', text: 'Enter a valid amount' })
     if (cents < min) return setMsg({ kind: 'error', text: `Minimum load for this game is ${centsToDisplay(min)}` })
+    if (cents > bucketBalance) return setMsg({ kind: 'error', text: `Not enough ${bucket === 'bonus' ? 'bonus' : 'cash'} balance` })
     setBusy(true)
-    const { error } = await supabase.rpc('request_game_load', { p_game_account_id: acct, p_amount_cents: cents })
+    const { error } = await supabase.rpc('request_game_load', { p_game_account_id: acct, p_amount_cents: cents, p_bucket: bucket })
     setBusy(false)
     if (error) return setMsg({ kind: 'error', text: error.message })
     setPopup(WAIT_MESSAGES.scores)
@@ -60,7 +64,28 @@ export default function LoadGame() {
       <Title sub="Move cash from your wallet into a game account">Load Game</Title>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 20 }}>
         <form onSubmit={submit} style={card}>
-          <div style={{ marginBottom: 18 }}><Label>Cash balance</Label><MoneyDisplay cents={wallet?.cash_balance_cents || 0} size="xl" color="#10b981" /></div>
+          {/* Fund the load from Cash or Bonus. Winnings from bonus-funded
+              scores redeem back to the Bonus balance at the bonus rate. */}
+          <div style={{ marginBottom: 18 }}>
+            <Label>Load from</Label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              {[['cash', 'Cash', wallet?.cash_balance_cents, '#10b981'], ['bonus', 'Bonus', wallet?.bonus_balance_cents, '#fbbf24']].map(([key, name, cents, clr]) => (
+                <button type="button" key={key} onClick={() => setBucket(key)} style={{
+                  textAlign: 'left', padding: '12px 14px', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit',
+                  background: bucket === key ? 'rgba(251,191,36,.12)' : 'rgba(255,255,255,.04)',
+                  border: `1px solid ${bucket === key ? 'rgba(251,191,36,.5)' : 'rgba(255,255,255,.1)'}`, color: '#fff',
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: bucket === key ? '#fbbf24' : 'rgba(255,255,255,.45)' }}>{name}</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, marginTop: 2, color: clr }}>${(((cents || 0)) / 100).toFixed(2)}</div>
+                </button>
+              ))}
+            </div>
+            {bucket === 'bonus' && (
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)', marginTop: 8, lineHeight: 1.5 }}>
+                Winnings from bonus-funded scores redeem back to your Bonus balance at the bonus rate.
+              </div>
+            )}
+          </div>
           <Notice kind={msg?.kind}>{msg?.text}</Notice>
           {accounts.length === 0 ? (
             <Empty icon="🎮" text={<>You need an active game account first. <Link href="/dashboard/games" style={{ color: '#fbbf24' }}>Browse games →</Link></>} />

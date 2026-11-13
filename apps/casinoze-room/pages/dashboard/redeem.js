@@ -68,12 +68,18 @@ export default function Redeem() {
         </form>
         <div style={{ ...card, padding: 0, overflow: 'hidden' }}>
           <div style={{ padding: '16px 20px', fontWeight: 700, borderBottom: '1px solid rgba(255,255,255,.06)' }}>Recent requests</div>
-          {history.length === 0 ? <Empty text="No redemptions yet" /> : history.map(r => (
+          {history.length === 0 ? <Empty text="No redemptions yet" /> : history.map(r => {
+            const src = r.source_bucket === 'bonus' ? { t: 'Bonus winnings', c: '#fbbf24' } : r.source_bucket === 'cash' ? { t: 'Cash winnings', c: '#10b981' } : null
+            return (
             <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 20px', borderBottom: '1px solid rgba(255,255,255,.04)' }}>
-              <div><div style={{ fontSize: 13, fontWeight: 600 }}>{r.game_accounts?.game_panels?.name || 'Game'}</div><div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)' }}>{fmtDate(r.created_at)}</div></div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{r.game_accounts?.game_panels?.name || 'Game'}</div>
+                {src && <div style={{ fontSize: 10.5, fontWeight: 700, color: src.c, marginTop: 1 }}>{src.t}</div>}
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)' }}>{fmtDate(r.created_at)}</div>
+              </div>
               <div style={{ textAlign: 'right' }}><MoneyDisplay cents={r.amount_cents} size="sm" color="#fbbf24" /><div><StatusBadge status={r.status} size="xs" /></div></div>
             </div>
-          ))}
+          )})}
         </div>
       </div>
     </PlayerLayout>

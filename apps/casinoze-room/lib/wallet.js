@@ -72,7 +72,7 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
   const need = offset + limit          // enough from each table to fill this page
   const empty = Promise.resolve({ data: [] })
 
-  const [dep, wd, rd, gl, led] = await Promise.all([
+  const [dep, wd, rd, gl, spin, led] = await Promise.all([
     want('deposit') ? supabase.from('deposits')
       .select('id, amount_cents, status, created_at, rejection_reason, payment_methods(name)')
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
@@ -80,11 +80,17 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
       .select('id, amount_cents, status, created_at, rejection_reason, method')
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
     want('redeem') ? supabase.from('redemptions')
-      .select('id, amount_cents, status, created_at, rejection_reason, game_accounts(game_panels(name))')
+      .select('id, amount_cents, status, created_at, rejection_reason, source_bucket, game_accounts(game_panels(name))')
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
     want('game_load') ? supabase.from('game_loads')
-      .select('id, amount_cents, status, created_at, rejection_reason, game_accounts(game_panels(name))')
+      .select('id, amount_cents, status, created_at, rejection_reason, wallet_bucket, game_accounts(game_panels(name))')
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
+    // Wheel of Fortune bets and winnings — these settle instantly, so they come
+    // straight from the ledger (there is no request row for them).
+    want('spinner') ? supabase.from('ledger')
+      .select('id, type, amount_cents, direction, balance_after_cents, created_at')
+      .eq('user_id', userId).in('type', ['spin_bet', 'spin_win'])
+      .order('created_at', { ascending: false }).limit(need) : empty,
     // The running wallet balance after each settled request, from the ledger.
     supabase.from('ledger')
       .select('balance_after_cents, wallet_bucket, created_at, deposit_id, withdrawal_id, redeem_id, game_load_id')
@@ -117,11 +123,27 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
   // like scores and redeems; withdraw keeps its own "Paid".
   const normDeposit = s => (s === 'approved' ? 'completed' : s)
 
+  // 'cash' | 'bonus' → the word shown to the player.
+  const srcTag = b => (b === 'bonus' ? 'Bonus' : b === 'cash' ? 'Cash' : null)
+
   const rows = [
     ...(dep.data || []).map(r => ({ id: 'dep-' + r.id, kind: 'deposit', label: 'Deposit', game_name: r.payment_methods?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: normDeposit(r.status), created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
     ...(wd.data || []).map(r => ({ id: 'wd-' + r.id, kind: 'withdrawal', label: 'Withdrawal', game_name: r.method || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
-    ...(rd.data || []).map(r => ({ id: 'rd-' + r.id, kind: 'redeem', label: 'Redeem', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
-    ...(gl.data || []).map(r => ({ id: 'gl-' + r.id, kind: 'game_load', label: 'Scores', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id) })),
+    ...(rd.data || []).map(r => ({ id: 'rd-' + r.id, kind: 'redeem', label: 'Redeem', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'credit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id), source_bucket: r.source_bucket || null, source_label: srcTag(r.source_bucket) ? `${srcTag(r.source_bucket)} winnings` : null })),
+    ...(gl.data || []).map(r => ({ id: 'gl-' + r.id, kind: 'game_load', label: 'Scores', game_name: r.game_accounts?.game_panels?.name || null, amount_cents: r.amount_cents, direction: 'debit', status: r.status, created_at: whenAt(r.id, r.created_at), rejection_reason: r.rejection_reason, balance_after_cents: after(r.id), source_bucket: r.wallet_bucket || null, source_label: srcTag(r.wallet_bucket) ? `from ${srcTag(r.wallet_bucket)}` : null })),
+    ...(spin.data || []).map(r => ({
+      id: 'spin-' + r.id,
+      kind: 'spinner',
+      label: r.type === 'spin_win' ? 'Wheel of Fortune win' : 'Wheel of Fortune bet',
+      game_name: null,
+      amount_cents: r.amount_cents,
+      direction: r.direction,                 // debit = bet, credit = winnings
+      status: 'completed',
+      created_at: r.created_at,
+      rejection_reason: null,
+      balance_after_cents: r.balance_after_cents,
+      source_label: r.type === 'spin_win' ? 'to Bonus' : null,
+    })),
   ]
 
   rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
