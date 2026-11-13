@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { signInWithEmail, signInWithGoogle } from '../../lib/auth';
 import Logo from '../../components/ui/Logo';
 import AuthBackdrop from '../../components/site/AuthBackdrop'
+import Icon from '../../components/ui/Icon'
 
 const PARTICLES = ['♠', '♥', '♦', '♣'];
 
@@ -149,7 +150,7 @@ export default function Login() {
           fontFamily: 'Outfit, sans-serif', backdropFilter: 'blur(12px)',
           boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
         }}>
-          {toast.type === 'error' ? '⚠ ' : '✓ '}{toast.msg}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Icon name={toast.type === 'error' ? 'alert' : 'check'} size={16} stroke={2.4} /> {toast.msg}</span>
         </div>
       )}
 
@@ -174,13 +175,13 @@ export default function Login() {
             <div style={{ marginBottom: 18 }}>
               <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: 0.5 }}>Email Address</label>
               <input type="email" value={email} onChange={e => { setEmail(e.target.value); if (errors.email) setErrors(p => ({ ...p, email: '' })); }} onFocus={() => setFocusedField('email')} onBlur={() => setFocusedField(null)} placeholder="you@example.com" style={inputStyle('email')} autoComplete="email" />
-              {errors.email && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500 }}>⚠ {errors.email}</p>}
+              {errors.email && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {errors.email}</p>}
             </div>
 
             <div style={{ marginBottom: 8 }}>
               <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: 0.5 }}>Password</label>
               <input type="password" value={password} onChange={e => { setPassword(e.target.value); if (errors.password) setErrors(p => ({ ...p, password: '' })); }} onFocus={() => setFocusedField('password')} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={inputStyle('password')} autoComplete="current-password" />
-              {errors.password && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500 }}>⚠ {errors.password}</p>}
+              {errors.password && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {errors.password}</p>}
             </div>
 
             <div style={{ textAlign: 'right', marginBottom: 24 }}>
@@ -190,7 +191,7 @@ export default function Login() {
             <button type="submit" disabled={loading} style={{ width: '100%', padding: 15, background: loading ? 'rgba(245,158,11,0.4)' : 'linear-gradient(135deg, #f59e0b, #fbbf24)', border: 'none', borderRadius: 10, color: '#0a0410', fontSize: 15, fontWeight: 700, fontFamily: 'Outfit, sans-serif', letterSpacing: 0.5, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'transform 0.15s, box-shadow 0.15s', boxShadow: loading ? 'none' : '0 4px 24px rgba(245,158,11,0.35)' }}
               onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'scale(1.02)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}>
-              {loading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Signing in…</>) : '🎰 Sign In to Play'}
+              {loading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Signing in…</>) : 'Sign In to Play'}
             </button>
           </form>
 

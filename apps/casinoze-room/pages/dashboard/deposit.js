@@ -6,6 +6,10 @@ import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
 import { WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
+import Icon from '../../components/ui/Icon'
+
+// Payment-method → line icon name (from components/ui/Icon.js)
+const METHOD_ICON = { cashapp: 'cash', zelle: 'zap', venmo: 'send', crypto: 'coins', bank_transfer: 'bank', money_order: 'send', other: 'card' }
 
 // ─── STEP INDICATOR ─────────────────────────────────────────
 function Steps({ current }) {
@@ -23,7 +27,7 @@ function Steps({ current }) {
               border: i === current ? '2px solid rgba(251,191,36,.5)' : '2px solid transparent',
               boxShadow: i === current ? '0 0 16px rgba(251,191,36,.4)' : 'none',
               flexShrink: 0,
-            }}>{i < current ? '✓' : i + 1}</div>
+            }}>{i < current ? <Icon name="check" size={15} stroke={2.6} /> : i + 1}</div>
             <span style={{ fontSize: 10, fontWeight: 700, color: i <= current ? '#fff' : 'rgba(255,255,255,.3)', letterSpacing: '.04em', whiteSpace: 'nowrap' }}>{s}</span>
           </div>
           {i < steps.length - 1 && (
@@ -37,7 +41,7 @@ function Steps({ current }) {
 
 // ─── PAYMENT METHOD CARD ─────────────────────────────────────
 function MethodCard({ method, selected, onSelect, bonusPct }) {
-  const icons = { cashapp: '💸', zelle: '⚡', venmo: '💜', crypto: '₿', bank_transfer: '🏦', money_order: '📮', other: '💳' }
+  const iconName = METHOD_ICON[method.type] || 'card'
   return (
     <div onClick={() => onSelect(method)} style={{
       padding: '18px 20px', borderRadius: 16, cursor: 'pointer',
@@ -51,7 +55,7 @@ function MethodCard({ method, selected, onSelect, bonusPct }) {
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 24 }}>{icons[method.type] || '💳'}</span>
+          <span style={{ width: 40, height: 40, borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', color: selected ? '#fbbf24' : 'rgba(255,255,255,.7)', background: selected ? 'rgba(251,191,36,.14)' : 'rgba(255,255,255,.05)', border: `1px solid ${selected ? 'rgba(251,191,36,.4)' : 'rgba(255,255,255,.1)'}` }}><Icon name={iconName} size={20} /></span>
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{method.name}</div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)' }}>
@@ -228,7 +232,7 @@ export default function DepositPage() {
       <Head><title>Deposit Submitted — Casinoze Room</title></Head>
       <WaitPopup data={showWait ? WAIT_MESSAGES.deposit : null} onClose={() => setShowWait(false)} />
       <div style={{ maxWidth: 520, margin: '40px auto', textAlign: 'center' }}>
-        <div style={{ fontSize: 64, marginBottom: 20 }}>✅</div>
+        <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'center', color: '#10b981' }}><Icon name="checkCircle" size={64} stroke={1.6} /></div>
         <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Deposit Submitted!</h2>
         <p style={{ color: 'rgba(255,255,255,.5)', fontSize: 15, marginBottom: 28, lineHeight: 1.7 }}>
           Your deposit request has been submitted and is pending review by our team. You will be notified once it's approved.
@@ -271,7 +275,7 @@ export default function DepositPage() {
       {/* Toast */}
       {toast && (
         <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, background: toast.type === 'error' ? 'rgba(239,68,68,.95)' : 'rgba(16,185,129,.95)', border: `1px solid ${toast.type === 'error' ? '#ef4444' : '#10b981'}`, borderRadius: 12, padding: '12px 24px', color: '#fff', fontSize: 14, fontWeight: 600, fontFamily: "'Outfit',sans-serif", whiteSpace: 'nowrap', boxShadow: '0 8px 32px rgba(0,0,0,.4)' }}>
-          {toast.type === 'error' ? '⚠ ' : '✓ '}{toast.msg}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Icon name={toast.type === 'error' ? 'alert' : 'check'} size={16} stroke={2.4} /> {toast.msg}</span>
         </div>
       )}
 
@@ -347,7 +351,7 @@ export default function DepositPage() {
               {/* Bonus preview — calculated client-side for display only, re-calculated server-side */}
               {amountCents > 0 && (
                 <div style={{ background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 14, padding: '18px 20px' }}>
-                  <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: '#10b981', marginBottom: 14 }}>💰 Deposit Summary</div>
+                  <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: '#10b981', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="money" size={16} /> Deposit Summary</div>
                   {[
                     ['You Send',    amountCents,  '#fff'],
                     [`Bonus (+${bonusPct}%)`, bonusCents, '#10b981'],
@@ -420,12 +424,12 @@ export default function DepositPage() {
                   {screenshot ? (
                     <div>
                       <img src={screenshot.preview} alt="Screenshot" style={{ maxHeight: 180, maxWidth: '100%', borderRadius: 10, marginBottom: 10, objectFit: 'contain' }} />
-                      <div style={{ fontSize: 13, color: '#10b981', fontWeight: 700 }}>✓ {screenshot.name}</div>
+                      <div style={{ fontSize: 13, color: '#10b981', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 6 }}><Icon name="check" size={14} stroke={2.4} /> {screenshot.name}</div>
                       <div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)', marginTop: 4 }}>Click to change</div>
                     </div>
                   ) : (
                     <div>
-                      <div style={{ fontSize: 40, marginBottom: 12 }}>📸</div>
+                      <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center', color: '#fbbf24' }}><Icon name="camera" size={40} stroke={1.6} /></div>
                       <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 6 }}>Upload Screenshot</div>
                       <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)' }}>JPG, PNG, WebP · Max 5MB</div>
                     </div>
@@ -489,16 +493,17 @@ export default function DepositPage() {
                 </div>
               )}
 
-              <div style={{ background: 'rgba(245,158,11,.08)', border: '1px solid rgba(245,158,11,.2)', borderRadius: 12, padding: '14px 16px', fontSize: 13, color: 'rgba(255,255,255,.55)', lineHeight: 1.6 }}>
-                ⚠️ Please ensure your payment has been sent before submitting. False submissions may result in account suspension.
+              <div style={{ background: 'rgba(245,158,11,.08)', border: '1px solid rgba(245,158,11,.2)', borderRadius: 12, padding: '14px 16px', fontSize: 13, color: 'rgba(255,255,255,.55)', lineHeight: 1.6, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                <span style={{ color: '#f59e0b', flexShrink: 0, marginTop: 1 }}><Icon name="alert" size={18} /></span>
+                <span>Please ensure your payment has been sent before submitting. False submissions may result in account suspension.</span>
               </div>
             </div>
           )}
 
           {/* Error */}
           {error && (
-            <div style={{ marginTop: 16, padding: '10px 14px', background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.3)', borderRadius: 10, color: '#f87171', fontSize: 13, fontWeight: 600 }}>
-              ⚠ {error}
+            <div style={{ marginTop: 16, padding: '10px 14px', background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.3)', borderRadius: 10, color: '#f87171', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Icon name="alert" size={16} /> {error}
             </div>
           )}
 
@@ -517,7 +522,7 @@ export default function DepositPage() {
             ) : (
               <button onClick={handleSubmit} disabled={submitting || uploading}
                 style={{ padding: '12px 32px', background: submitting ? 'rgba(245,158,11,.4)' : 'linear-gradient(135deg,#f59e0b,#fbbf24)', border: 'none', borderRadius: 12, color: '#050505', fontSize: 14, fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: "'Outfit',sans-serif", display: 'flex', alignItems: 'center', gap: 8 }}>
-                {uploading ? '⬆ Uploading…' : submitting ? '⏳ Submitting…' : '✓ Submit Deposit'}
+                {uploading ? 'Uploading…' : submitting ? 'Submitting…' : <><Icon name="check" size={16} stroke={2.4} /> Submit Deposit</>}
               </button>
             )}
           </div>

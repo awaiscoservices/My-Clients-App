@@ -64,7 +64,7 @@ export function WaitPopup({ data, onClose, icon = 'checkCircle' }) {
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <div onClick={e => e.stopPropagation()} style={{ position: 'relative', background: '#0e1a2e', border: '1px solid rgba(251,191,36,.3)', borderRadius: 20, padding: '30px 28px', width: '100%', maxWidth: 420, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,.5)' }}>
-        <button onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', fontSize: 22, lineHeight: 1, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', lineHeight: 1, cursor: 'pointer', display: 'inline-flex' }}><Icon name="x" size={20} /></button>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14, color: '#10b981' }}><Icon name={icon} size={46} /></div>
         <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: '#fff', margin: '0 0 10px' }}>{data.title}</h3>
         <p style={{ fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,.6)', margin: '0 0 22px' }}>{data.text}</p>

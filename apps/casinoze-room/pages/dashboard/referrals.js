@@ -70,7 +70,7 @@ export default function Referrals() {
             {link && (
               <div style={{ display: 'flex', gap: 10, flex: 1, minWidth: 260 }}>
                 <input readOnly value={link} onFocus={e => e.target.select()} style={{ ...input, flex: 1 }} />
-                <Btn onClick={copy}>{copied ? 'Copied ✓' : 'Copy link'}</Btn>
+                <Btn onClick={copy}>{copied ? 'Copied' : 'Copy link'}</Btn>
               </div>
             )}
           </div>

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
+import Icon, { ICON_PATHS } from '../../components/ui/Icon'
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 const fmt = c => c == null ? '—' : '$' + (c / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -40,21 +41,22 @@ function StatBox({ label, value, color = 'rgba(255,255,255,.88)' }) {
   )
 }
 
-// Default emoji per level name (admin can override via badge_icon)
-const LEVEL_EMOJIS = {
-  bronze:   '🥉',
-  silver:   '🥈',
-  gold:     '🥇',
-  platinum: '💠',
-  diamond:  '💎',
-  elite:    '👑',
-  master:   '🔥',
-  champion: '⚡',
-  legend:   '🏆',
+// Default SVG icon per level name (admin can override via badge_icon when it
+// names one of our icons; legacy emoji badge_icon values fall back to the map).
+const LEVEL_ICONS = {
+  bronze:   'medal',
+  silver:   'medal',
+  gold:     'medal',
+  platinum: 'diamond',
+  diamond:  'gem',
+  elite:    'crown',
+  master:   'flame',
+  champion: 'zap',
+  legend:   'trophy',
 }
-function levelEmoji(level) {
-  if (level.badge_icon) return level.badge_icon
-  return LEVEL_EMOJIS[level.name?.toLowerCase()] || '⭐'
+function levelIcon(level) {
+  if (level.badge_icon && ICON_PATHS[level.badge_icon]) return level.badge_icon
+  return LEVEL_ICONS[level.name?.toLowerCase()] || 'star'
 }
 
 // ─── Level card ───────────────────────────────────────────────────────────────
@@ -104,9 +106,9 @@ function LevelCard({ level, status, bonusRows }) {
           background: `${accent}22`,
           border: `1.5px solid ${status === 'locked' ? 'rgba(255,255,255,.2)' : accent}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 18, flexShrink: 0,
+          color: status === 'locked' ? 'rgba(255,255,255,.5)' : accent, flexShrink: 0,
         }}>
-          {levelEmoji(level)}
+          <Icon name={levelIcon(level)} size={20} />
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ fontSize: 16, fontWeight: 800, color: status === 'active' ? accent : '#fff', fontFamily: "'Cinzel',serif", letterSpacing: '.02em', lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -130,7 +132,7 @@ function LevelCard({ level, status, bonusRows }) {
           {/* Wallet Rules sub-panel */}
           <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(96,165,250,.35)' }}>
             <div style={{ background: 'rgba(96,165,250,.16)', padding: '6px 9px', borderBottom: '1px solid rgba(96,165,250,.28)', textAlign: 'center' }}>
-              <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: '.05em', textTransform: 'uppercase', color: '#93c5fd' }}>💰 Wallet</span>
+              <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: '.05em', textTransform: 'uppercase', color: '#93c5fd', display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="wallet" size={12} /> Wallet</span>
             </div>
             <div style={{ background: 'rgba(96,165,250,.05)', padding: '8px', display: 'flex', flexDirection: 'column', gap: 6 }}>
               <StatBox label="Min WD"   value={fmt(level.min_withdrawal_cents)} />
@@ -141,7 +143,7 @@ function LevelCard({ level, status, bonusRows }) {
           {/* Game Rules sub-panel */}
           <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(167,139,250,.35)' }}>
             <div style={{ background: 'rgba(167,139,250,.16)', padding: '6px 9px', borderBottom: '1px solid rgba(167,139,250,.28)', textAlign: 'center' }}>
-              <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: '.05em', textTransform: 'uppercase', color: '#c4b5fd' }}>🎮 Game</span>
+              <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: '.05em', textTransform: 'uppercase', color: '#c4b5fd', display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="gamepad" size={12} /> Game</span>
             </div>
             <div style={{ background: 'rgba(167,139,250,.05)', padding: '8px', display: 'flex', flexDirection: 'column', gap: 6 }}>
               <StatBox label="Min x"    value={fmtX(level.min_redeem_multiplier)} />
@@ -286,7 +288,7 @@ export default function PlayerLevels() {
             }} />
           </div>
           {progressPct === 100 && (
-            <div style={{ fontSize: 12, color: '#fbbf24', marginTop: 8, fontWeight: 700 }}>🏆 Maximum level reached!</div>
+            <div style={{ fontSize: 12, color: '#fbbf24', marginTop: 8, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 7 }}><Icon name="trophy" size={14} /> Maximum level reached!</div>
           )}
         </div>
       )}
@@ -296,7 +298,7 @@ export default function PlayerLevels() {
         <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,.3)', fontSize: 14 }}>Loading…</div>
       ) : levels.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>⭐</div>
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center', color: '#fbbf24' }}><Icon name="star" size={40} /></div>
           <div style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>Levels coming soon</div>
         </div>
       ) : (

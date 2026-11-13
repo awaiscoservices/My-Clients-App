@@ -36,8 +36,8 @@ function EmojiButton({ onPick, disabled }) {
   return (
     <div ref={ref} style={{ position: 'relative', flexShrink: 0 }}>
       <button type="button" onClick={() => setOpen(o => !o)} disabled={disabled} title="Emoji"
-        style={{ width: 40, height: 40, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 10, color: '#fff', fontSize: 18, cursor: disabled ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        🙂
+        style={{ width: 40, height: 40, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 10, color: '#fff', cursor: disabled ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><path d="M9 9h.01M15 9h.01" /></svg>
       </button>
       {open && (
         <div style={{ position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, width: 268, background: '#0e1a2e', border: '1px solid rgba(251,191,36,.25)', borderRadius: 12, boxShadow: '0 16px 40px rgba(0,0,0,.6)', padding: 8, display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 2, zIndex: 30 }}>
@@ -56,8 +56,8 @@ function EmojiButton({ onPick, disabled }) {
 // WhatsApp-style ticks: grey ✓✓ = delivered, blue ✓✓ = seen (read_at set).
 function Ticks({ read }) {
   return (
-    <span style={{ marginLeft: 5, fontSize: 11, letterSpacing: '-3px', color: read ? '#53bdeb' : 'rgba(255,255,255,.5)' }}>
-      ✓✓
+    <span style={{ marginLeft: 5, display: 'inline-flex', color: read ? '#53bdeb' : 'rgba(255,255,255,.5)' }}>
+      <svg width="18" height="11" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1 7l3.2 3.2L11 3.5" /><path d="M7.5 10L8 10.2 14.8 3.5" /></svg>
     </span>
   )
 }
@@ -257,14 +257,14 @@ export default function PlayerChat() {
 
           <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '16px 20px' }}>
             {loading && <div style={{ textAlign: 'center', color: 'rgba(255,255,255,.4)', fontSize: 13, padding: 32 }}>Connecting…</div>}
-            {!loading && messages.length === 0 && <div style={{ textAlign: 'center', color: 'rgba(255,255,255,.4)', fontSize: 13, padding: 32 }}>👋 Hi! Send a message to start chatting with our support team.</div>}
+            {!loading && messages.length === 0 && <div style={{ textAlign: 'center', color: 'rgba(255,255,255,.4)', fontSize: 13, padding: 32 }}>Hi! Send a message to start chatting with our support team.</div>}
             {messages.map(m => <Bubble key={m.id} msg={m} />)}
             <div ref={bottomRef} />
           </div>
 
           {error && (
-            <div style={{ margin: '0 16px', padding: '10px 14px', background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 10, color: '#f87171', fontSize: 13 }}>
-              ⚠ {error}
+            <div style={{ margin: '0 16px', padding: '10px 14px', background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 10, color: '#f87171', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9 2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" /></svg> {error}
             </div>
           )}
 

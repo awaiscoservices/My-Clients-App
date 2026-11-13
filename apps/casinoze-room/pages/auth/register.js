@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { signUpWithEmail, signInWithGoogle } from '../../lib/auth';
 import Logo from '../../components/ui/Logo';
 import AuthBackdrop from '../../components/site/AuthBackdrop'
+import Icon from '../../components/ui/Icon'
 
 const PARTICLES = ['♠', '♥', '♦', '♣'];
 
@@ -142,7 +143,7 @@ export default function Register() {
       {/* Toast */}
       {toast && (
         <div style={{ position: 'fixed', top: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, animation: 'toastIn .3s ease', background: toast.type === 'error' ? 'rgba(239,68,68,0.95)' : 'rgba(16,185,129,0.95)', border: `1px solid ${toast.type === 'error' ? '#ef4444' : '#10b981'}`, borderRadius: 12, padding: '12px 24px', color: '#fff', fontSize: 14, fontWeight: 600, fontFamily: 'Outfit, sans-serif', backdropFilter: 'blur(12px)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)', whiteSpace: 'nowrap' }}>
-          {toast.type === 'error' ? '⚠ ' : '✓ '}{toast.msg}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Icon name={toast.type === 'error' ? 'alert' : 'check'} size={16} stroke={2.4} /> {toast.msg}</span>
         </div>
       )}
 
@@ -159,7 +160,7 @@ export default function Register() {
         {/* Success state */}
         {success ? (
           <div style={{ width: '100%', maxWidth: 460, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.4)', borderRadius: 20, padding: 48, textAlign: 'center', animation: 'successPop .4s ease' }}>
-            <div style={{ fontSize: 56, marginBottom: 16 }}>✅</div>
+            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center', color: '#10b981' }}><Icon name="checkCircle" size={56} stroke={1.6} /></div>
             <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, color: '#10b981', marginBottom: 12 }}>Account Created!</h2>
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, lineHeight: 1.7 }}>Check your email to confirm your account. Redirecting to login…</p>
           </div>
@@ -172,7 +173,7 @@ export default function Register() {
 
             {refCode && (
               <div style={{ margin: '0 0 18px', padding: '12px 16px', borderRadius: 12, background: 'rgba(251,191,36,.1)', border: '1px solid rgba(251,191,36,.35)', color: '#fbbf24', fontSize: 13, fontWeight: 700, textAlign: 'center' }}>
-                🎁 You were referred! <span style={{ opacity: .75, fontWeight: 600 }}>Code: {refCode}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Icon name="gift" size={15} /> You were referred! <span style={{ opacity: .75, fontWeight: 600 }}>Code: {refCode}</span></span>
               </div>
             )}
             <form onSubmit={handleSubmit} noValidate>
@@ -180,14 +181,14 @@ export default function Register() {
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: 0.5 }}>Full Name</label>
                 <input type="text" value={form.fullName} onChange={e => setField('fullName', e.target.value)} onFocus={() => setFocusedField('fullName')} onBlur={() => setFocusedField(null)} placeholder="John Doe" style={inputStyle('fullName')} autoComplete="name" />
-                {errors.fullName && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500 }}>⚠ {errors.fullName}</p>}
+                {errors.fullName && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {errors.fullName}</p>}
               </div>
 
               {/* Email */}
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: 0.5 }}>Email Address</label>
                 <input type="email" value={form.email} onChange={e => setField('email', e.target.value)} onFocus={() => setFocusedField('email')} onBlur={() => setFocusedField(null)} placeholder="you@example.com" style={inputStyle('email')} autoComplete="email" />
-                {errors.email && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500 }}>⚠ {errors.email}</p>}
+                {errors.email && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {errors.email}</p>}
               </div>
 
               {/* Password */}
@@ -202,7 +203,7 @@ export default function Register() {
                     <p style={{ fontSize: 11, color: strengthColor[strength], fontWeight: 600 }}>{strengthLabel[strength]} password</p>
                   </div>
                 )}
-                {errors.password && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500 }}>⚠ {errors.password}</p>}
+                {errors.password && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {errors.password}</p>}
               </div>
 
               {/* Confirm Password */}
@@ -211,14 +212,14 @@ export default function Register() {
                 <input type="password" value={form.confirmPassword} onChange={e => setField('confirmPassword', e.target.value)} onFocus={() => setFocusedField('confirmPassword')} onBlur={() => setFocusedField(null)} placeholder="••••••••"
                   style={{ ...inputStyle('confirmPassword'), ...(form.confirmPassword && form.password === form.confirmPassword ? { borderColor: '#22c55e', boxShadow: '0 0 0 3px rgba(34,197,94,0.12)' } : {}) }}
                   autoComplete="new-password" />
-                {form.confirmPassword && form.password === form.confirmPassword && <p style={{ color: '#22c55e', fontSize: 12, marginTop: 6, fontWeight: 500 }}>✓ Passwords match</p>}
-                {errors.confirmPassword && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500 }}>⚠ {errors.confirmPassword}</p>}
+                {form.confirmPassword && form.password === form.confirmPassword && <p style={{ color: '#22c55e', fontSize: 12, marginTop: 6, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="check" size={13} stroke={2.4} /> Passwords match</p>}
+                {errors.confirmPassword && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {errors.confirmPassword}</p>}
               </div>
 
               <button type="submit" disabled={loading} style={{ width: '100%', padding: 15, background: loading ? 'rgba(245,158,11,0.4)' : 'linear-gradient(135deg, #f59e0b, #fbbf24)', border: 'none', borderRadius: 10, color: '#0a0410', fontSize: 15, fontWeight: 700, fontFamily: 'Outfit, sans-serif', letterSpacing: 0.5, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: loading ? 'none' : '0 4px 24px rgba(245,158,11,0.35)' }}
                 onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'scale(1.02)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}>
-                {loading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Creating Account…</>) : '♠ Create My Account'}
+                {loading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Creating Account…</>) : 'Create My Account'}
               </button>
             </form>
 

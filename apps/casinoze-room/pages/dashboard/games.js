@@ -55,7 +55,7 @@ function GameCard({ game, myAccount, onRequest, requesting, tint }) {
           <GameIcon name={game.name} slug={game.slug} logoUrl={game.logo_url} size={96} />
         </div>
         <div className="gtile-bar">
-          <span className="gtile-play">▶</span>
+          <span className="gtile-play"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg></span>
           <span className="gtile-name">{game.name}</span>
         </div>
       </div>

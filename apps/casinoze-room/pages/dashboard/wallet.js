@@ -132,10 +132,10 @@ export default function WalletPage() {
       {/* 4 Balance cards */}
       {wallet && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px,100%),1fr))', gap: 12, marginBottom: 20 }}>
-          <BucketCard label="Cash"         cents={wallet.cash_balance_cents}   color="#10b981" icon="💵" desc="Available to load or withdraw" />
-          <BucketCard label="Bonus"        cents={wallet.bonus_balance_cents}  color="#f59e0b" icon="🎁" desc="Bonus credits" />
-          <BucketCard label="Reserved"     cents={wallet.reserved_cents}       color="#94a3b8" icon="🔒" desc="Held for pending requests" />
-          <BucketCard label="Withdrawable" cents={wallet.withdrawable_cents}   color="#fbbf24" icon="💸" desc="Ready to withdraw" />
+          <BucketCard label="Cash"         cents={wallet.cash_balance_cents}   color="#10b981" icon="cash"  desc="Available to load or withdraw" />
+          <BucketCard label="Bonus"        cents={wallet.bonus_balance_cents}  color="#f59e0b" icon="gift"  desc="Bonus credits" />
+          <BucketCard label="Reserved"     cents={wallet.reserved_cents}       color="#94a3b8" icon="lock"  desc="Held for pending requests" />
+          <BucketCard label="Withdrawable" cents={wallet.withdrawable_cents}   color="#fbbf24" icon="money" desc="Ready to withdraw" />
         </div>
       )}
 

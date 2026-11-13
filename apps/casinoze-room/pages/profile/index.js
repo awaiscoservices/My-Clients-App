@@ -86,7 +86,7 @@ export default function Profile() {
             <div style={{ height: 10, borderRadius: 99, background: 'rgba(255,255,255,.08)', overflow: 'hidden' }}>
               <div style={{ width: `${pct}%`, height: '100%', borderRadius: 99, background: `linear-gradient(90deg,${color},#f59e0b)`, transition: 'width .6s' }} />
             </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.45)', marginTop: 8 }}>{next ? `${(next.xp_required - xp).toLocaleString()} XP to reach ${next.name}` : 'You are at the top level 👑'}</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.45)', marginTop: 8 }}>{next ? `${(next.xp_required - xp).toLocaleString()} XP to reach ${next.name}` : 'You are at the top level'}</div>
           </div>
 
           <div style={card}>
@@ -94,7 +94,7 @@ export default function Profile() {
             {p?.referral_code ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 24, fontWeight: 800, color: G, letterSpacing: '.1em', wordBreak: 'break-all' }}>{p.referral_code}</span>
-                <Btn type="button" ghost onClick={copy} style={{ padding: '8px 16px', fontSize: 13 }}>{copied ? 'Copied ✓' : 'Copy'}</Btn>
+                <Btn type="button" ghost onClick={copy} style={{ padding: '8px 16px', fontSize: 13 }}>{copied ? 'Copied' : 'Copy'}</Btn>
               </div>
             ) : <div style={{ fontSize: 13, color: 'rgba(255,255,255,.4)' }}>Your code is being generated.</div>}
           </div>

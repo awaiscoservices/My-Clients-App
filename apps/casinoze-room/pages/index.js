@@ -119,9 +119,9 @@ function GameCard({ game }) {
       {game.bonus > 0 && <span className="gtile-badge gtile-bonus">{game.bonus}%</span>}
       {game.hot && <span className="gtile-badge gtile-hot">HOT</span>}
       <div className="gtile-art">
-        {failed ? <span style={{ fontSize: 42 }}>🎮</span> : <img src={game.src} alt={game.name} loading="lazy" onError={() => setFailed(true)} />}
+        {failed ? <span style={{ color: 'rgba(255,255,255,.4)', display: 'flex' }}><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01M7 7h10a4 4 0 014 4v2a4 4 0 01-4 4l-2-2H9l-2 2a4 4 0 01-4-4v-2a4 4 0 014-4z" /></svg></span> : <img src={game.src} alt={game.name} loading="lazy" onError={() => setFailed(true)} />}
       </div>
-      <div className="gtile-bar"><span className="gtile-play">▶</span><span className="gtile-name">{game.name}</span></div>
+      <div className="gtile-bar"><span className="gtile-play"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg></span><span className="gtile-name">{game.name}</span></div>
     </Link>
   )
 }

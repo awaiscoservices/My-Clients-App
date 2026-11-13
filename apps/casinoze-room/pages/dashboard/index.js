@@ -37,6 +37,12 @@ const I_PATHS = {
   wallet: 'M3 7h16a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm0 0V6a2 2 0 012-2h11M16 13.5h.01', gift: 'M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H8.5a2.5 2.5 0 110-5C11 2 12 7 12 7zM12 7h3.5a2.5 2.5 0 100-5C13 2 12 7 12 7z',
   lock: 'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3', arrow: 'M5 12h14M13 6l6 6-6 6', up: 'M12 19V5M6 11l6-6 6 6', down: 'M12 5v14M6 13l6 6 6-6',
   list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01', spin: 'M21 12a9 9 0 11-3-6.7M21 4v5h-5',
+  star: 'M12 3l2.7 6.1 6.6.6-5 4.4 1.5 6.5L12 17.8 6.7 21.1l1.5-6.5-5-4.4 6.6-.6z',
+  check: 'M5 13l4 4L19 7', zap: 'M13 2L4 14h7l-1 8 9-12h-7z', play: 'M8 5v14l11-7z',
+  alert: 'M12 9v4M12 17h.01M10.3 3.9 2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z',
+  money: 'M2 7h20v10H2zM12 9a3 3 0 100 6 3 3 0 100-6zM5 10h.01M19 14h.01',
+  dice: 'M5 5h14v14H5zM9 9h.01M15 15h.01M9 15h.01M15 9h.01M12 12h.01',
+  clover: 'M12 5A3 3 0 1 1 12 11A3 3 0 1 1 12 5ZM12 13A3 3 0 1 1 12 19A3 3 0 1 1 12 13ZM8 9A3 3 0 1 1 8 15A3 3 0 1 1 8 9ZM16 9A3 3 0 1 1 16 15A3 3 0 1 1 16 9ZM12 12v8',
 }
 function I({ name, size = 18, stroke = 1.8 }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true"><path d={I_PATHS[name] || I_PATHS.list} /></svg>
@@ -294,7 +300,7 @@ function WheelSection({ wallet, onBalanceChange }) {
             {result && (
               <div style={{ marginBottom: 16, padding: '14px 18px', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, background: won ? 'linear-gradient(135deg,rgba(16,185,129,.18),rgba(16,185,129,.05))' : 'linear-gradient(135deg,rgba(239,68,68,.14),rgba(239,68,68,.04))', border: `1px solid ${won ? 'rgba(16,185,129,.4)' : 'rgba(239,68,68,.3)'}` }}>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.6)' }}>{won ? '🎉 You won' : '💸 You get back'}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.6)' }}>{won ? 'You won' : 'You get back'}</div>
                   <div style={{ fontSize: 22, fontWeight: 800, color: '#fbbf24', fontVariantNumeric: 'tabular-nums' }}>${(result.winCents / 100).toFixed(2)}</div>
                 </div>
                 <div style={{ fontSize: 30, fontWeight: 800, color: won ? '#10b981' : '#f87171' }}>{result.seg.label}</div>
@@ -360,7 +366,7 @@ function DailyBonusCard() {
   return (
     <div style={{ background: 'linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.04))', border: '1px solid rgba(251,191,36,.2)', borderRadius: 18, padding: '18px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-        <span style={{ fontSize: 24 }}>🎁</span>
+        <span style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.3)' }}><I name="gift" size={22} /></span>
         <div>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>Daily Bonus</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)' }}>Resets every midnight</div>
@@ -368,7 +374,7 @@ function DailyBonusCard() {
       </div>
       {claimed ? (
         <div style={{ textAlign: 'center', padding: '8px 0' }}>
-          <div style={{ fontSize: 12, color: '#10b981', fontWeight: 700, marginBottom: 4 }}>✅ Claimed! Next in:</div>
+          <div style={{ fontSize: 12, color: '#10b981', fontWeight: 700, marginBottom: 4, display: 'inline-flex', alignItems: 'center', gap: 6 }}><I name="check" size={14} stroke={2.4} /> Claimed! Next in:</div>
           <div style={{ fontSize: 22, fontWeight: 800, color: '#fbbf24', fontVariantNumeric: 'tabular-nums' }}>{timeLeft}</div>
         </div>
       ) : (
@@ -377,8 +383,8 @@ function DailyBonusCard() {
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 4 }}>Today's reward</div>
             <div style={{ fontSize: 20, fontWeight: 800, color: '#fbbf24' }}>$0.50 Bonus</div>
           </div>
-          <button onClick={() => setClaimed(true)} style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg,#fbbf24,#d97706)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#000', cursor: 'pointer' }}>
-            Claim Now 🎁
+          <button onClick={() => setClaimed(true)} style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg,#fbbf24,#d97706)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#000', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
+            <I name="gift" size={16} stroke={2} /> Claim Now
           </button>
         </>
       )}
@@ -399,7 +405,7 @@ function VIPProgressCard({ level, profile }) {
         <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${level.badge_color}22`, color: level.badge_color, fontWeight: 800, border: `1px solid ${level.badge_color}44` }}>{level.name}</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-        <div style={{ width: 44, height: 44, borderRadius: '50%', background: `${level.badge_color}22`, border: `2px solid ${level.badge_color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>⭐</div>
+        <div style={{ width: 44, height: 44, borderRadius: '50%', background: `${level.badge_color}22`, border: `2px solid ${level.badge_color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: level.badge_color, flexShrink: 0 }}><I name="star" size={22} /></div>
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,.5)' }}>{xp} XP</span>
@@ -433,7 +439,7 @@ function LuckyNumberCard() {
 
   return (
     <div style={{ ...PANEL, borderRadius: 18, padding: '18px 20px' }}>
-      <div style={{ ...LABEL, marginBottom: 14 }}>🍀 Lucky Numbers</div>
+      <div style={{ ...LABEL, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}><I name="clover" size={16} /> Lucky Numbers</div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
         {nums.length === 0
           ? Array.from({ length: 6 }, (_, i) => (
@@ -447,8 +453,8 @@ function LuckyNumberCard() {
             })
         }
       </div>
-      <button onClick={roll} disabled={rolling} style={{ width: '100%', padding: '9px', background: rolling ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, fontSize: 13, fontWeight: 700, color: rolling ? 'rgba(255,255,255,.3)' : '#fff', cursor: rolling ? 'not-allowed' : 'pointer' }}>
-        {rolling ? '🎲 Rolling...' : '🎲 Roll Numbers'}
+      <button onClick={roll} disabled={rolling} style={{ width: '100%', padding: '9px', background: rolling ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, fontSize: 13, fontWeight: 700, color: rolling ? 'rgba(255,255,255,.3)' : '#fff', cursor: rolling ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        <I name="dice" size={15} /> {rolling ? 'Rolling...' : 'Roll Numbers'}
       </button>
     </div>
   )
@@ -504,9 +510,9 @@ function PendingCard({ label, count, href, color }) {
 // ─── PROMO BANNER ─────────────────────────────────────────────────────────────
 function PromoBanner() {
   const promos = [
-    { emoji: '💰', title: 'First Deposit Bonus', desc: '100% match up to $200 on your first deposit!', color: '#10b981', href: '/dashboard/deposit' },
-    { emoji: '🎁', title: 'Reload Bonus', desc: '50% bonus every Friday — max $100', color: '#3b82f6', href: '/dashboard/deposit' },
-    { emoji: '⭐', title: 'VIP Cashback', desc: 'Earn up to 15% cashback as a VIP member', color: '#8b5cf6', href: '/dashboard/rewards' },
+    { icon: 'money', title: 'First Deposit Bonus', desc: '100% match up to $200 on your first deposit!', color: '#10b981', href: '/dashboard/deposit' },
+    { icon: 'gift', title: 'Reload Bonus', desc: '50% bonus every Friday — max $100', color: '#3b82f6', href: '/dashboard/deposit' },
+    { icon: 'star', title: 'VIP Cashback', desc: 'Earn up to 15% cashback as a VIP member', color: '#8b5cf6', href: '/dashboard/rewards' },
   ]
   const [idx, setIdx] = useState(0)
   useEffect(() => { const id = setInterval(() => setIdx(i => (i + 1) % promos.length), 4000); return () => clearInterval(id) }, [])
@@ -516,7 +522,7 @@ function PromoBanner() {
     <Link href={p.href} style={{ textDecoration: 'none', display: 'block', marginBottom: 24 }}>
       <div style={{ padding: '16px 20px', borderRadius: 16, background: `linear-gradient(135deg,${p.color}18,${p.color}06)`, border: `1px solid ${p.color}33`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all .3s', cursor: 'pointer' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <span style={{ fontSize: 28 }}>{p.emoji}</span>
+          <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.color, background: `${p.color}1f`, border: `1px solid ${p.color}44` }}><I name={p.icon} size={24} /></span>
           <div>
             <div style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>{p.title}</div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>{p.desc}</div>
@@ -602,7 +608,7 @@ export default function Dashboard() {
     <PlayerLayout>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 36, marginBottom: 12, animation: 'spin 1s linear infinite', display: 'inline-block' }}>⚡</div>
+          <div style={{ marginBottom: 12, animation: 'spin 1s linear infinite', display: 'inline-flex', color: '#fbbf24' }}><I name="spin" size={34} stroke={2.2} /></div>
           <div style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>Loading your dashboard…</div>
         </div>
       </div>
@@ -617,7 +623,7 @@ export default function Dashboard() {
       {/* WELCOME — notifications live in the topbar bell, not here */}
       <div style={{ marginBottom: 20, minWidth: 0 }}>
         <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(20px,3vw,28px)', fontWeight: 700, color: '#fff', marginBottom: 4 }}>
-          Welcome back, {profile?.full_name?.split(' ')[0] || 'Player'} 👋
+          Welcome back, {profile?.full_name?.split(' ')[0] || 'Player'}
         </h1>
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>
           {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
@@ -629,7 +635,7 @@ export default function Dashboard() {
         <Link href="/dashboard/kyc" style={{ textDecoration: 'none', display: 'block', marginBottom: 20 }}>
           <div style={{ padding: '14px 20px', borderRadius: 14, background: 'rgba(245,158,11,.1)', border: '1px solid rgba(245,158,11,.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <span style={{ fontSize: 20 }}>⚠️</span>
+              <span style={{ color: '#f59e0b', display: 'flex' }}><I name="alert" size={20} /></span>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#f59e0b' }}>Verify Your Identity</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,.45)' }}>Complete KYC to unlock withdrawals and higher limits</div>
@@ -686,8 +692,8 @@ export default function Dashboard() {
               return (
                 <Link key={g.id} href="/dashboard/games" className="hg" style={{ '--g1': t[0], '--g2': t[1] }}>
                   {g.default_bonus_pct > 0 && <span className="hg-b">{g.default_bonus_pct}%</span>}
-                  <div className="hg-art">{logo ? <img src={logo} alt={g.name} loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} /> : <span style={{ fontSize: 36 }}>🎮</span>}</div>
-                  <div className="hg-bar"><span className="hg-p">▶</span><span className="hg-n">{g.name}</span></div>
+                  <div className="hg-art">{logo ? <img src={logo} alt={g.name} loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} /> : <span style={{ color: 'rgba(255,255,255,.4)' }}><I name="gamepad" size={34} /></span>}</div>
+                  <div className="hg-bar"><span className="hg-p" style={{ display: 'flex' }}><I name="play" size={10} stroke={2.5} /></span><span className="hg-n">{g.name}</span></div>
                 </Link>
               )
             })}
@@ -746,7 +752,7 @@ export default function Dashboard() {
                     <div style={{ width: 46, height: 46, borderRadius: 13, flexShrink: 0, background: `linear-gradient(145deg,${accent}2e,${accent}0a)`, border: `1px solid ${accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                       {logo
                         ? <img src={logo} alt={ga.game_panels?.name || 'Game'} loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: 36, height: 36, objectFit: 'contain', filter: 'drop-shadow(0 3px 6px rgba(0,0,0,.45))' }} />
-                        : <span style={{ fontSize: 20 }}>🎮</span>}
+                        : <span style={{ color: 'rgba(255,255,255,.4)', display: 'flex' }}><I name="gamepad" size={20} /></span>}
                     </div>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -786,7 +792,7 @@ export default function Dashboard() {
           {/* Verification status */}
           <div style={{ ...PANEL, borderRadius: 18, padding: '16px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,.6)' }}>🔐 Verification</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,.6)', display: 'inline-flex', alignItems: 'center', gap: 7 }}><I name="lock" size={14} /> Verification</span>
               <StatusBadge status={profile?.kyc_status || 'not_started'} size="xs" />
             </div>
             {profile?.kyc_status !== 'verified' && (
