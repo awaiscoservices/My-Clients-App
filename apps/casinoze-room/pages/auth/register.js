@@ -3,7 +3,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signUpWithEmail, signInWithGoogle } from '../../lib/auth';
-import { supabase } from '../../lib/supabase';
 import Logo from '../../components/ui/Logo';
 import AuthBackdrop from '../../components/site/AuthBackdrop'
 
@@ -73,12 +72,11 @@ export default function Register() {
     setErrors({});
     setLoading(true);
     try {
-      const res = await signUpWithEmail({ fullName: form.fullName, email: form.email, password: form.password });
-      // Record the referral. This only works if signup returns a session; otherwise it is recorded at first login.
-      const code = refCode || (() => { try { return localStorage.getItem('referral_code') || ''; } catch { return ''; } })();
-      if (code && res?.user?.id) {
-        try { await supabase.from('referrals').insert({ referrer_code: code, referred_user_id: res.user.id }); } catch {}
-      }
+      await signUpWithEmail({ fullName: form.fullName, email: form.email, password: form.password });
+      // The referral code stays in localStorage and is linked on first signed-in
+      // load by PlayerLayout → apply_referral (which also creates the referrals
+      // row). Doing it here would fail: referrer_id/referred_id are NOT NULL and
+      // there is no session yet on email-confirmation signups.
       setSuccess(true);
       showToast('Account created! Check your email to confirm.', 'success');
       setTimeout(() => router.push('/auth/login'), 3000);
