@@ -197,7 +197,8 @@ function WheelSection({ wallet, onBalanceChange }) {
     setErr(''); setResult(null); doneRef.current = false
 
     // The server deducts the bet, decides the result, and credits any win to
-    // the Bonus balance. We only animate the wheel to the segment it returns.
+    // the same wallet the bet came from. We only animate the wheel to the
+    // segment it returns.
     setStarting(true)
     const { data, error } = await supabase.rpc('spin_wheel', { p_bet_cents: betCents, p_bucket: bucket })
     setStarting(false)
@@ -240,7 +241,7 @@ function WheelSection({ wallet, onBalanceChange }) {
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>Spin to multiply your bet, up to {maxMult}×</div>
           </div>
         </div>
-        <div style={{ fontSize: 11, padding: '5px 14px', borderRadius: 99, background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.35)', color: '#fbbf24', fontWeight: 800, letterSpacing: '.12em' }}>WINS → BONUS</div>
+        <div style={{ fontSize: 11, padding: '5px 14px', borderRadius: 99, background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.35)', color: '#fbbf24', fontWeight: 800, letterSpacing: '.12em' }}>WINS → {bucket === 'cash' ? 'CASH' : 'BONUS'}</div>
       </div>
 
       {!hasDeposit ? (
