@@ -39,10 +39,10 @@ export default async function handler(req, res) {
   const { data: { user }, error: authErr } = await supabaseAdmin.auth.getUser(token)
   if (authErr || !user) return res.status(401).json({ error: 'Unauthorized' })
 
-  const [profileRes, walletRes, gameAccountsRes, levelsRes] = await Promise.all([
+  const [profileRes, walletRes, gameAccountsRes] = await Promise.all([
     supabaseAdmin
       .from('profiles')
-      .select('id, full_name, email, username, kyc_status, status, role, total_xp, player_level_id, referral_code, created_at')
+      .select('id, full_name, email, username, kyc_status, status, role, total_xp, player_level_id, referral_code, tenant_id, created_at')
       .eq('id', user.id)
       .single(),
     supabaseAdmin
@@ -55,18 +55,21 @@ export default async function handler(req, res) {
       .select('id, status, username, game_panel_id, game_panels(name)')
       .eq('user_id', user.id)
       .in('status', ['active', 'pending']),
-    supabaseAdmin
-      .from('player_levels')
-      .select('id, name, accent_color, badge_color, badge_icon, perks, xp_required, sort_order')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true }),
   ])
 
   if (!profileRes.data) return res.status(404).json({ error: 'Profile not found' })
 
   const profile = profileRes.data
   const wallet = walletRes.data || {}
-  const levels = levelsRes.data || []
+
+  // Only this player's own tenant's levels — names/sort_orders repeat across tenants.
+  const { data: levelsData } = await supabaseAdmin
+    .from('player_levels')
+    .select('id, name, accent_color, badge_color, badge_icon, perks, xp_required, sort_order')
+    .eq('is_active', true)
+    .eq('tenant_id', profile.tenant_id)
+    .order('sort_order', { ascending: true })
+  const levels = levelsData || []
 
   const curIdx = levels.findIndex(l => l.id === profile.player_level_id)
   const current = curIdx >= 0 ? levels[curIdx] : null
