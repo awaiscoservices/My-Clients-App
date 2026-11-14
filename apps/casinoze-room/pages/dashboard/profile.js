@@ -130,6 +130,7 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="pf-hero-badges" style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
+              {kyc ? pill('Verified', green) : pill('Pending', gold)}
               {pill(lvl.name || 'Bronze', accent)}
               {pill(p?.status === 'suspended' ? 'Suspended' : 'Active', p?.status === 'suspended' ? red : green)}
             </div>
