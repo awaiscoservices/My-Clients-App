@@ -190,22 +190,25 @@ export default function ProfilePage() {
 
             {/* Level benefits */}
             <Card style={{ marginTop: 18 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                <h2 style={{ fontSize: 14, fontWeight: 800, color: accent, margin: 0, letterSpacing: '.02em' }}>{lvl.name || 'Level'} Benefits</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 6 }}>
                 <Icon name={lvl.icon || 'star'} size={16} color={accent} />
+                <h2 style={{ fontSize: 14, fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '.02em' }}>{lvl.name || 'Level'} Benefits</h2>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div>
                 {[
-                  { label: 'Deposit Bonus', value: lvl.deposit_bonus_pct != null ? `${lvl.deposit_bonus_pct}%` : '—', c: green },
-                  { label: 'Redeem Multiplier', value: (lvl.min_redeem_multiplier != null && lvl.max_redeem_multiplier != null) ? `${lvl.min_redeem_multiplier}x – ${lvl.max_redeem_multiplier}x` : '—', c: '#38bdf8' },
-                  { label: 'Max Redeem', value: lvl.max_redeem_cap_cents != null ? money(lvl.max_redeem_cap_cents) : '—', c: gold },
-                  { label: 'Max Withdraw', value: lvl.max_withdrawal_cents != null ? money(lvl.max_withdrawal_cents) : '—', c: gold },
-                  { label: 'Daily Withdraw Limit', value: lvl.daily_withdrawal_limit_cents != null ? money(lvl.daily_withdrawal_limit_cents) : '—', c: '#a855f7' },
-                  { label: 'KYC', value: lvl.kyc_required ? 'Required' : 'Not required', c: lvl.kyc_required ? gold : green },
-                ].map((b, i) => (
-                  <div key={i} style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 11, padding: '11px 13px' }}>
-                    <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.07em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', marginBottom: 5 }}>{b.label}</div>
-                    <div style={{ fontSize: 15, fontWeight: 800, color: b.c }}>{b.value}</div>
+                  { icon: 'gift', label: 'Deposit Bonus', value: lvl.deposit_bonus_pct != null ? `${lvl.deposit_bonus_pct}%` : '—' },
+                  { icon: 'gamepad', label: 'Redeem Multiplier', value: (lvl.min_redeem_multiplier != null && lvl.max_redeem_multiplier != null) ? `${lvl.min_redeem_multiplier}x – ${lvl.max_redeem_multiplier}x` : '—' },
+                  { icon: 'arrowDown', label: 'Max Redeem', value: lvl.max_redeem_cap_cents != null ? money(lvl.max_redeem_cap_cents) : '—' },
+                  { icon: 'wallet', label: 'Max Withdraw', value: lvl.max_withdrawal_cents != null ? money(lvl.max_withdrawal_cents) : '—' },
+                  { icon: 'clock', label: 'Daily Withdraw Limit', value: lvl.daily_withdrawal_limit_cents != null ? money(lvl.daily_withdrawal_limit_cents) : '—' },
+                  { icon: 'shield', label: 'KYC Verification', value: lvl.kyc_required ? 'Required' : 'Not required', muted: !lvl.kyc_required },
+                ].map((b, i, arr) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '12px 2px', borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,.055)' : 'none' }}>
+                    <div style={{ width: 30, height: 30, flexShrink: 0, borderRadius: 8, background: 'rgba(255,255,255,.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.55)' }}>
+                      <Icon name={b.icon} size={15} />
+                    </div>
+                    <span style={{ fontSize: 13, color: 'rgba(255,255,255,.6)', flex: 1 }}>{b.label}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: b.muted ? 'rgba(255,255,255,.4)' : 'rgba(255,255,255,.95)' }}>{b.value}</span>
                   </div>
                 ))}
               </div>
