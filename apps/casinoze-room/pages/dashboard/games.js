@@ -175,8 +175,7 @@ function AccountCard({ account, onRequestPassword, requestingPassword }) {
               New password requested — your current one still works
             </div>
           ) : (
-            <button onClick={() => onRequestPassword(account)} disabled={requestingPassword}
-              style={{ width: '100%', marginBottom: 10, padding: '10px 12px', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, color: 'rgba(255,255,255,.65)', fontSize: 12, fontWeight: 700, cursor: requestingPassword ? 'default' : 'pointer', fontFamily: "'Outfit',sans-serif" }}>
+            <button onClick={() => onRequestPassword(account)} disabled={requestingPassword} className="btn-soft">
               {requestingPassword ? 'Requesting…' : 'Change Password'}
             </button>
           )
@@ -187,12 +186,10 @@ function AccountCard({ account, onRequestPassword, requestingPassword }) {
             competing with the actions that belong to this card. */}
         {account.status === 'active' && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            <Link href={`/dashboard/load-game?account=${account.id}`}
-              style={{ padding: '11px 10px', background: 'linear-gradient(135deg,#10b981,#059669)', borderRadius: 10, color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none', textAlign: 'center', letterSpacing: '.02em' }}>
+            <Link href={`/dashboard/load-game?account=${account.id}`} className="pill pill-load">
               Load Credits
             </Link>
-            <Link href={`/dashboard/redeem?account=${account.id}`}
-              style={{ padding: '11px 10px', background: 'linear-gradient(135deg,#a855f7,#7c3aed)', borderRadius: 10, color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none', textAlign: 'center', letterSpacing: '.02em' }}>
+            <Link href={`/dashboard/redeem?account=${account.id}`} className="pill pill-redeem">
               Redeem Scores
             </Link>
           </div>
@@ -337,13 +334,6 @@ export default function GamesPage() {
   const visibleGames = showAll ? games : games.slice(0, perPage)
   const hiddenCount  = showAll ? 0 : Math.max(0, games.length - perPage)
 
-  const stats = [
-    { label: 'Total Games', value: games.length,                                     color: '#fbbf24' },
-    { label: 'My Accounts', value: accounts.length,                                      color: '#10b981' },
-    { label: 'Active',      value: accounts.filter(a => a.status === 'active').length,   color: '#f59e0b' },
-    { label: 'Pending',     value: accounts.filter(a => a.status === 'pending').length,  color: '#94a3b8' },
-  ]
-
   if (loading) return (
     <PlayerLayout>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300 }}>
@@ -368,10 +358,30 @@ export default function GamesPage() {
         @media (max-width: 860px)  { .games-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 720px)  { .games-grid { grid-template-columns: repeat(2, 1fr); gap: 11px; } }
 
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 560px; margin: 0 auto 22px; }
-        @media (max-width: 560px) { .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-
         .gcard { display: flex; flex-direction: column; gap: 8px; }
+
+        /* Gradient action buttons on an account card */
+        .pill {
+          padding: 12px 10px; border-radius: 11px; color: #fff;
+          font-size: 12.5px; font-weight: 800; text-decoration: none; text-align: center;
+          letter-spacing: .03em; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+        }
+        .pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+        .pill-load   { background: linear-gradient(135deg, #34d399, #059669); box-shadow: 0 8px 20px rgba(16,185,129,.35); }
+        .pill-load:hover   { box-shadow: 0 12px 26px rgba(16,185,129,.5); }
+        .pill-redeem { background: linear-gradient(135deg, #c084fc, #7c3aed); box-shadow: 0 8px 20px rgba(168,85,247,.35); }
+        .pill-redeem:hover { box-shadow: 0 12px 26px rgba(168,85,247,.5); }
+
+        /* Soft gold gradient for the secondary "Change Password" action */
+        .btn-soft {
+          width: 100%; margin-bottom: 10px; padding: 10px 12px; border-radius: 10px;
+          font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif;
+          color: #fbbf24; border: 1px solid rgba(251,191,36,.3);
+          background: linear-gradient(135deg, rgba(251,191,36,.18), rgba(245,158,11,.08));
+          transition: filter .18s ease;
+        }
+        .btn-soft:hover:enabled { filter: brightness(1.12); }
+        .btn-soft:disabled { opacity: .6; cursor: default; }
 
         /* The dashboard's tile, so a game looks the same in both places. */
         .gtile {
@@ -443,16 +453,6 @@ export default function GamesPage() {
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 14, margin: 0 }}>
           Request an account in any game room. Our team sets it up for you.
         </p>
-      </div>
-
-      {/* Stat cards — equal-sized, centred, 2-up on mobile */}
-      <div className="stat-grid">
-        {stats.map(s => (
-          <div key={s.label} style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minWidth: 0 }}>
-            <span style={{ fontFamily: "'Cinzel Decorative',serif", fontSize: 22, fontWeight: 900, color: s.color }}>{s.value}</span>
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', fontWeight: 600 }}>{s.label}</span>
-          </div>
-        ))}
       </div>
 
       {/* Tabs */}
