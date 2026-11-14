@@ -10,7 +10,7 @@ const fmtDate = (d) => d ? new Date(d).toLocaleString('en-US', { month: 'short',
 
 const TYPE_META = {
   deposit:          { label: 'Deposit',      icon: 'arrowDown', color: green },
-  game_load:        { label: 'Game Load',    icon: 'gamepad',   color: purple },
+  game_load:        { label: 'Scores',       icon: 'gamepad',   color: purple },
   game_load_return: { label: 'Load Return',  icon: 'arrow',     color: blue },
   redemption:       { label: 'Redeem',       icon: 'coins',     color: gold },
   withdrawal:       { label: 'Withdraw',     icon: 'arrowUp',   color: red },
@@ -59,7 +59,7 @@ const TABS = [
   { key: 'all',         label: 'All' },
   { key: 'deposits',    label: 'Deposits' },
   { key: 'withdrawals', label: 'Withdraws' },
-  { key: 'loads',       label: 'Game Loads' },
+  { key: 'loads',       label: 'Scores' },
   { key: 'redemptions', label: 'Redeems' },
   { key: 'bonuses',     label: 'Bonuses' },
 ]
@@ -107,13 +107,13 @@ export default function TransactionsPage() {
     const { deposits, withdrawals, loads, redemptions } = data.recent
     if (tab === 'deposits')    return deposits.map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' }))
     if (tab === 'withdrawals') return withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' }))
-    if (tab === 'loads')       return loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Game Load',    _dir: 'debit' }))
+    if (tab === 'loads')       return loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Scores',    _dir: 'debit' }))
     if (tab === 'redemptions') return redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' }))
     if (tab === 'bonuses')     return ledgerRows()
     const all = [
       ...deposits.map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' })),
       ...withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' })),
-      ...loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Game Load',    _dir: 'debit' })),
+      ...loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Scores',    _dir: 'debit' })),
       ...redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' })),
       ...ledgerRows(),
     ]
@@ -141,7 +141,7 @@ export default function TransactionsPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 700, color: gold, margin: 0, display: 'flex', alignItems: 'center', gap: 9 }}><Icon name="clipboard" size={20} color={gold} /> My Transactions</h1>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: '4px 0 0' }}>Track all your deposits, withdrawals, game loads and redemptions.</p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: '4px 0 0' }}>Track all your deposits, withdraws, scores and redeems.</p>
           </div>
           <button onClick={() => fetchData(token)} style={{ padding: '8px 16px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: 'pointer', fontFamily: 'Outfit, sans-serif' }}>↻ Refresh</button>
         </div>
@@ -165,7 +165,7 @@ export default function TransactionsPage() {
               ))}
               {data.pending.loads.map(l => (
                 <div key={l.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Icon name="gamepad" size={14} color={purple} /> Game Load <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{l.reference_id}</span></span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Icon name="gamepad" size={14} color={purple} /> Scores <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{l.reference_id}</span></span>
                   <span style={{ color: purple, fontWeight: 700 }}>−{fmt(l.amount_cents)}</span>
                 </div>
               ))}

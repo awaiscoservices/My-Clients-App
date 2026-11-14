@@ -255,7 +255,7 @@ export function txTypeLabel(type) {
   const labels = {
     deposit:                    'Deposit',
     deposit_bonus:              'Deposit Bonus',
-    game_load:                  'Game Load',
+    game_load:                  'Scores',
     game_load_reserve:          'Load Reserved',
     game_load_reserve_release:  'Load Released',
     redeem:                     'Redeem',
