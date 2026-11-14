@@ -367,10 +367,10 @@ export default function GamesPage() {
           letter-spacing: .03em; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
         }
         .pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
-        .pill-load   { background: linear-gradient(135deg, #34d399, #059669); box-shadow: 0 8px 20px rgba(16,185,129,.35); }
-        .pill-load:hover   { box-shadow: 0 12px 26px rgba(16,185,129,.5); }
-        .pill-redeem { background: linear-gradient(135deg, #c084fc, #7c3aed); box-shadow: 0 8px 20px rgba(168,85,247,.35); }
-        .pill-redeem:hover { box-shadow: 0 12px 26px rgba(168,85,247,.5); }
+        .pill-load   { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #050505; box-shadow: 0 8px 20px rgba(251,191,36,.35); }
+        .pill-load:hover   { box-shadow: 0 12px 26px rgba(251,191,36,.5); }
+        .pill-redeem { background: linear-gradient(135deg, #2dd4bf, #0891b2); box-shadow: 0 8px 20px rgba(13,148,136,.35); }
+        .pill-redeem:hover { box-shadow: 0 12px 26px rgba(13,148,136,.5); }
 
         /* Soft gold gradient for the secondary "Change Password" action */
         .btn-soft {
