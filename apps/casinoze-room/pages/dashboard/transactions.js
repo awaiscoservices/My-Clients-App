@@ -11,10 +11,13 @@ const fmtDate = (d) => d ? new Date(d).toLocaleString('en-US', { month: 'short',
 const TYPE_META = {
   deposit:          { label: 'Deposit',      icon: 'arrowDown', color: green },
   game_load:        { label: 'Scores',       icon: 'gamepad',   color: purple },
-  game_load_return: { label: 'Load Return',  icon: 'arrow',     color: blue },
+  game_load_return: { label: 'Score Refund', icon: 'arrowDown', color: blue },
+  game_load_refund: { label: 'Score Refund', icon: 'arrowDown', color: blue },
+  redeem:           { label: 'Redeem',       icon: 'coins',     color: gold },
   redemption:       { label: 'Redeem',       icon: 'coins',     color: gold },
   withdrawal:       { label: 'Withdraw',     icon: 'arrowUp',   color: red },
   withdrawal_hold:  { label: 'Withdraw',     icon: 'arrowUp',   color: red },
+  withdrawal_refund:{ label: 'Withdraw Refund', icon: 'arrowDown', color: blue },
   adjustment:       { label: 'Adjustment',   icon: 'gear',      color: 'rgba(255,255,255,0.5)' },
   bonus:            { label: 'Bonus',        icon: 'gift',      color: gold },
   referral:         { label: 'Referral',     icon: 'users',     color: green },
@@ -30,9 +33,22 @@ const TYPE_META = {
   adjustment_debit:  { label: 'Adjustment',     icon: 'gear',    color: red },
 }
 
-// Ledger types surfaced here directly (the rest come from the request tables
-// above, so listing them from the ledger too would double them up).
-const LEDGER_SHOW = ['deposit_bonus', 'referral_bonus', 'level_bonus', 'promotion_credit', 'spin_win', 'spin_bet', 'refund', 'adjustment_credit', 'adjustment_debit']
+// Which tab a ledger type belongs under. Same grouping the admin uses, so the
+// two sides read identically.
+const CATEGORY_TYPES = {
+  deposits:    ['deposit'],
+  withdrawals: ['withdrawal', 'withdrawal_refund', 'withdrawal_hold'],
+  loads:       ['game_load', 'game_load_refund', 'game_load_return'],
+  redemptions: ['redeem', 'redemption'],
+  bonuses:     ['deposit_bonus', 'promotion_credit', 'referral_bonus', 'level_bonus', 'bonus'],
+}
+const catOfType = t => Object.keys(CATEGORY_TYPES).find(k => CATEGORY_TYPES[k].includes(t)) || null
+
+// A request row counts as "settled" once it has a ledger entry; those come
+// from the ledger below. Only still-open or rejected requests are merged in
+// from the request tables, so the player sees the same rows an admin sees
+// plus their own in-flight items.
+const SETTLED_REQUEST = ['approved', 'completed', 'paid']
 
 const STATUS_STYLE = {
   pending:    { bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.35)', color: gold,                        label: 'Pending' },
@@ -92,32 +108,36 @@ export default function TransactionsPage() {
     ? (data.pending.deposits.length + data.pending.withdrawals.length + data.pending.loads.length + data.pending.redemptions.length)
     : 0
 
-  // Bonuses, spin wins/bets and other ledger-only movements. These settle
-  // instantly, so they always show as Completed.
-  const ledgerRows = () => (data?.ledger || [])
-    .filter(l => LEDGER_SHOW.includes(l.type))
-    .map(l => ({
-      ...l, _type: l.type, _amount: l.amount_cents,
-      _desc: l.description || (TYPE_META[l.type]?.label ?? 'Bonus'),
-      _dir: l.direction || 'credit', status: 'completed',
-    }))
+  // Settled transactions come straight from the ledger — the same source of
+  // truth the admin reads — so every row, description and amount matches what
+  // an admin sees for this account.
+  const ledgerRows = () => (data?.ledger || []).map(l => ({
+    ...l, _type: l.type, _amount: l.amount_cents,
+    _desc: l.description || (TYPE_META[l.type]?.label ?? '—'),
+    _dir: l.direction || (l.amount_cents >= 0 ? 'credit' : 'debit'),
+    status: 'completed',
+  }))
+
+  // Still-open or rejected requests aren't in the ledger yet, so merge them in
+  // from the request tables (with their real status + reason).
+  const openRequestRows = () => {
+    if (!data) return []
+    const { deposits, withdrawals, loads, redemptions } = data.recent
+    const open = arr => arr.filter(x => !SETTLED_REQUEST.includes(x.status))
+    return [
+      ...open(deposits).map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' })),
+      ...open(withdrawals).map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' })),
+      ...open(loads).map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Scores',    _dir: 'debit' })),
+      ...open(redemptions).map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' })),
+    ]
+  }
 
   const getRows = () => {
     if (!data) return []
-    const { deposits, withdrawals, loads, redemptions } = data.recent
-    if (tab === 'deposits')    return deposits.map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' }))
-    if (tab === 'withdrawals') return withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' }))
-    if (tab === 'loads')       return loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Scores',    _dir: 'debit' }))
-    if (tab === 'redemptions') return redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' }))
-    if (tab === 'bonuses')     return ledgerRows()
-    const all = [
-      ...deposits.map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' })),
-      ...withdrawals.map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' })),
-      ...loads.map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Scores',    _dir: 'debit' })),
-      ...redemptions.map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' })),
-      ...ledgerRows(),
-    ]
-    return all.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    const all = [...ledgerRows(), ...openRequestRows()]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    if (tab === 'all') return all
+    return all.filter(r => catOfType(r._type) === tab)
   }
 
   const rows = getRows()
