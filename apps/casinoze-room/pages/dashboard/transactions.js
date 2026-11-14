@@ -45,10 +45,17 @@ const CATEGORY_TYPES = {
 const catOfType = t => Object.keys(CATEGORY_TYPES).find(k => CATEGORY_TYPES[k].includes(t)) || null
 
 // A request row counts as "settled" once it has a ledger entry; those come
-// from the ledger below. Only still-open or rejected requests are merged in
-// from the request tables, so the player sees the same rows an admin sees
-// plus their own in-flight items.
-const SETTLED_REQUEST = ['approved', 'completed', 'paid']
+// from the ledger below. Only still-open or rejected requests are merged in,
+// so the player sees the same rows an admin sees plus in-flight items.
+// "Settled" is per-table: a withdrawal is done only when 'paid', but a game
+// load / redeem in 'processing' has already moved money (it has a ledger
+// row), so it must not be merged again or it would show twice.
+const SETTLED_REQUEST = {
+  deposits:    ['approved'],
+  withdrawals: ['paid'],
+  loads:       ['completed', 'processing'],
+  redemptions: ['completed', 'processing'],
+}
 
 const STATUS_STYLE = {
   pending:    { bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.35)', color: gold,                        label: 'Pending' },
@@ -123,12 +130,12 @@ export default function TransactionsPage() {
   const openRequestRows = () => {
     if (!data) return []
     const { deposits, withdrawals, loads, redemptions } = data.recent
-    const open = arr => arr.filter(x => !SETTLED_REQUEST.includes(x.status))
+    const open = (arr, settled) => arr.filter(x => !settled.includes(x.status))
     return [
-      ...open(deposits).map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' })),
-      ...open(withdrawals).map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' })),
-      ...open(loads).map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Scores',    _dir: 'debit' })),
-      ...open(redemptions).map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' })),
+      ...open(deposits, SETTLED_REQUEST.deposits).map(d => ({ ...d, _type: 'deposit',    _amount: d.amount_cents, _desc: d.payment_method_name || 'Deposit',    _dir: 'credit' })),
+      ...open(withdrawals, SETTLED_REQUEST.withdrawals).map(w => ({ ...w, _type: 'withdrawal', _amount: w.amount_cents, _desc: w.payout_method_label || w.payout_method_type || 'Withdraw', _dir: 'debit' })),
+      ...open(loads, SETTLED_REQUEST.loads).map(l => ({ ...l, _type: 'game_load',    _amount: l.amount_cents, _desc: l.game_panel_name || 'Scores',    _dir: 'debit' })),
+      ...open(redemptions, SETTLED_REQUEST.redemptions).map(r => ({ ...r, _type: 'redemption', _amount: r.amount_cents, _desc: r.game_panel_name || 'Redeem',   _dir: 'credit' })),
     ]
   }
 
