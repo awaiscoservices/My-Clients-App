@@ -23,6 +23,7 @@ const TX_FILTERS = [
   { key: 'game_load',  label: 'Scores'     },
   { key: 'redeem',     label: 'Redeems'    },
   { key: 'withdrawal', label: 'Withdraws'},
+  { key: 'bonus',      label: 'Bonus'      },
   { key: 'spinner',    label: 'Wheel'      },
 ]
 

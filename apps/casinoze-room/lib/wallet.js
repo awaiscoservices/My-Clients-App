@@ -67,12 +67,19 @@ export async function getMyTransactions(userId, { limit = 20, offset = 0, type }
  * 'game_load'); omit it for everything. Paginated by created_at across all
  * four tables.
  */
+const BONUS_LABELS = {
+  deposit_bonus:    'Deposit Bonus',
+  referral_bonus:   'Referral Bonus',
+  level_bonus:      'Level Bonus',
+  promotion_credit: 'Promo Bonus',
+}
+
 export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {}) {
   const want = k => !kind || kind === k
   const need = offset + limit          // enough from each table to fill this page
   const empty = Promise.resolve({ data: [] })
 
-  const [dep, wd, rd, gl, spin, led] = await Promise.all([
+  const [dep, wd, rd, gl, spin, bon, led] = await Promise.all([
     want('deposit') ? supabase.from('deposits')
       .select('id, amount_cents, status, created_at, rejection_reason, payment_methods(name)')
       .eq('user_id', userId).order('created_at', { ascending: false }).limit(need) : empty,
@@ -90,6 +97,11 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
     want('spinner') ? supabase.from('ledger')
       .select('id, type, amount_cents, direction, balance_after_cents, created_at')
       .eq('user_id', userId).in('type', ['spin_bet', 'spin_win'])
+      .order('created_at', { ascending: false }).limit(need) : empty,
+    // Bonus credits (deposit, referral, level and promo bonuses) — ledger-only.
+    want('bonus') ? supabase.from('ledger')
+      .select('id, type, amount_cents, direction, balance_after_cents, created_at')
+      .eq('user_id', userId).in('type', ['deposit_bonus', 'referral_bonus', 'level_bonus', 'promotion_credit'])
       .order('created_at', { ascending: false }).limit(need) : empty,
     // The running wallet balance after each settled request, from the ledger.
     supabase.from('ledger')
@@ -143,6 +155,19 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
       rejection_reason: null,
       balance_after_cents: r.balance_after_cents,
       source_label: r.type === 'spin_win' ? 'to Bonus' : null,
+    })),
+    ...(bon.data || []).map(r => ({
+      id: 'bon-' + r.id,
+      kind: 'bonus',
+      label: BONUS_LABELS[r.type] || 'Bonus',
+      game_name: null,
+      amount_cents: r.amount_cents,
+      direction: r.direction || 'credit',
+      status: 'completed',
+      created_at: r.created_at,
+      rejection_reason: null,
+      balance_after_cents: r.balance_after_cents,
+      source_label: 'to Bonus',
     })),
   ]
 
