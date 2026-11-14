@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   const [profileRes, walletRes, gameAccountsRes] = await Promise.all([
     supabaseAdmin
       .from('profiles')
-      .select('id, full_name, email, status, role, xp_points, current_level_id, my_referral_code, referral_code_used, referral_bonus_applied, created_at, player_levels(name, min_xp, max_xp, color, icon, perks)')
+      .select('id, full_name, email, username, kyc_status, status, role, xp_points, current_level_id, my_referral_code, referral_code_used, referral_bonus_applied, created_at, player_levels(name, min_xp, max_xp, color, icon, perks)')
       .eq('id', user.id)
       .single(),
     supabaseAdmin
@@ -58,6 +58,8 @@ export default async function handler(req, res) {
     id: profile.id,
     full_name: profile.full_name,
     email: profile.email,
+    username: profile.username,
+    kyc_status: profile.kyc_status,
     status: profile.status,
     xp_points: profile.xp_points || 0,
     level: profile.player_levels,
