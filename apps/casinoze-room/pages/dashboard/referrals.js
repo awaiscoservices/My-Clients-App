@@ -3,17 +3,77 @@ import Head from 'next/head'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
+import Icon from '../../components/ui/Icon'
 import { Title, Btn, Empty, card, input, Label, G, fmtDate } from '../../components/ui/kit'
 
 const STEPS = [
-  { n: 1, t: 'Share your code', d: 'Send your invite link to a friend' },
-  { n: 2, t: 'They deposit', d: 'Your friend signs up and adds money' },
-  { n: 3, t: 'You earn', d: 'Get a bonus on their first 3 deposits' },
+  { n: 1, t: 'Share your code', d: 'Send your invite link to a friend', icon: 'send' },
+  { n: 2, t: 'They deposit', d: 'Your friend signs up and adds money', icon: 'wallet' },
+  { n: 3, t: 'You earn', d: 'Get a bonus on their first 3 deposits', icon: 'gift' },
 ]
+
+function HowItWorks() {
+  return (
+    <div className="hiw-wrap">
+      <style>{`
+        .hiw-wrap { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-bottom: 22px; }
+        .hiw-step { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 16px;
+          opacity: 0; transform: translateY(14px); animation: hiwIn .55s cubic-bezier(.22,1,.36,1) forwards; }
+        .hiw-step:nth-child(1) { animation-delay: .05s; }
+        .hiw-step:nth-child(2) { animation-delay: .22s; }
+        .hiw-step:nth-child(3) { animation-delay: .39s; }
+        @keyframes hiwIn { to { opacity: 1; transform: translateY(0); } }
+        .hiw-ring { position: relative; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+          background: radial-gradient(circle at 30% 25%, rgba(251,191,36,.22), rgba(255,255,255,.03));
+          border: 1.5px solid rgba(251,191,36,.45); color: ${G}; margin-bottom: 14px; z-index: 2; }
+        .hiw-ring::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px solid rgba(251,191,36,.25);
+          animation: hiwPulse 2.4s ease-out infinite; }
+        .hiw-step:nth-child(2) .hiw-ring::before { animation-delay: .8s; }
+        .hiw-step:nth-child(3) .hiw-ring::before { animation-delay: 1.6s; }
+        @keyframes hiwPulse { 0% { transform: scale(1); opacity: .6; } 70% { transform: scale(1.25); opacity: 0; } 100% { opacity: 0; } }
+        .hiw-num { position: absolute; top: -4px; right: -4px; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 800;
+          color: #050505; background: linear-gradient(135deg, ${G}, #f59e0b); display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 4px 10px rgba(245,158,11,.4); z-index: 3; }
+        .hiw-t { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+        .hiw-d { font-size: 12.5px; color: rgba(255,255,255,.45); line-height: 1.45; max-width: 190px; }
+        /* Connector line behind the rings */
+        .hiw-step:not(:last-child)::after { content: ''; position: absolute; top: 43px; left: 50%; width: 100%; height: 2px; z-index: 1;
+          background: linear-gradient(90deg, rgba(251,191,36,.5), rgba(251,191,36,.12)); }
+        .hiw-step:not(:last-child)::before { content: ''; position: absolute; top: 39px; left: 50%; width: 10px; height: 10px; z-index: 1;
+          background: ${G}; border-radius: 50%; box-shadow: 0 0 10px ${G};
+          animation: hiwFlow 2.6s linear infinite; }
+        .hiw-step:nth-child(2)::before { animation-delay: 1.3s; }
+        @keyframes hiwFlow { 0% { left: 50%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: 150%; opacity: 0; } }
+        @media (max-width: 620px) {
+          .hiw-wrap { grid-template-columns: 1fr; gap: 6px; }
+          .hiw-step { flex-direction: row; text-align: left; gap: 16px; padding: 10px 6px; }
+          .hiw-ring { margin-bottom: 0; flex-shrink: 0; }
+          .hiw-d { max-width: none; }
+          .hiw-step:not(:last-child)::after { top: 70px; left: 35px; width: 2px; height: 100%;
+            background: linear-gradient(180deg, rgba(251,191,36,.5), rgba(251,191,36,.12)); }
+          .hiw-step:not(:last-child)::before { display: none; }
+          .hiw-txt { padding-top: 6px; }
+        }
+      `}</style>
+      {STEPS.map(s => (
+        <div key={s.n} className="hiw-step">
+          <div className="hiw-ring">
+            <span className="hiw-num">{s.n}</span>
+            <Icon name={s.icon} size={28} />
+          </div>
+          <div className="hiw-txt">
+            <div className="hiw-t">{s.t}</div>
+            <div className="hiw-d">{s.d}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 function Stat({ label, children }) {
   return (
-    <div style={card}>
+    <div style={{ ...card, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Label>{label}</Label>
       <div style={{ marginTop: 6 }}>{children}</div>
     </div>
@@ -49,17 +109,7 @@ export default function Referrals() {
       <Title sub="Invite friends and earn on their first 3 deposits">Referrals</Title>
 
       {/* How it works */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(220px,100%),1fr))', gap: 14, marginBottom: 20 }}>
-        {STEPS.map(s => (
-          <div key={s.n} style={{ ...card, display: 'flex', alignItems: 'center', gap: 14, padding: 18 }}>
-            <div style={{ width: 40, height: 40, flexShrink: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 18, color: '#050505', background: `linear-gradient(135deg,${G},#f59e0b)` }}>{s.n}</div>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 15 }}>{s.t}</div>
-              <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,.45)' }}>{s.d}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <HowItWorks />
 
       {/* Code + stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(240px,100%),1fr))', gap: 16, marginBottom: 20 }}>
