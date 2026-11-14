@@ -32,9 +32,8 @@ const shape = lvl => lvl && ({
   min_redeem_multiplier: lvl.min_redeem_multiplier != null ? Number(lvl.min_redeem_multiplier) : null,
   max_redeem_multiplier: lvl.max_redeem_multiplier != null ? Number(lvl.max_redeem_multiplier) : null,
   max_redeem_cap_cents: lvl.max_redeem_cap_cents ?? null,
+  min_withdrawal_cents: lvl.min_withdrawal_cents ?? null,
   max_withdrawal_cents: lvl.max_withdrawal_cents ?? null,
-  daily_withdrawal_limit_cents: lvl.daily_withdrawal_limit_cents ?? lvl.max_daily_withdrawal_cents ?? null,
-  kyc_required: !!lvl.kyc_required,
 })
 
 export default async function handler(req, res) {
@@ -72,7 +71,7 @@ export default async function handler(req, res) {
   // Only this player's own tenant's levels — names/sort_orders repeat across tenants.
   const { data: levelsData } = await supabaseAdmin
     .from('player_levels')
-    .select('id, name, accent_color, badge_color, badge_icon, perks, xp_required, sort_order, deposit_bonus_pct, min_redeem_multiplier, max_redeem_multiplier, max_redeem_cap_cents, max_withdrawal_cents, daily_withdrawal_limit_cents, max_daily_withdrawal_cents, kyc_required')
+    .select('id, name, accent_color, badge_color, badge_icon, perks, xp_required, sort_order, min_redeem_multiplier, max_redeem_multiplier, max_redeem_cap_cents, min_withdrawal_cents, max_withdrawal_cents')
     .eq('is_active', true)
     .eq('tenant_id', profile.tenant_id)
     .order('sort_order', { ascending: true })

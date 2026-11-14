@@ -13,6 +13,15 @@ function Card({ children, style }) {
   return <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 16, padding: 22, ...style }}>{children}</div>
 }
 
+function BenefitRow({ label, value, mute }) {
+  return (
+    <div style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 8, padding: '7px 9px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
+      <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)' }}>{label}</span>
+      <span style={{ fontSize: 12.5, fontWeight: 800, color: mute ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.88)', whiteSpace: 'nowrap' }}>{value}</span>
+    </div>
+  )
+}
+
 function StatTile({ label, value, accent, icon }) {
   return (
     <div style={{ background: `${accent}0f`, border: `1px solid ${accent}2e`, borderRadius: 14, padding: '16px 18px' }}>
@@ -188,29 +197,35 @@ export default function ProfilePage() {
               </Card>
             )}
 
-            {/* Level benefits */}
+            {/* Level benefits — same rules shown on the Levels page */}
             <Card style={{ marginTop: 18 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 14 }}>
                 <Icon name={lvl.icon || 'star'} size={16} color={accent} />
                 <h2 style={{ fontSize: 14, fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '.02em' }}>{lvl.name || 'Level'} Benefits</h2>
               </div>
-              <div>
-                {[
-                  { icon: 'gift', label: 'Deposit Bonus', value: lvl.deposit_bonus_pct != null ? `${lvl.deposit_bonus_pct}%` : '—' },
-                  { icon: 'gamepad', label: 'Redeem Multiplier', value: (lvl.min_redeem_multiplier != null && lvl.max_redeem_multiplier != null) ? `${lvl.min_redeem_multiplier}x – ${lvl.max_redeem_multiplier}x` : '—' },
-                  { icon: 'arrowDown', label: 'Max Redeem', value: lvl.max_redeem_cap_cents != null ? money(lvl.max_redeem_cap_cents) : '—' },
-                  { icon: 'wallet', label: 'Max Withdraw', value: lvl.max_withdrawal_cents != null ? money(lvl.max_withdrawal_cents) : '—' },
-                  { icon: 'clock', label: 'Daily Withdraw Limit', value: lvl.daily_withdrawal_limit_cents != null ? money(lvl.daily_withdrawal_limit_cents) : '—' },
-                  { icon: 'shield', label: 'KYC Verification', value: lvl.kyc_required ? 'Required' : 'Not required', muted: !lvl.kyc_required },
-                ].map((b, i, arr) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '12px 2px', borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,.055)' : 'none' }}>
-                    <div style={{ width: 30, height: 30, flexShrink: 0, borderRadius: 8, background: 'rgba(255,255,255,.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.55)' }}>
-                      <Icon name={b.icon} size={15} />
-                    </div>
-                    <span style={{ fontSize: 13, color: 'rgba(255,255,255,.6)', flex: 1 }}>{b.label}</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: b.muted ? 'rgba(255,255,255,.4)' : 'rgba(255,255,255,.95)' }}>{b.value}</span>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {/* Wallet */}
+                <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(96,165,250,.35)' }}>
+                  <div style={{ background: 'rgba(96,165,250,.16)', padding: '7px 9px', borderBottom: '1px solid rgba(96,165,250,.28)', textAlign: 'center' }}>
+                    <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.05em', textTransform: 'uppercase', color: '#93c5fd', display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="wallet" size={12} /> Wallet</span>
                   </div>
-                ))}
+                  <div style={{ background: 'rgba(96,165,250,.05)', padding: 9, display: 'flex', flexDirection: 'column', gap: 7 }}>
+                    <BenefitRow label="Min WD" value={lvl.min_withdrawal_cents != null ? money(lvl.min_withdrawal_cents) : '—'} />
+                    <BenefitRow label="Max WD" value={lvl.max_withdrawal_cents != null ? money(lvl.max_withdrawal_cents) : '—'} />
+                    <BenefitRow label="Window" value="24h" mute />
+                  </div>
+                </div>
+                {/* Game */}
+                <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(167,139,250,.35)' }}>
+                  <div style={{ background: 'rgba(167,139,250,.16)', padding: '7px 9px', borderBottom: '1px solid rgba(167,139,250,.28)', textAlign: 'center' }}>
+                    <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.05em', textTransform: 'uppercase', color: '#c4b5fd', display: 'inline-flex', alignItems: 'center', gap: 5 }}><Icon name="gamepad" size={12} /> Game</span>
+                  </div>
+                  <div style={{ background: 'rgba(167,139,250,.05)', padding: 9, display: 'flex', flexDirection: 'column', gap: 7 }}>
+                    <BenefitRow label="Min x" value={lvl.min_redeem_multiplier != null ? parseFloat(lvl.min_redeem_multiplier).toFixed(1) + 'x' : '—'} />
+                    <BenefitRow label="Max x" value={lvl.max_redeem_multiplier != null ? parseFloat(lvl.max_redeem_multiplier).toFixed(1) + 'x' : '—'} />
+                    <BenefitRow label="Cap" value={lvl.max_redeem_cap_cents != null ? money(lvl.max_redeem_cap_cents) : '—'} />
+                  </div>
+                </div>
               </div>
             </Card>
 
