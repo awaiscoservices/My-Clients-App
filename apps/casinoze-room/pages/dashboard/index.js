@@ -565,8 +565,8 @@ function ClaimPromoCard({ onClaimed }) {
 
   return (
     <div style={{ marginBottom: 24, padding: '16px 20px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(251,191,36,.1),rgba(245,158,11,.04))', border: '1px solid rgba(251,191,36,.28)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+      <div className="cpc-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
+        <div className="cpc-info" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', background: 'rgba(251,191,36,.16)', border: '1px solid rgba(251,191,36,.4)' }}><I name="gift" size={24} /></span>
           <div>
             <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>Have a Promo Code?</div>
@@ -574,7 +574,7 @@ function ClaimPromoCard({ onClaimed }) {
           </div>
         </div>
         {!open && (
-          <button onClick={() => { setOpen(true); setMsg(null) }} style={{ padding: '11px 22px', borderRadius: 11, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer' }}>Claim Promo</button>
+          <button className="cpc-btn" onClick={() => { setOpen(true); setMsg(null) }} style={{ padding: '11px 22px', borderRadius: 11, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer' }}>Claim Promo</button>
         )}
       </div>
 
@@ -867,6 +867,11 @@ export default function Dashboard() {
       <style>{`
         @media (max-width: 1080px) {
           .dash-main-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 640px) {
+          .cpc-row { flex-direction: column !important; align-items: center !important; text-align: center !important; }
+          .cpc-info { flex-direction: column !important; align-items: center !important; }
+          .cpc-btn { width: 100% !important; }
         }
         .hg-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;padding:8px 4px 4px}
         @media(max-width:1500px){.hg-grid{grid-template-columns:repeat(6,1fr)}}
