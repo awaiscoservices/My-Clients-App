@@ -45,14 +45,13 @@ function HowItWorks() {
         .hiw-step:nth-child(2)::before { animation-delay: 1.3s; }
         @keyframes hiwFlow { 0% { left: 50%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: 150%; opacity: 0; } }
         @media (max-width: 620px) {
-          .hiw-wrap { grid-template-columns: 1fr; gap: 6px; }
-          .hiw-step { flex-direction: row; text-align: left; gap: 16px; padding: 10px 6px; }
-          .hiw-ring { margin-bottom: 0; flex-shrink: 0; }
-          .hiw-d { max-width: none; }
-          .hiw-step:not(:last-child)::after { top: 70px; left: 35px; width: 2px; height: 100%;
+          .hiw-wrap { grid-template-columns: 1fr; gap: 18px; }
+          .hiw-step { flex-direction: column; text-align: center; gap: 0; padding: 4px 6px; }
+          .hiw-ring { margin-bottom: 12px; }
+          .hiw-d { max-width: 260px; }
+          .hiw-step:not(:last-child)::after { top: 78px; left: 50%; transform: translateX(-50%); width: 2px; height: 20px;
             background: linear-gradient(180deg, rgba(251,191,36,.5), rgba(251,191,36,.12)); }
           .hiw-step:not(:last-child)::before { display: none; }
-          .hiw-txt { padding-top: 6px; }
         }
       `}</style>
       {STEPS.map(s => (
