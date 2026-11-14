@@ -126,7 +126,7 @@ export default function ProfilePage() {
         <div className="pf-stats" style={{ marginBottom: 18 }}>
           <StatTile label="Cash Balance"  value={money(p?.cash_balance_cents)}  accent={green} icon="wallet" />
           <StatTile label="Bonus Balance" value={money(p?.bonus_balance_cents)} accent="#a855f7" icon="gift" />
-          <StatTile label="Total Balance" value={money(total)}                 accent={gold}  icon="coin" />
+          <StatTile label="Total Balance" value={money(total)}                 accent={gold}  icon="gem" />
           <StatTile label="XP Points"     value={xp.toLocaleString()}          accent="#38bdf8" icon="star" />
         </div>
 
@@ -187,6 +187,46 @@ export default function ProfilePage() {
                 </div>
               </Card>
             )}
+
+            {/* Level benefits */}
+            <Card style={{ marginTop: 18 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <h2 style={{ fontSize: 14, fontWeight: 800, color: accent, margin: 0, letterSpacing: '.02em' }}>{lvl.name || 'Level'} Benefits</h2>
+                <Icon name={lvl.icon || 'star'} size={16} color={accent} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {[
+                  { label: 'Deposit Bonus', value: lvl.deposit_bonus_pct != null ? `${lvl.deposit_bonus_pct}%` : '—', c: green },
+                  { label: 'Redeem Multiplier', value: (lvl.min_redeem_multiplier != null && lvl.max_redeem_multiplier != null) ? `${lvl.min_redeem_multiplier}x – ${lvl.max_redeem_multiplier}x` : '—', c: '#38bdf8' },
+                  { label: 'Max Redeem', value: lvl.max_redeem_cap_cents != null ? money(lvl.max_redeem_cap_cents) : '—', c: gold },
+                  { label: 'Max Withdraw', value: lvl.max_withdrawal_cents != null ? money(lvl.max_withdrawal_cents) : '—', c: gold },
+                  { label: 'Daily Withdraw Limit', value: lvl.daily_withdrawal_limit_cents != null ? money(lvl.daily_withdrawal_limit_cents) : '—', c: '#a855f7' },
+                  { label: 'KYC', value: lvl.kyc_required ? 'Required' : 'Not required', c: lvl.kyc_required ? gold : green },
+                ].map((b, i) => (
+                  <div key={i} style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 11, padding: '11px 13px' }}>
+                    <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.07em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', marginBottom: 5 }}>{b.label}</div>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: b.c }}>{b.value}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Quick actions */}
+            <Card style={{ marginTop: 18 }}>
+              <h2 style={{ fontSize: 14, fontWeight: 800, color: gold, margin: '0 0 14px', letterSpacing: '.02em' }}>Quick Actions</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {[
+                  { href: '/dashboard/deposit', label: 'Deposit', icon: 'plus', bg: 'linear-gradient(135deg,#fbbf24,#f59e0b)', fg: '#050505' },
+                  { href: '/dashboard/load-game', label: 'Load Credits', icon: 'arrowUp', bg: 'linear-gradient(135deg,#2dd4bf,#0891b2)', fg: '#fff' },
+                  { href: '/dashboard/redeem', label: 'Redeem', icon: 'arrowDown', bg: 'rgba(255,255,255,.05)', fg: '#fff', border: '1px solid rgba(255,255,255,.12)' },
+                  { href: '/dashboard/withdraw', label: 'Withdraw', icon: 'wallet', bg: 'rgba(255,255,255,.05)', fg: '#fff', border: '1px solid rgba(255,255,255,.12)' },
+                ].map((a, i) => (
+                  <a key={i} href={a.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '13px', borderRadius: 11, fontSize: 13.5, fontWeight: 800, textDecoration: 'none', color: a.fg, background: a.bg, border: a.border || 'none', fontFamily: 'Outfit, sans-serif' }}>
+                    <Icon name={a.icon} size={15} color={a.fg} /> {a.label}
+                  </a>
+                ))}
+              </div>
+            </Card>
           </div>
 
           {/* Right column */}
