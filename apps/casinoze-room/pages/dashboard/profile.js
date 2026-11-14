@@ -100,10 +100,10 @@ export default function ProfilePage() {
         .pf-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         @media (max-width: 900px) { .pf-grid { grid-template-columns: 1fr; } .pf-stats { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) {
-          .pf-hero { flex-direction: column; justify-content: center; }
-          .pf-hero-id { flex-direction: column; text-align: center; gap: 12px; width: 100%; }
-          .pf-hero-name { text-align: center; }
-          .pf-hero-badges { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; width: 100%; }
+          .pf-hero { flex-direction: column !important; justify-content: center !important; align-items: center !important; }
+          .pf-hero-id { flex-direction: column !important; text-align: center !important; gap: 12px !important; width: 100% !important; justify-content: center !important; }
+          .pf-hero-name { text-align: center !important; }
+          .pf-hero-badges { flex-direction: row !important; flex-wrap: wrap; justify-content: center !important; align-items: center !important; width: 100% !important; }
         }
         .pf-input { width: 100%; padding: '11px 14px'; }
         .pf-field { width: 100%; padding: 11px 14px; border-radius: 10px; box-sizing: border-box; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); color: #fff; font-size: 14px; font-family: 'Outfit', sans-serif; outline: none; }
@@ -131,7 +131,6 @@ export default function ProfilePage() {
             </div>
             <div className="pf-hero-badges" style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
               {pill(lvl.name || 'Bronze', accent)}
-              {kyc ? pill('KYC Verified', green) : pill('KYC Pending', gold)}
               {pill(p?.status === 'suspended' ? 'Suspended' : 'Active', p?.status === 'suspended' ? red : green)}
             </div>
           </div>
