@@ -539,6 +539,63 @@ function PromoBanner() {
   )
 }
 
+// ─── CLAIM PROMO (direct-wallet) ──────────────────────────────────────────────
+function ClaimPromoCard({ onClaimed }) {
+  const [open, setOpen] = useState(false)
+  const [code, setCode] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg]   = useState(null)   // { ok, text }
+
+  async function claim() {
+    const c = code.trim()
+    if (!c) return
+    setBusy(true); setMsg(null)
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch('/api/player/promo/claim', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ code: c }),
+    })
+    const d = await res.json().catch(() => ({}))
+    setBusy(false)
+    if (!res.ok) { setMsg({ ok: false, text: d.error || 'Could not claim' }); return }
+    setMsg({ ok: true, text: `$${(d.bonus_cents / 100).toFixed(2)} added to your Bonus balance!` })
+    setCode('')
+    onClaimed?.()
+  }
+
+  return (
+    <div style={{ marginBottom: 24, padding: '16px 20px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(251,191,36,.1),rgba(245,158,11,.04))', border: '1px solid rgba(251,191,36,.28)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', background: 'rgba(251,191,36,.16)', border: '1px solid rgba(251,191,36,.4)' }}><I name="gift" size={24} /></span>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>Have a Promo Code?</div>
+            <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>Claim it straight to your Bonus balance.</div>
+          </div>
+        </div>
+        {!open && (
+          <button onClick={() => { setOpen(true); setMsg(null) }} style={{ padding: '11px 22px', borderRadius: 11, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer' }}>Claim Promo</button>
+        )}
+      </div>
+
+      {open && (
+        <div style={{ marginTop: 14 }}>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <input value={code} onChange={e => { setCode(e.target.value.toUpperCase()); setMsg(null) }} placeholder="ENTER CODE"
+              style={{ flex: '1 1 200px', padding: '12px 14px', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, color: '#fff', fontSize: 15, fontFamily: 'monospace', letterSpacing: '.08em', textTransform: 'uppercase', outline: 'none' }} />
+            <button onClick={claim} disabled={busy || !code.trim()} style={{ padding: '0 24px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: busy ? 'default' : 'pointer' }}>{busy ? 'Claiming…' : 'Claim'}</button>
+          </div>
+          {msg && (
+            <div style={{ marginTop: 10, fontSize: 13, fontWeight: 600, color: msg.ok ? '#10b981' : '#f87171', display: 'flex', alignItems: 'center', gap: 7 }}>
+              <I name={msg.ok ? 'check' : 'alert'} size={15} stroke={2.2} /> {msg.text}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function Dashboard() {
   const router = useRouter()
@@ -648,6 +705,9 @@ export default function Dashboard() {
 
       {/* PROMO BANNER */}
       <PromoBanner />
+
+      {/* CLAIM PROMO (direct-wallet codes) */}
+      <ClaimPromoCard onClaimed={reloadWallet} />
 
       {/* WALLET BALANCES */}
       {wallet && (

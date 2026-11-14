@@ -99,7 +99,30 @@ export default function DepositPage() {
   // could be shown 20% and credited 3%.)
   const [bonusMap, setBonusMap] = useState({})
 
+  // Optional promo code (deposit-type). Validated against the server; the %age
+  // bonus lands in the Bonus balance when the deposit is approved.
+  const [promoInput, setPromoInput] = useState('')
+  const [promo, setPromo] = useState(null)       // { code, percent }
+  const [promoErr, setPromoErr] = useState('')
+  const [promoChecking, setPromoChecking] = useState(false)
+
   useEffect(() => { loadData() }, [])
+
+  async function applyPromo() {
+    const code = promoInput.trim()
+    if (!code) return
+    setPromoChecking(true); setPromoErr('')
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch('/api/player/promo/validate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ code, amount_cents: 0, require_type: 'deposit' }),
+    })
+    const d = await res.json().catch(() => ({}))
+    setPromoChecking(false)
+    if (!res.ok) { setPromo(null); setPromoErr(d.error || 'Invalid code'); return }
+    setPromo(d.promo); setPromoErr('')
+  }
+  function removePromo() { setPromo(null); setPromoInput(''); setPromoErr('') }
 
   function showToast(msg, type = 'error') {
     setToast({ msg, type })
@@ -139,7 +162,8 @@ export default function DepositPage() {
   const amountCents = Math.round(parseFloat(amountInput || 0) * 100)
   const bonusPct = (selectedMethod && bonusMap[selectedMethod.id]) || 0
   const bonusCents = Math.floor(amountCents * (bonusPct / 100))
-  const totalCents = amountCents + bonusCents
+  const promoBonusCents = promo ? Math.floor(amountCents * ((promo.percent || 0) / 100)) : 0
+  const totalCents = amountCents + bonusCents + promoBonusCents
 
   function validateStep() {
     if (step === 0 && !selectedMethod) { setError('Please select a payment method'); return false }
@@ -209,6 +233,7 @@ export default function DepositPage() {
           screenshot_url,
           player_notes: notes || null,
           idempotency_key,
+          promo_code: promo?.code || null,
         }),
       })
       const submitData = await submitRes.json()
@@ -292,6 +317,28 @@ export default function DepositPage() {
           {/* ── STEP 0: Select Method ── */}
           {step === 0 && (
             <div>
+              {/* Promo code (optional) — above the payment methods */}
+              <div style={{ marginBottom: 22, background: 'rgba(251,191,36,.05)', border: '1px solid rgba(251,191,36,.2)', borderRadius: 14, padding: '16px 18px' }}>
+                <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '.08em', textTransform: 'uppercase', color: '#fbbf24', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="gift" size={15} /> Have a Promo Code?</div>
+                {promo ? (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, background: 'rgba(16,185,129,.1)', border: '1px solid rgba(16,185,129,.3)', borderRadius: 10, padding: '11px 14px' }}>
+                    <span style={{ fontSize: 14, color: '#fff', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      <Icon name="check" size={15} stroke={2.4} color="#10b981" />
+                      <span style={{ fontFamily: 'monospace', letterSpacing: '.06em', color: '#10b981' }}>{promo.code}</span>
+                      <span style={{ color: 'rgba(255,255,255,.6)', fontWeight: 600 }}>+{promo.percent}% bonus</span>
+                    </span>
+                    <button onClick={removePromo} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>Remove</button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <input value={promoInput} onChange={e => { setPromoInput(e.target.value.toUpperCase()); setPromoErr('') }} placeholder="Enter code"
+                      style={{ flex: 1, padding: '11px 14px', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, color: '#fff', fontSize: 14, fontFamily: 'monospace', letterSpacing: '.06em', textTransform: 'uppercase', outline: 'none', boxSizing: 'border-box' }} />
+                    <button onClick={applyPromo} disabled={promoChecking || !promoInput.trim()} style={{ padding: '0 20px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 13, fontWeight: 800, cursor: promoChecking ? 'default' : 'pointer' }}>{promoChecking ? '…' : 'Apply'}</button>
+                  </div>
+                )}
+                {promoErr && <div style={{ color: '#f87171', fontSize: 12, marginTop: 8, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {promoErr}</div>}
+              </div>
+
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 20 }}>Choose Payment Method</h3>
               {methods.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,.3)' }}>No payment methods available. Please contact support.</div>
@@ -355,6 +402,7 @@ export default function DepositPage() {
                   {[
                     ['You Send',    amountCents,  '#fff'],
                     [`Bonus (+${bonusPct}%)`, bonusCents, '#10b981'],
+                    ...(promo ? [[`Promo ${promo.code} (+${promo.percent}%)`, promoBonusCents, '#fbbf24']] : []),
                   ].map(([label, cents, color]) => (
                     <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                       <span style={{ fontSize: 14, color: 'rgba(255,255,255,.55)' }}>{label}</span>

@@ -4,6 +4,7 @@
  * Never trusts client-side balance or bonus calculations.
  */
 import { createClient } from '@supabase/supabase-js'
+import { validatePromo } from '../../../lib/promoServer'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -30,6 +31,7 @@ export default async function handler(req, res) {
     screenshot_url,
     player_notes,
     idempotency_key,
+    promo_code,
   } = req.body
 
   // ── Input validation ──────────────────────────────────────
@@ -80,12 +82,27 @@ export default async function handler(req, res) {
   // ── Check player status ───────────────────────────────────
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('status, player_level_id')
+    .select('status, player_level_id, tenant_id')
     .eq('id', user.id)
     .single()
 
   if (!profile || profile.status !== 'active')
     return res.status(403).json({ error: 'Account is not active' })
+
+  // ── Optional promo code (deposit-type) ────────────────────
+  // Validated now; the %age bonus is credited to the Bonus balance when the
+  // deposit is approved. Kept separate from the method/level bonus below.
+  let promotion_id = null
+  let promo_snapshot = null
+  if (promo_code && promo_code.trim()) {
+    const pr = await validatePromo(supabaseAdmin, {
+      userId: user.id, tenantId: profile.tenant_id,
+      code: promo_code, amountCents: amount_cents, requireType: 'deposit',
+    })
+    if (pr.error) return res.status(400).json({ error: pr.error })
+    promotion_id = pr.promo.id
+    promo_snapshot = { id: pr.promo.id, code: pr.promo.code, percent: Number(pr.promo.bonus_value), bonus_cents: pr.bonus_cents }
+  }
 
   // ── Calculate bonus SERVER-SIDE ───────────────────────────
   // Look up bonus from player_bonuses grid: payment_method × level × day_of_week
@@ -123,6 +140,8 @@ export default async function handler(req, res) {
       player_notes: player_notes || null,
       status: 'pending',
       idempotency_key,
+      promotion_id,
+      bonus_rule_snapshot: promo_snapshot ? { promo: promo_snapshot } : null,
     })
     .select()
     .single()
