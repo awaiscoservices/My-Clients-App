@@ -40,7 +40,7 @@ const CATEGORY_TYPES = {
   withdrawals: ['withdrawal', 'withdrawal_refund', 'withdrawal_hold'],
   loads:       ['game_load', 'game_load_refund', 'game_load_return'],
   redemptions: ['redeem', 'redemption'],
-  bonuses:     ['deposit_bonus', 'promotion_credit', 'referral_bonus', 'level_bonus', 'bonus'],
+  bonuses:     ['deposit_bonus', 'promotion_credit', 'referral_bonus', 'level_bonus', 'bonus', 'spin_win', 'spin_bet'],
 }
 const catOfType = t => Object.keys(CATEGORY_TYPES).find(k => CATEGORY_TYPES[k].includes(t)) || null
 
