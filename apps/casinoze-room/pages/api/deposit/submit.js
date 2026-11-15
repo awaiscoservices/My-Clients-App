@@ -126,12 +126,14 @@ export default async function handler(req, res) {
   // A brand-new player (no prior deposit) gets the tenant's signup % on this,
   // their first deposit — it replaces the normal per-method/level bonus. Same
   // % the player sees on every payment method and the home banner.
-  const [{ count: priorDeposits }, { data: signupCfg }] = await Promise.all([
-    supabaseAdmin.from('deposits').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+  // Applies until the player's first deposit is APPROVED — a rejected attempt
+  // leaves the signup bonus unclaimed, so the next deposit still gets it.
+  const [{ count: approvedDeposits }, { data: signupCfg }] = await Promise.all([
+    supabaseAdmin.from('deposits').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'approved'),
     supabaseAdmin.from('signup_bonus_config').select('pct, is_active').eq('tenant_id', profile.tenant_id).maybeSingle(),
   ])
   const signupPct = parseFloat(signupCfg?.pct || 0) || 0
-  if ((priorDeposits || 0) === 0 && signupCfg?.is_active && signupPct > 0) {
+  if ((approvedDeposits || 0) === 0 && signupCfg?.is_active && signupPct > 0) {
     bonus_pct = signupPct
   }
 

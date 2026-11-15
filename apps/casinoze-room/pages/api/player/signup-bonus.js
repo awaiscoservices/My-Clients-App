@@ -28,15 +28,16 @@ export default async function handler(req, res) {
     .from('profiles').select('tenant_id').eq('id', user.id).single()
   if (!profile) return res.status(200).json({ eligible: false, pct: 0, active: false })
 
-  const [{ data: cfg }, { count: depCount }] = await Promise.all([
+  const [{ data: cfg }, { count: approvedCount }] = await Promise.all([
     supabaseAdmin.from('signup_bonus_config').select('pct, is_active').eq('tenant_id', profile.tenant_id).maybeSingle(),
-    supabaseAdmin.from('deposits').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+    supabaseAdmin.from('deposits').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'approved'),
   ])
 
   const pct = parseFloat(cfg?.pct || 0) || 0
   const active = !!cfg?.is_active && pct > 0
-  // Qualifies only while the player has never deposited (their first deposit).
-  const eligible = active && (depCount || 0) === 0
+  // Qualifies until the player's FIRST deposit is approved. A rejected first
+  // attempt leaves the signup bonus unclaimed, so it still applies next time.
+  const eligible = active && (approvedCount || 0) === 0
 
   return res.status(200).json({ eligible, pct, active })
 }
