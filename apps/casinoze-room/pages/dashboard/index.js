@@ -508,44 +508,28 @@ function PendingCard({ label, count, href, color }) {
 }
 
 // ─── PROMO BANNER ─────────────────────────────────────────────────────────────
-// First-deposit signup bonus banner — reads the one % the admin configures,
-// shown only while the player still qualifies (no deposit yet).
-function SignupBanner() {
-  const [signup, setSignup] = useState(null)
+function PromoBanner() {
+  // First slide is the real signup bonus (the one % the admin configures),
+  // added only when it's active. The number is never hardcoded.
+  const [signupPct, setSignupPct] = useState(0)
   useEffect(() => {
     (async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession()
         const r = await fetch('/api/player/signup-bonus', { headers: { Authorization: `Bearer ${session?.access_token}` } })
-        if (r.ok) setSignup(await r.json())
+        if (r.ok) { const s = await r.json(); if (s.active && s.pct > 0) setSignupPct(s.pct) }
       } catch { /* ignore */ }
     })()
   }, [])
-  if (!signup?.eligible || !signup.pct) return null
-  return (
-    <Link href="/dashboard/deposit" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
-      <div style={{ padding: '16px 20px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(16,185,129,.16),rgba(5,150,105,.05))', border: '1px solid rgba(16,185,129,.4)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', background: 'rgba(16,185,129,.18)', border: '1px solid rgba(16,185,129,.44)' }}><I name="gift" size={24} /></span>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>+{signup.pct}% First Deposit Bonus</div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>New here? Get +{signup.pct}% on your first deposit, any method.</div>
-          </div>
-        </div>
-        <span style={{ fontSize: 12, color: '#10b981', fontWeight: 700, whiteSpace: 'nowrap' }}>Deposit →</span>
-      </div>
-    </Link>
-  )
-}
 
-function PromoBanner() {
   const promos = [
+    ...(signupPct > 0 ? [{ icon: 'gift', title: 'First Deposit Bonus', desc: `Get +${signupPct}% on your first deposit — any method!`, color: '#10b981', href: '/dashboard/deposit' }] : []),
     { icon: 'gift', title: 'Reload Bonus', desc: '50% bonus every Friday — max $100', color: '#3b82f6', href: '/dashboard/deposit' },
     { icon: 'star', title: 'VIP Cashback', desc: 'Earn up to 15% cashback as a VIP member', color: '#8b5cf6', href: '/dashboard/rewards' },
   ]
   const [idx, setIdx] = useState(0)
-  useEffect(() => { const id = setInterval(() => setIdx(i => (i + 1) % promos.length), 4000); return () => clearInterval(id) }, [])
-  const p = promos[idx]
+  useEffect(() => { const id = setInterval(() => setIdx(i => (i + 1) % promos.length), 4000); return () => clearInterval(id) }, [promos.length])
+  const p = promos[idx % promos.length]
 
   return (
     <Link href={p.href} style={{ textDecoration: 'none', display: 'block', marginBottom: 24 }}>
@@ -733,7 +717,6 @@ export default function Dashboard() {
       )}
 
       {/* PROMO BANNER */}
-      <SignupBanner />
       <PromoBanner />
 
       {/* CLAIM PROMO (direct-wallet codes) */}
