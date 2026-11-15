@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import { supabase } from '../../lib/supabase'
 import Icon from '../../components/ui/Icon'
+import { useSettings, formatInTimezone } from '../../lib/settings'
 
 const gold = '#fbbf24'; const green = '#22c55e'; const red = '#ef4444'; const purple = '#a855f7'; const blue = '#3b82f6'
 
 const fmt = (cents) => '$' + (Math.abs(cents) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-const fmtDate = (d) => d ? new Date(d).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
+// Timestamps show in the casino's timezone (admin Settings), not the viewer's.
+const fmtDate = (d, tz) => d ? formatInTimezone(d, tz, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
 
 const TYPE_META = {
   deposit:          { label: 'Deposit',      icon: 'arrowDown', color: green },
@@ -90,6 +92,7 @@ const TABS = [
 ]
 
 export default function TransactionsPage() {
+  const { timezone } = useSettings()
   const [tab, setTab] = useState('all')
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -257,7 +260,7 @@ export default function TransactionsPage() {
                     </div>
                   </div>
                   {/* Date */}
-                  <div className="txn-date" style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{fmtDate(row.created_at)}</div>
+                  <div className="txn-date" style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{fmtDate(row.created_at, timezone)}</div>
                   {/* Status */}
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 5 }}>
                     <StatusPill status={row.status} />

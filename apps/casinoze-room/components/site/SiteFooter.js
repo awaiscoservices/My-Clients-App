@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Logo from '../ui/Logo'
 import { GAME_CATALOG } from '../../lib/gameCatalog'
+import { useSettings } from '../../lib/settings'
 
 const cols = [
   ['Platform', [['Games', '/#games'], ['How it works', '/#how'], ['Register', '/auth/register'], ['Login', '/auth/login']]],
@@ -9,12 +10,19 @@ const cols = [
 ]
 
 export default function SiteFooter() {
+  const { platform_name, support_email } = useSettings()
+  const brand = platform_name || 'Casinoze Room'
   return (
     <footer className="sf">
       <div className="sf-in">
         <div className="sf-brand">
           <Logo variant="full" height={44} />
           <p>One account and one wallet for {GAME_CATALOG.length} game rooms.</p>
+          {support_email && (
+            <p style={{ marginTop: 8 }}>
+              Support: <a href={`mailto:${support_email}`} style={{ color: '#fbbf24', textDecoration: 'none' }}>{support_email}</a>
+            </p>
+          )}
         </div>
         {cols.map(([t, ls]) => (
           <div key={t} className="sf-col">
@@ -23,7 +31,7 @@ export default function SiteFooter() {
           </div>
         ))}
       </div>
-      <div className="sf-bar"><span>© {new Date().getFullYear()} Casinoze Room. All rights reserved.</span><span>18+ · Play responsibly</span></div>
+      <div className="sf-bar"><span>© {new Date().getFullYear()} {brand}. All rights reserved.</span><span>18+ · Play responsibly</span></div>
       <style>{`
         .sf{border-top:1px solid rgba(251,191,36,.12);background:rgba(4,7,13,.55);margin-top:40px}
         .sf-in{max-width:1240px;margin:0 auto;padding:54px 24px 30px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:34px}

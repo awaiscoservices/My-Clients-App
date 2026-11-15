@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import '../styles/globals.css'
+import { SettingsProvider, useSettings } from '../lib/settings'
 
 // Site-wide maintenance screen. Driven by the admin Settings "Maintenance
-// mode" switch (read via /api/settings/flags for this casino). While it is on,
+// mode" switch (read once by SettingsProvider for this casino). While it is on,
 // every page shows this instead of the app. Money actions are also blocked
 // server-side in the deposit/withdraw APIs, so this is the visible half.
 function MaintenanceScreen({ message }) {
@@ -20,31 +20,22 @@ function MaintenanceScreen({ message }) {
   )
 }
 
+function Shell({ Component, pageProps }) {
+  const settings = useSettings()
+  if (settings.maintenance_mode === true) return <MaintenanceScreen message={settings.maintenance_message} />
+  return <Component {...pageProps} />
+}
+
 export default function App({ Component, pageProps }) {
-  const [flags, setFlags] = useState(null)
-
-  useEffect(() => {
-    let on = true
-    fetch('/api/settings/flags')
-      .then(r => r.json())
-      .then(f => { if (on) setFlags(f) })
-      .catch(() => { if (on) setFlags({ maintenance_mode: false }) })
-    return () => { on = false }
-  }, [])
-
-  const underMaintenance = flags?.maintenance_mode === true
-
   return (
-    <>
+    <SettingsProvider>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,700&family=Cinzel:wght@600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      {underMaintenance
-        ? <MaintenanceScreen message={flags?.maintenance_message} />
-        : <Component {...pageProps} />}
-    </>
+      <Shell Component={Component} pageProps={pageProps} />
+    </SettingsProvider>
   )
 }
