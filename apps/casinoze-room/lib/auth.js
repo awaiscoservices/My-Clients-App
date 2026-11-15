@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { TENANT_ID } from './tenant'
 
 // ─── SIGN UP with email ────────────────────────────────────
 export async function signUpWithEmail({ fullName, email, password }) {
@@ -6,7 +7,9 @@ export async function signUpWithEmail({ fullName, email, password }) {
     email,
     password,
     options: {
-      data: { full_name: fullName },
+      // tenant_id is read by the handle_new_user DB trigger so the player,
+      // their wallet and KYC row all land in THIS casino, not the default one.
+      data: { full_name: fullName, tenant_id: TENANT_ID },
     },
   })
   if (error) throw error
