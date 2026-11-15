@@ -30,6 +30,7 @@ const TYPE_META = {
   refund:            { label: 'Refund',         icon: 'arrow',   color: blue },
   adjustment_credit: { label: 'Adjustment',     icon: 'gear',    color: green },
   adjustment_debit:  { label: 'Adjustment',     icon: 'gear',    color: red },
+  transfer:          { label: 'Transfer',       icon: 'coins',   color: purple },
 }
 
 // Which tab a ledger type belongs under. Same grouping the admin uses, so the
@@ -40,6 +41,7 @@ const CATEGORY_TYPES = {
   loads:       ['game_load', 'game_load_refund', 'game_load_return'],
   redemptions: ['redeem', 'redemption'],
   bonuses:     ['deposit_bonus', 'promotion_credit', 'referral_bonus', 'bonus', 'spin_win', 'spin_bet'],
+  transfers:   ['transfer'],
 }
 const catOfType = t => Object.keys(CATEGORY_TYPES).find(k => CATEGORY_TYPES[k].includes(t)) || null
 
@@ -84,6 +86,7 @@ const TABS = [
   { key: 'loads',       label: 'Scores' },
   { key: 'redemptions', label: 'Redeems' },
   { key: 'bonuses',     label: 'Bonuses' },
+  { key: 'transfers',   label: 'Transfer' },
 ]
 
 export default function TransactionsPage() {

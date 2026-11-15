@@ -24,6 +24,7 @@ const TX_FILTERS = [
   { key: 'redeem',     label: 'Redeems'    },
   { key: 'withdrawal', label: 'Withdraws'},
   { key: 'bonus',      label: 'Bonus'      },
+  { key: 'transfer',   label: 'Transfer'   },
   { key: 'spinner',    label: 'Wheel'      },
 ]
 
@@ -41,7 +42,119 @@ function BucketCard({ label, cents, color, icon, desc }) {
   )
 }
 
-// ─── Withdraw method picker (inline modal) ────────────────────────────────────
+// ─── Transfer modal (Bonus ⇄ Cash exchange) ──────────────────────────────────
+// One exchange rate, set by the admin as the Bonus "redeemable %". Bonus is
+// worth pct% of cash, so:
+//   Bonus → Cash:  cash  = bonus × pct/100   (e.g. 15% → $100 bonus = $15 cash)
+//   Cash → Bonus:  bonus = cash × 100/pct    (the inverse, same rate)
+// The actual move is atomic server-side (transfer_wallet RPC); this is preview
+// + input only.
+function TransferModal({ wallet, onClose, onDone }) {
+  const [dir, setDir]     = useState('bonus_to_cash')   // 'bonus_to_cash' | 'cash_to_bonus'
+  const [amount, setAmount] = useState('')              // dollars, as typed
+  const [pct, setPct]     = useState(null)
+  const [busy, setBusy]   = useState(false)
+  const [err, setErr]     = useState('')
+
+  useEffect(() => {
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      const r = await fetch('/api/player/bonus-rate', { headers: { Authorization: `Bearer ${session?.access_token}` } })
+      if (r.ok) { const d = await r.json(); setPct(d.pct) }
+    })()
+  }, [])
+
+  const fromBonus = dir === 'bonus_to_cash'
+  const srcCents  = fromBonus ? (wallet?.bonus_balance_cents || 0) : (wallet?.cash_balance_cents || 0)
+  const srcLabel  = fromBonus ? 'Bonus' : 'Cash'
+  const dstLabel  = fromBonus ? 'Cash' : 'Bonus'
+  const amtCents  = Math.round((parseFloat(amount) || 0) * 100)
+  const rate      = pct && pct > 0 ? pct : 0
+  // Preview of what lands in the destination wallet.
+  const recvCents = rate <= 0 ? 0
+    : fromBonus ? Math.floor(amtCents * rate / 100)
+    : Math.floor(amtCents * 100 / rate)
+
+  const tooMuch   = amtCents > srcCents
+  const tooSmall  = amtCents > 0 && recvCents <= 0
+  const canSubmit = !busy && rate > 0 && amtCents > 0 && !tooMuch && recvCents > 0
+
+  async function submit() {
+    if (!canSubmit) return
+    setBusy(true); setErr('')
+    const { data, error } = await supabase.rpc('transfer_wallet', { p_direction: dir, p_amount_cents: amtCents })
+    setBusy(false)
+    if (error) { setErr(error.message || 'Transfer failed'); return }
+    onDone?.(data)
+  }
+
+  const money = c => `$${(c / 100).toFixed(2)}`
+
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.8)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#0b1626', border: '1px solid rgba(251,191,36,.3)', borderRadius: 18, padding: 24, width: '100%', maxWidth: 440 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
+          <h2 style={{ fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: '#fff', margin: 0 }}>Transfer</h2>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', cursor: 'pointer', display: 'flex' }}><Icon name="x" size={18} /></button>
+        </div>
+
+        {/* Direction toggle */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 18 }}>
+          {[['bonus_to_cash', 'Bonus → Cash'], ['cash_to_bonus', 'Cash → Bonus']].map(([key, label]) => {
+            const on = dir === key
+            return (
+              <button key={key} onClick={() => { setDir(key); setAmount(''); setErr('') }}
+                style={{ padding: '10px 8px', borderRadius: 12, cursor: 'pointer', fontFamily: "'Outfit',sans-serif", fontSize: 13, fontWeight: 800,
+                  background: on ? 'rgba(251,191,36,.16)' : 'rgba(255,255,255,.05)',
+                  border: `1px solid ${on ? 'rgba(251,191,36,.5)' : 'rgba(255,255,255,.1)'}`,
+                  color: on ? '#fbbf24' : 'rgba(255,255,255,.6)' }}>
+                {label}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Amount */}
+        <div style={{ marginBottom: 6, display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+          <span style={{ color: 'rgba(255,255,255,.5)' }}>{srcLabel} to move</span>
+          <button onClick={() => setAmount((srcCents / 100).toFixed(2))} style={{ background: 'none', border: 'none', color: '#fbbf24', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+            Max {money(srcCents)}
+          </button>
+        </div>
+        <div style={{ position: 'relative', marginBottom: 16 }}>
+          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,.5)', fontSize: 16, fontWeight: 700 }}>$</span>
+          <input type="number" min="0" step="0.01" value={amount} onChange={e => { setAmount(e.target.value); setErr('') }} placeholder="0.00"
+            style={{ width: '100%', boxSizing: 'border-box', padding: '12px 14px 12px 30px', background: 'rgba(255,255,255,.06)', border: `1px solid ${tooMuch ? 'rgba(248,113,113,.5)' : 'rgba(255,255,255,.12)'}`, borderRadius: 12, color: '#fff', fontSize: 16, fontWeight: 700, fontFamily: "'Outfit',sans-serif", outline: 'none' }} />
+        </div>
+
+        {/* Preview */}
+        <div style={{ padding: '14px 16px', borderRadius: 12, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', marginBottom: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 13, color: 'rgba(255,255,255,.55)' }}>You receive in {dstLabel}</span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: '#10b981' }}>{money(recvCents)}</span>
+          </div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,.3)', marginTop: 6 }}>
+            {rate > 0 ? `Rate: Bonus is worth ${rate}% of Cash` : 'Transfers are currently unavailable'}
+          </div>
+        </div>
+
+        {(err || tooMuch || tooSmall) && (
+          <div style={{ marginBottom: 14, fontSize: 13, color: '#f87171', fontWeight: 600 }}>
+            {err || (tooMuch ? `Not enough ${srcLabel} balance` : 'Amount too small to convert')}
+          </div>
+        )}
+
+        <button onClick={submit} disabled={!canSubmit}
+          style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', fontSize: 15, fontWeight: 800, fontFamily: "'Outfit',sans-serif",
+            background: canSubmit ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 'rgba(255,255,255,.08)',
+            color: canSubmit ? '#050505' : 'rgba(255,255,255,.4)', cursor: canSubmit ? 'pointer' : 'default' }}>
+          {busy ? 'Transferring…' : 'Confirm Transfer'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function WalletPage() {
   const router = useRouter()
@@ -52,6 +165,7 @@ export default function WalletPage() {
   const [txLoading, setTxLoading]     = useState(false)
   const [page, setPage]               = useState(0)
   const [hasMore, setHasMore]         = useState(true)
+  const [showTransfer, setShowTransfer] = useState(false)
   const LIMIT = 15
 
   useEffect(() => { loadWallet() }, [])
@@ -118,6 +232,12 @@ export default function WalletPage() {
       color: '#050505',
       onClick: () => router.push('/dashboard/redeem'),
     },
+    {
+      text: 'Transfer', icon: 'coins',
+      bg: 'linear-gradient(135deg,#8b5cf6,#6d28d9)',
+      color: '#fff',
+      onClick: () => setShowTransfer(true),
+    },
   ]
 
   return (
@@ -140,10 +260,12 @@ export default function WalletPage() {
         </div>
       )}
 
-      {/* 4 Action buttons — equal-sized, centred, 2-up on mobile */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px,1fr))', gap: 10, marginBottom: 28 }}>
+      {/* 5 Action buttons — equal-sized and centred, so they wrap 2-up on
+          mobile with the 5th (Transfer) centred on its own third row. */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10, marginBottom: 28 }}>
         {ACTIONS.map(a => (
           <button key={a.text} onClick={a.onClick} style={{
+            flex: '1 1 150px', maxWidth: 240,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 22px', borderRadius: 12,
             background: a.bg, color: a.color, fontSize: 13, fontWeight: 700, border: 'none',
             cursor: 'pointer', letterSpacing: '.02em', fontFamily: "'Outfit',sans-serif",
@@ -232,6 +354,14 @@ export default function WalletPage() {
           </>
         )}
       </div>
+
+      {showTransfer && (
+        <TransferModal
+          wallet={wallet}
+          onClose={() => setShowTransfer(false)}
+          onDone={() => { setShowTransfer(false); loadWallet(); loadTransactions(0) }}
+        />
+      )}
     </PlayerLayout>
   )
 }
