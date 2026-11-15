@@ -70,7 +70,6 @@ export async function getMyTransactions(userId, { limit = 20, offset = 0, type }
 const BONUS_LABELS = {
   deposit_bonus:    'Deposit Bonus',
   referral_bonus:   'Referral Bonus',
-  level_bonus:      'Level Bonus',
   promotion_credit: 'Promo Bonus',
 }
 
@@ -101,7 +100,7 @@ export async function getMyActivity(userId, { limit = 15, offset = 0, kind } = {
     // Bonus credits (deposit, referral, level and promo bonuses) — ledger-only.
     want('bonus') ? supabase.from('ledger')
       .select('id, type, amount_cents, direction, balance_after_cents, created_at')
-      .eq('user_id', userId).in('type', ['deposit_bonus', 'referral_bonus', 'level_bonus', 'promotion_credit'])
+      .eq('user_id', userId).in('type', ['deposit_bonus', 'referral_bonus', 'promotion_credit'])
       .order('created_at', { ascending: false }).limit(need) : empty,
     // The running wallet balance after each settled request, from the ledger.
     supabase.from('ledger')
@@ -265,7 +264,6 @@ export function txTypeLabel(type) {
     withdrawal_reserve:         'Withdraw Reserved',
     withdrawal_reserve_release: 'Withdraw Released',
     referral_bonus:             'Referral Bonus',
-    level_bonus:                'Level Bonus',
     adjustment_credit:          'Admin Credit',
     adjustment_debit:           'Admin Debit',
     promotion_credit:           'Promotion Credit',

@@ -24,7 +24,6 @@ const TYPE_META = {
   // Ledger-only credits/debits (no dedicated request table)
   deposit_bonus:     { label: 'Deposit Bonus',  icon: 'gift',    color: gold },
   referral_bonus:    { label: 'Referral Bonus', icon: 'users',   color: green },
-  level_bonus:       { label: 'Level Bonus',    icon: 'star',    color: gold },
   promotion_credit:  { label: 'Promo Bonus',    icon: 'gift',    color: gold },
   spin_win:          { label: 'Spin Win',       icon: 'wheel',   color: gold },
   spin_bet:          { label: 'Spin Bet',       icon: 'wheel',   color: purple },
@@ -40,7 +39,7 @@ const CATEGORY_TYPES = {
   withdrawals: ['withdrawal', 'withdrawal_refund', 'withdrawal_hold'],
   loads:       ['game_load', 'game_load_refund', 'game_load_return'],
   redemptions: ['redeem', 'redemption'],
-  bonuses:     ['deposit_bonus', 'promotion_credit', 'referral_bonus', 'level_bonus', 'bonus', 'spin_win', 'spin_bet'],
+  bonuses:     ['deposit_bonus', 'promotion_credit', 'referral_bonus', 'bonus', 'spin_win', 'spin_bet'],
 }
 const catOfType = t => Object.keys(CATEGORY_TYPES).find(k => CATEGORY_TYPES[k].includes(t)) || null
 
