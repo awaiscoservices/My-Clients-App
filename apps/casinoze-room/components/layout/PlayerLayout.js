@@ -46,12 +46,12 @@ const NAV_ITEMS = [
   { href: '/dashboard',           icon: 'home',   label: 'Dashboard'     },
   { href: '/dashboard/games',     icon: 'games',  label: 'Games'         },
   { href: '/dashboard/wallet',    icon: 'wallet', label: 'Wallet'        },
-  { href: '/dashboard/rewards',   icon: 'star',   label: 'Player Levels' },
+  { href: '/dashboard/rewards',   icon: 'star',   label: 'Levels'        },
   { href: '/dashboard/referrals', icon: 'users',  label: 'Referrals'     },
-  { href: '/dashboard/profile',   icon: 'user',   label: 'Profile'       },
   // Live chat replaces the old Support page — a real conversation with staff
   // rather than a ticket form.
-  { href: '/dashboard/chat',      icon: 'chat',   label: 'Live Chat'     },
+  { href: '/dashboard/chat',      icon: 'chat',   label: 'Support'       },
+  { href: '/dashboard/profile',   icon: 'user',   label: 'Profile'       },
 ]
 
 function BalanceChip({ label, cents, accent }) {

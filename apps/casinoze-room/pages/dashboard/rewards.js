@@ -248,11 +248,11 @@ export default function PlayerLevels() {
 
   return (
     <PlayerLayout>
-      <Head><title>Player Levels — Casinoze Room</title></Head>
+      <Head><title>Levels — Casinoze Room</title></Head>
 
       {/* Page heading */}
       <div style={{ marginBottom: 24 }}>
-        <h1 className="levels-heading" style={{ fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>Player Levels</h1>
+        <h1 className="levels-heading" style={{ fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>Levels</h1>
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 13, margin: 0 }}>
           Complete more activity to unlock higher tiers and bigger bonuses.
         </p>
