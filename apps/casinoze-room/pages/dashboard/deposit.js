@@ -55,7 +55,9 @@ function MethodCard({ method, selected, onSelect, bonusPct }) {
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ width: 40, height: 40, borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', color: selected ? '#fbbf24' : 'rgba(255,255,255,.7)', background: selected ? 'rgba(251,191,36,.14)' : 'rgba(255,255,255,.05)', border: `1px solid ${selected ? 'rgba(251,191,36,.4)' : 'rgba(255,255,255,.1)'}` }}><Icon name={iconName} size={20} /></span>
+          <span style={{ width: 40, height: 40, borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', color: selected ? '#fbbf24' : 'rgba(255,255,255,.7)', background: method.logo_url ? '#fff' : (selected ? 'rgba(251,191,36,.14)' : 'rgba(255,255,255,.05)'), border: `1px solid ${selected ? 'rgba(251,191,36,.4)' : 'rgba(255,255,255,.1)'}` }}>
+            {method.logo_url ? <img src={method.logo_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <Icon name={iconName} size={20} />}
+          </span>
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{method.name}</div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)' }}>
