@@ -122,6 +122,19 @@ export default async function handler(req, res) {
 
   if (bonusRule?.bonus_percent) bonus_pct = parseFloat(bonusRule.bonus_percent)
 
+  // ── Signup bonus (first deposit) ──────────────────────────
+  // A brand-new player (no prior deposit) gets the tenant's signup % on this,
+  // their first deposit — it replaces the normal per-method/level bonus. Same
+  // % the player sees on every payment method and the home banner.
+  const [{ count: priorDeposits }, { data: signupCfg }] = await Promise.all([
+    supabaseAdmin.from('deposits').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+    supabaseAdmin.from('signup_bonus_config').select('pct, is_active').eq('tenant_id', profile.tenant_id).maybeSingle(),
+  ])
+  const signupPct = parseFloat(signupCfg?.pct || 0) || 0
+  if ((priorDeposits || 0) === 0 && signupCfg?.is_active && signupPct > 0) {
+    bonus_pct = signupPct
+  }
+
   const bonus_cents = Math.floor(amount_cents * (bonus_pct / 100))
   const total_credit_cents = amount_cents + bonus_cents
 

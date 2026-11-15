@@ -98,6 +98,10 @@ export default function DepositPage() {
   // showed payment_methods.default_bonus_pct, a different number, so a player
   // could be shown 20% and credited 3%.)
   const [bonusMap, setBonusMap] = useState({})
+  // First-deposit signup bonus (one % for the whole casino). When the player
+  // still qualifies, this % overrides every method's bonus — same number the
+  // admin sets and the home banner shows.
+  const [signup, setSignup] = useState({ eligible: false, pct: 0 })
 
   // Optional promo code (deposit-type). Validated against the server; the %age
   // bonus lands in the Bonus balance when the deposit is approved.
@@ -156,11 +160,23 @@ export default function DepositPage() {
       for (const b of bonusRows || []) map[b.payment_method_id] = parseFloat(b.bonus_percent) || 0
       setBonusMap(map)
     }
+
+    // Signup (first-deposit) bonus — overrides the per-method bonus while the
+    // player still qualifies.
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const r = await fetch('/api/player/signup-bonus', { headers: { Authorization: `Bearer ${session?.access_token}` } })
+      if (r.ok) { const s = await r.json(); setSignup({ eligible: !!s.eligible, pct: s.pct || 0 }) }
+    } catch { /* ignore — falls back to normal bonuses */ }
   }
+
+  // Effective bonus % for a method: the signup % for everyone while eligible,
+  // otherwise the method's own level/day bonus.
+  const effBonus = (methodId) => (signup.eligible && signup.pct > 0) ? signup.pct : (bonusMap[methodId] || 0)
 
   // Amount in cents (integer)
   const amountCents = Math.round(parseFloat(amountInput || 0) * 100)
-  const bonusPct = (selectedMethod && bonusMap[selectedMethod.id]) || 0
+  const bonusPct = selectedMethod ? effBonus(selectedMethod.id) : 0
   const bonusCents = Math.floor(amountCents * (bonusPct / 100))
   const promoBonusCents = promo ? Math.floor(amountCents * ((promo.percent || 0) / 100)) : 0
   const totalCents = amountCents + bonusCents + promoBonusCents
@@ -317,6 +333,16 @@ export default function DepositPage() {
           {/* ── STEP 0: Select Method ── */}
           {step === 0 && (
             <div>
+              {/* First-deposit signup bonus banner */}
+              {signup.eligible && signup.pct > 0 && (
+                <div style={{ marginBottom: 22, background: 'linear-gradient(135deg,rgba(16,185,129,.14),rgba(5,150,105,.05))', border: '1px solid rgba(16,185,129,.35)', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ width: 40, height: 40, borderRadius: 11, background: 'rgba(16,185,129,.18)', border: '1px solid rgba(16,185,129,.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', flexShrink: 0 }}><Icon name="gift" size={20} /></span>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>Welcome bonus: +{signup.pct}% on your first deposit</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>Applied automatically to any payment method — just deposit.</div>
+                  </div>
+                </div>
+              )}
               {/* Promo code (optional) — above the payment methods */}
               <div style={{ marginBottom: 22, background: 'rgba(251,191,36,.05)', border: '1px solid rgba(251,191,36,.2)', borderRadius: 14, padding: '16px 18px' }}>
                 <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '.08em', textTransform: 'uppercase', color: '#fbbf24', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="gift" size={15} /> Have a Promo Code?</div>
@@ -344,7 +370,7 @@ export default function DepositPage() {
                 <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,.3)' }}>No payment methods available. Please contact support.</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {methods.map(m => <MethodCard key={m.id} method={m} selected={selectedMethod?.id === m.id} onSelect={setSelectedMethod} bonusPct={bonusMap[m.id] || 0} />)}
+                  {methods.map(m => <MethodCard key={m.id} method={m} selected={selectedMethod?.id === m.id} onSelect={setSelectedMethod} bonusPct={effBonus(m.id)} />)}
                 </div>
               )}
             </div>

@@ -508,9 +508,38 @@ function PendingCard({ label, count, href, color }) {
 }
 
 // ─── PROMO BANNER ─────────────────────────────────────────────────────────────
+// First-deposit signup bonus banner — reads the one % the admin configures,
+// shown only while the player still qualifies (no deposit yet).
+function SignupBanner() {
+  const [signup, setSignup] = useState(null)
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        const r = await fetch('/api/player/signup-bonus', { headers: { Authorization: `Bearer ${session?.access_token}` } })
+        if (r.ok) setSignup(await r.json())
+      } catch { /* ignore */ }
+    })()
+  }, [])
+  if (!signup?.eligible || !signup.pct) return null
+  return (
+    <Link href="/dashboard/deposit" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
+      <div style={{ padding: '16px 20px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(16,185,129,.16),rgba(5,150,105,.05))', border: '1px solid rgba(16,185,129,.4)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', background: 'rgba(16,185,129,.18)', border: '1px solid rgba(16,185,129,.44)' }}><I name="gift" size={24} /></span>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>+{signup.pct}% First Deposit Bonus</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>New here? Get +{signup.pct}% on your first deposit, any method.</div>
+          </div>
+        </div>
+        <span style={{ fontSize: 12, color: '#10b981', fontWeight: 700, whiteSpace: 'nowrap' }}>Deposit →</span>
+      </div>
+    </Link>
+  )
+}
+
 function PromoBanner() {
   const promos = [
-    { icon: 'money', title: 'First Deposit Bonus', desc: '100% match up to $200 on your first deposit!', color: '#10b981', href: '/dashboard/deposit' },
     { icon: 'gift', title: 'Reload Bonus', desc: '50% bonus every Friday — max $100', color: '#3b82f6', href: '/dashboard/deposit' },
     { icon: 'star', title: 'VIP Cashback', desc: 'Earn up to 15% cashback as a VIP member', color: '#8b5cf6', href: '/dashboard/rewards' },
   ]
@@ -704,6 +733,7 @@ export default function Dashboard() {
       )}
 
       {/* PROMO BANNER */}
+      <SignupBanner />
       <PromoBanner />
 
       {/* CLAIM PROMO (direct-wallet codes) */}
