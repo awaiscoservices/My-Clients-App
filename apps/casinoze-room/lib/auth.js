@@ -25,16 +25,23 @@ export async function signInWithEmail({ email, password }) {
   return data
 }
 
-// ─── SIGN IN with Google ───────────────────────────────────
-export async function signInWithGoogle() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
-    },
+// ─── CONFIRM SIGN UP with email OTP ────────────────────────
+// After signUpWithEmail, Supabase emails a 6-digit code. This verifies it and
+// returns a logged-in session (no magic link, no redirect).
+export async function verifyEmailOtp({ email, token }) {
+  const { data, error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: 'signup',
   })
   if (error) throw error
   return data
+}
+
+// ─── RESEND the sign-up OTP ────────────────────────────────
+export async function resendSignupOtp(email) {
+  const { error } = await supabase.auth.resend({ type: 'signup', email })
+  if (error) throw error
 }
 
 // ─── SIGN OUT ──────────────────────────────────────────────

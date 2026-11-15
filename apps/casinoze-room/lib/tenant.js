@@ -7,7 +7,6 @@
  * simply doesn't stamp a tenant (a misconfiguration to fix, not a default).
  *
  * This is what makes a new player land in the RIGHT casino: email signup passes
- * it in the auth metadata (the handle_new_user trigger reads it), and Google
- * signup stamps it after the OAuth callback.
+ * it in the auth metadata, which the handle_new_user trigger reads.
  */
 export const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || ''

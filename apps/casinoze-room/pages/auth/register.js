@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { signUpWithEmail, signInWithGoogle } from '../../lib/auth';
+import { signUpWithEmail, verifyEmailOtp, resendSignupOtp } from '../../lib/auth';
 import Logo from '../../components/ui/Logo';
 import AuthBackdrop from '../../components/site/AuthBackdrop'
 import Icon from '../../components/ui/Icon'
@@ -20,13 +20,17 @@ export default function Register() {
   const [form, setForm] = useState({ fullName: '', email: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
   const [particles, setParticles] = useState([]);
   const [toast, setToast] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [step, setStep] = useState('form'); // 'form' → 'otp'
+  const [otp, setOtp] = useState('');
+  const [otpError, setOtpError] = useState('');
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendBusy, setResendBusy] = useState(false);
   const [refCode, setRefCode] = useState('');
-  // ?ref=CODE → remember it (also used by Google sign-up and email-confirmation flows) and show the banner
+  // ?ref=CODE → remember it (linked on first signed-in load) and show the banner
   useEffect(() => {
     try {
       const r = (new URLSearchParams(window.location.search).get('ref') || '').trim().slice(0, 32);
@@ -42,6 +46,13 @@ export default function Register() {
     }));
     setParticles(generated);
   }, []);
+
+  // Resend cooldown tick
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setTimeout(() => setResendCooldown(c => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCooldown]);
 
   const showToast = (msg, type = 'error') => {
     setToast({ msg, type });
@@ -74,13 +85,10 @@ export default function Register() {
     setLoading(true);
     try {
       await signUpWithEmail({ fullName: form.fullName, email: form.email, password: form.password });
-      // The referral code stays in localStorage and is linked on first signed-in
-      // load by PlayerLayout → apply_referral (which also creates the referrals
-      // row). Doing it here would fail: referrer_id/referred_id are NOT NULL and
-      // there is no session yet on email-confirmation signups.
-      setSuccess(true);
-      showToast('Account created! Check your email to confirm.', 'success');
-      setTimeout(() => router.push('/auth/login'), 3000);
+      // Supabase emails a 6-digit code — move to the verify step.
+      setStep('otp');
+      setResendCooldown(45);
+      showToast('We sent a 6-digit code to your email.', 'success');
     } catch (err) {
       showToast(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -88,13 +96,35 @@ export default function Register() {
     }
   };
 
-  const handleGoogle = async () => {
-    setGoogleLoading(true);
+  const handleVerify = async (ev) => {
+    ev.preventDefault();
+    const code = otp.trim();
+    if (!/^\d{6}$/.test(code)) { setOtpError('Enter the 6-digit code'); return; }
+    setOtpError('');
+    setOtpLoading(true);
     try {
-      await signInWithGoogle();
+      // Verifying confirms the account AND signs the player in. The referral
+      // code stays in localStorage and is linked on first signed-in load by
+      // PlayerLayout → apply_referral.
+      await verifyEmailOtp({ email: form.email, token: code });
+      router.push('/dashboard');
     } catch (err) {
-      showToast(err.message || 'Google sign up failed');
-      setGoogleLoading(false);
+      setOtpError(err.message || 'Invalid or expired code');
+      setOtpLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (resendCooldown > 0 || resendBusy) return;
+    setResendBusy(true);
+    try {
+      await resendSignupOtp(form.email);
+      setResendCooldown(45);
+      showToast('New code sent.', 'success');
+    } catch (err) {
+      showToast(err.message || 'Could not resend code');
+    } finally {
+      setResendBusy(false);
     }
   };
 
@@ -157,12 +187,40 @@ export default function Register() {
           <div style={{ marginTop: 6, fontSize: 11, letterSpacing: 4, color: 'rgba(251,191,36,0.7)', textTransform: 'uppercase', fontWeight: 500 }}>Premium Fish Game Platform</div>
         </div>
 
-        {/* Success state */}
-        {success ? (
-          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.4)', borderRadius: 20, padding: 48, textAlign: 'center', animation: 'successPop .4s ease' }}>
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center', color: '#10b981' }}><Icon name="checkCircle" size={56} stroke={1.6} /></div>
-            <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, color: '#10b981', marginBottom: 12 }}>Account Created!</h2>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, lineHeight: 1.7 }}>Check your email to confirm your account. Redirecting to login…</p>
+        {/* OTP verification step */}
+        {step === 'otp' ? (
+          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 20, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', animation: 'fadeSlideUp 0.5s ease both, pulse-glow 4s ease-in-out infinite', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: 1, background: 'linear-gradient(90deg, transparent, #f59e0b, #fbbf24, #f59e0b, transparent)' }} />
+            <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'center', color: '#fbbf24' }}><Icon name="inbox" size={44} stroke={1.6} /></div>
+            <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 6, textAlign: 'center' }}>Verify Your Email</h2>
+            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, textAlign: 'center', marginBottom: 26 }}>Enter the 6-digit code we sent to <span style={{ color: '#fbbf24', fontWeight: 600 }}>{form.email}</span></p>
+
+            <form onSubmit={handleVerify} noValidate>
+              <input
+                type="text" inputMode="numeric" autoComplete="one-time-code" maxLength={6} autoFocus
+                value={otp}
+                onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); if (otpError) setOtpError(''); }}
+                onFocus={() => setFocusedField('otp')} onBlur={() => setFocusedField(null)}
+                placeholder="______"
+                style={{ ...inputStyle('otp'), textAlign: 'center', fontSize: 30, letterSpacing: 14, fontWeight: 700, padding: '16px' }}
+              />
+              {otpError && <p style={{ color: '#f87171', fontSize: 12, marginTop: 10, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Icon name="alert" size={13} /> {otpError}</p>}
+
+              <button type="submit" disabled={otpLoading} style={{ width: '100%', marginTop: 22, padding: 15, background: otpLoading ? 'rgba(245,158,11,0.4)' : 'linear-gradient(135deg, #f59e0b, #fbbf24)', border: 'none', borderRadius: 10, color: '#0a0410', fontSize: 15, fontWeight: 700, fontFamily: 'Outfit, sans-serif', letterSpacing: 0.5, cursor: otpLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: otpLoading ? 'none' : '0 4px 24px rgba(245,158,11,0.35)' }}>
+                {otpLoading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Verifying…</>) : 'Verify & Continue'}
+              </button>
+            </form>
+
+            <p style={{ textAlign: 'center', marginTop: 20, color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
+              Didn't get it?{' '}
+              <button type="button" onClick={handleResend} disabled={resendCooldown > 0 || resendBusy} style={{ background: 'none', border: 'none', padding: 0, color: resendCooldown > 0 ? 'rgba(255,255,255,0.3)' : '#fbbf24', fontWeight: 600, fontFamily: 'Outfit, sans-serif', fontSize: 13, cursor: resendCooldown > 0 || resendBusy ? 'not-allowed' : 'pointer' }}>
+                {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : resendBusy ? 'Sending…' : 'Resend code'}
+              </button>
+            </p>
+            <p style={{ textAlign: 'center', marginTop: 10, color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
+              Wrong email?{' '}
+              <button type="button" onClick={() => { setStep('form'); setOtp(''); setOtpError(''); }} style={{ background: 'none', border: 'none', padding: 0, color: 'rgba(251,191,36,0.75)', fontWeight: 600, fontFamily: 'Outfit, sans-serif', fontSize: 12, cursor: 'pointer' }}>Go back</button>
+            </p>
           </div>
         ) : (
           <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 20, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', animation: 'fadeSlideUp 0.7s ease 0.1s both, pulse-glow 4s ease-in-out infinite', position: 'relative', overflow: 'hidden' }}>
@@ -222,19 +280,6 @@ export default function Register() {
                 {loading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Creating Account…</>) : 'Create My Account'}
               </button>
             </form>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
-              <div style={{ flex: 1, height: 1, background: 'rgba(251,191,36,0.2)' }} />
-              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12, letterSpacing: 1 }}>OR</span>
-              <div style={{ flex: 1, height: 1, background: 'rgba(251,191,36,0.2)' }} />
-            </div>
-
-            <button onClick={handleGoogle} disabled={googleLoading} style={{ width: '100%', padding: 13, background: 'rgba(255,255,255,0.04)', border: '1.5px solid rgba(251,191,36,0.25)', borderRadius: 10, color: '#fff', fontSize: 14, fontWeight: 500, fontFamily: 'Outfit, sans-serif', cursor: googleLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'border-color 0.2s, background 0.2s', opacity: googleLoading ? 0.6 : 1 }}
-              onMouseEnter={e => { if (!googleLoading) { e.currentTarget.style.borderColor = '#fbbf24'; e.currentTarget.style.background = 'rgba(251,191,36,0.08)'; } }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(251,191,36,0.25)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}>
-              {googleLoading ? <span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.2)', borderTopColor: '#fbbf24', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} /> : <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>}
-              {googleLoading ? 'Connecting…' : 'Sign up with Google'}
-            </button>
 
             <p style={{ textAlign: 'center', marginTop: 22, color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
               Already have an account?{' '}
