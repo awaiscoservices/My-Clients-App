@@ -5,6 +5,7 @@
  */
 import { createClient } from '@supabase/supabase-js'
 import { validatePromo } from '../../../lib/promoServer'
+import { getTenantSettings, flagOn } from '../../../lib/platformSettings'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -88,6 +89,15 @@ export default async function handler(req, res) {
 
   if (!profile || profile.status !== 'active')
     return res.status(403).json({ error: 'Account is not active' })
+
+  // ── Casino switches (admin Settings) ──────────────────────
+  // Hard gate: deposits can be turned off, and nothing goes through while the
+  // casino is in maintenance.
+  const sw = await getTenantSettings(profile.tenant_id, ['deposits_enabled', 'maintenance_mode'])
+  if (flagOn(sw.maintenance_mode, false))
+    return res.status(503).json({ error: 'The site is under maintenance. Please try again shortly.' })
+  if (!flagOn(sw.deposits_enabled, true))
+    return res.status(403).json({ error: 'Deposits are currently disabled' })
 
   // ── Optional promo code (deposit-type) ────────────────────
   // Validated now; the %age bonus is credited to the Bonus balance when the

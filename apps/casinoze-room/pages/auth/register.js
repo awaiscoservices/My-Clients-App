@@ -29,7 +29,19 @@ export default function Register() {
   const [otpLoading, setOtpLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [resendBusy, setResendBusy] = useState(false);
+  const [regOpen, setRegOpen] = useState(true); // admin Settings → New Registrations
   const [refCode, setRefCode] = useState('');
+
+  // Respect the casino's "New Registrations" switch (maintenance is handled
+  // site-wide in _app). Defaults open so a failed read never blocks signup.
+  useEffect(() => {
+    let on = true;
+    fetch('/api/settings/flags')
+      .then(r => r.json())
+      .then(f => { if (on && f && f.registrations_enabled === false) setRegOpen(false); })
+      .catch(() => {});
+    return () => { on = false; };
+  }, []);
   // ?ref=CODE → remember it (linked on first signed-in load) and show the banner
   useEffect(() => {
     try {
@@ -220,6 +232,16 @@ export default function Register() {
             <p style={{ textAlign: 'center', marginTop: 10, color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
               Wrong email?{' '}
               <button type="button" onClick={() => { setStep('form'); setOtp(''); setOtpError(''); }} style={{ background: 'none', border: 'none', padding: 0, color: 'rgba(251,191,36,0.75)', fontWeight: 600, fontFamily: 'Outfit, sans-serif', fontSize: 12, cursor: 'pointer' }}>Go back</button>
+            </p>
+          </div>
+        ) : !regOpen ? (
+          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 20, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', textAlign: 'center' }}>
+            <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'center', color: '#fbbf24' }}><Icon name="lock" size={44} stroke={1.6} /></div>
+            <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 8 }}>Registrations Closed</h2>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, lineHeight: 1.7 }}>New sign-ups are paused right now. Please check back soon.</p>
+            <p style={{ marginTop: 22, color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
+              Already have an account?{' '}
+              <Link href="/auth/login" style={{ color: '#fbbf24', fontWeight: 600, textDecoration: 'none', borderBottom: '1px solid rgba(251,191,36,0.3)', paddingBottom: 1 }}>Sign in →</Link>
             </p>
           </div>
         ) : (

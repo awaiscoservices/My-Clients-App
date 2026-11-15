@@ -24,6 +24,7 @@
  *  - Idempotency key prevents double-submit
  */
 import { createClient } from '@supabase/supabase-js'
+import { getTenantSettings, flagOn } from '../../../lib/platformSettings'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -116,6 +117,15 @@ export default async function handler(req, res) {
 
   if (!profile || profile.status !== 'active')
     return res.status(403).json({ error: 'Account is not active' })
+
+  // ── Casino switches (admin Settings) ──────────────────────────────────────
+  // Hard gate: withdraws can be turned off, and nothing goes through while the
+  // casino is in maintenance.
+  const sw = await getTenantSettings(profile.tenant_id, ['withdrawals_enabled', 'maintenance_mode'])
+  if (flagOn(sw.maintenance_mode, false))
+    return res.status(503).json({ error: 'The site is under maintenance. Please try again shortly.' })
+  if (!flagOn(sw.withdrawals_enabled, true))
+    return res.status(403).json({ error: 'Withdraws are currently disabled' })
 
   const { data: level } = await supabaseAdmin
     .from('player_levels')
