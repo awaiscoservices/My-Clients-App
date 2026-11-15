@@ -356,10 +356,10 @@ export default function DepositPage() {
                     <button onClick={removePromo} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>Remove</button>
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', gap: 10 }}>
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'stretch' }}>
                     <input value={promoInput} onChange={e => { setPromoInput(e.target.value.toUpperCase()); setPromoErr('') }} placeholder="Enter code"
-                      style={{ flex: 1, padding: '11px 14px', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, color: '#fff', fontSize: 14, fontFamily: 'monospace', letterSpacing: '.06em', textTransform: 'uppercase', outline: 'none', boxSizing: 'border-box' }} />
-                    <button onClick={applyPromo} disabled={promoChecking || !promoInput.trim()} style={{ padding: '0 20px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 13, fontWeight: 800, cursor: promoChecking ? 'default' : 'pointer' }}>{promoChecking ? '…' : 'Apply'}</button>
+                      style={{ flex: 1, minWidth: 0, padding: '11px 14px', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, color: '#fff', fontSize: 14, fontFamily: 'monospace', letterSpacing: '.06em', textTransform: 'uppercase', outline: 'none', boxSizing: 'border-box' }} />
+                    <button onClick={applyPromo} disabled={promoChecking || !promoInput.trim()} style={{ flexShrink: 0, whiteSpace: 'nowrap', minWidth: 96, padding: '11px 22px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 13, fontWeight: 800, cursor: promoChecking ? 'default' : 'pointer' }}>{promoChecking ? '…' : 'Apply'}</button>
                   </div>
                 )}
                 {promoErr && <div style={{ color: '#f87171', fontSize: 12, marginTop: 8, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {promoErr}</div>}
