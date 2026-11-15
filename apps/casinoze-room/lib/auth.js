@@ -3,14 +3,16 @@ import { TENANT_ID } from './tenant'
 
 // ─── SIGN UP with email ────────────────────────────────────
 export async function signUpWithEmail({ fullName, email, password }) {
+  // tenant_id is read by the handle_new_user DB trigger so the player, their
+  // wallet and KYC row all land in THIS casino. Only send it when configured —
+  // an empty value would fail the uuid cast in the trigger.
+  const data_meta = { full_name: fullName }
+  if (TENANT_ID) data_meta.tenant_id = TENANT_ID
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      // tenant_id is read by the handle_new_user DB trigger so the player,
-      // their wallet and KYC row all land in THIS casino, not the default one.
-      data: { full_name: fullName, tenant_id: TENANT_ID },
-    },
+    options: { data: data_meta },
   })
   if (error) throw error
   return data
