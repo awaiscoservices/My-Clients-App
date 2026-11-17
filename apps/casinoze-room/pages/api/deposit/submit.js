@@ -6,6 +6,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { validatePromo } from '../../../lib/promoServer'
 import { getTenantSettings, flagOn } from '../../../lib/platformSettings'
+import { rateLimit } from '../../../lib/rateLimit'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -24,6 +25,12 @@ export default async function handler(req, res) {
   const token = authHeader.replace('Bearer ', '')
   const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' })
+
+  // ── Rate limit ────────────────────────────────────────────
+  // Idempotency stops exact double-submits; this caps distinct submissions
+  // so one account can't flood the deposit queue.
+  if (!await rateLimit(supabaseAdmin, { bucket: 'deposit_submit', key: user.id, limit: 10, windowSecs: 60 }))
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment and try again.' })
 
   const {
     payment_method_id,

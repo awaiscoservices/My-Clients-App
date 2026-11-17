@@ -25,6 +25,7 @@
  */
 import { createClient } from '@supabase/supabase-js'
 import { getTenantSettings, flagOn } from '../../../lib/platformSettings'
+import { rateLimit } from '../../../lib/rateLimit'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -41,6 +42,12 @@ export default async function handler(req, res) {
 
   const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' })
+
+  // ── Rate limit ────────────────────────────────────────────────────────────
+  // Caps how fast one account can fire withdrawal requests, independent of the
+  // per-request idempotency key.
+  if (!await rateLimit(supabaseAdmin, { bucket: 'withdraw_submit', key: user.id, limit: 8, windowSecs: 60 }))
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment and try again.' })
 
   // Payout details are given with each withdrawal now, not chosen from a
   // list saved on the player's profile. Where the money goes can change
