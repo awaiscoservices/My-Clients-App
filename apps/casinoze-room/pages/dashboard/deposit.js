@@ -95,6 +95,10 @@ export default function DepositPage() {
   const [error, setError] = useState('')
   const [myDeposits, setMyDeposits] = useState([])
   const [showWait, setShowWait] = useState(false)
+  // After a player's FIRST deposit we prompt them to complete KYC (unless they
+  // already have). Bound to the first deposit — there is no separate nav item.
+  const [kycStatus, setKycStatus] = useState('not_started')
+  const [showKyc, setShowKyc] = useState(false)
   // Bonus % per payment method, from the player_bonuses grid for THIS player's
   // level and today — the same source the server credits from. (The old badge
   // showed payment_methods.default_bonus_pct, a different number, so a player
@@ -142,10 +146,11 @@ export default function DepositPage() {
     const [{ data: methodsData }, { data: depositsData }, { data: profile }] = await Promise.all([
       supabase.from('payment_methods').select('*').eq('is_active', true).order('sort_order'),
       supabase.from('deposits').select('*, payment_methods(name)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5),
-      supabase.from('profiles').select('player_level_id').eq('id', user.id).single(),
+      supabase.from('profiles').select('player_level_id, kyc_status').eq('id', user.id).single(),
     ])
     setMethods(methodsData || [])
     setMyDeposits(depositsData || [])
+    setKycStatus(profile?.kyc_status || 'not_started')
 
     // Load the real bonus for each method from the player_bonuses grid, keyed
     // the exact way the server keys it: method × level × today's day_number.
@@ -257,8 +262,12 @@ export default function DepositPage() {
       const submitData = await submitRes.json()
       if (!submitRes.ok) throw new Error(submitData.error || 'Submission failed')
 
+      // First deposit + not yet verified → prompt KYC instead of the usual
+      // "request received" popup. Captured before loadData refreshes the list.
+      const wasFirstDeposit = myDeposits.length === 0
       setResult(submitData.deposit)
-      setShowWait(true)
+      if (wasFirstDeposit && !['verified', 'pending'].includes(kycStatus)) setShowKyc(true)
+      else setShowWait(true)
       loadData()
 
     } catch (err) {
@@ -274,6 +283,18 @@ export default function DepositPage() {
     <PlayerLayout>
       <Head><title>Deposit Submitted — Casinoze Room</title></Head>
       <WaitPopup data={showWait ? WAIT_MESSAGES.deposit : null} onClose={() => setShowWait(false)} />
+      {showKyc && (
+        <div onClick={() => setShowKyc(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+          <div onClick={e => e.stopPropagation()} style={{ position: 'relative', background: '#0e1a2e', border: '1px solid rgba(251,191,36,.3)', borderRadius: 20, padding: '30px 28px', width: '100%', maxWidth: 420, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,.5)' }}>
+            <button onClick={() => setShowKyc(false)} aria-label="Close" style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', cursor: 'pointer', display: 'inline-flex' }}><Icon name="x" size={20} /></button>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14, color: '#fbbf24' }}><Icon name="shield" size={46} /></div>
+            <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: '#fff', margin: '0 0 10px' }}>Verify Your Identity</h3>
+            <p style={{ fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,.6)', margin: '0 0 22px' }}>Thanks for your first deposit! To secure your account and unlock withdrawals, please complete a quick identity verification.</p>
+            <button onClick={() => router.push('/profile/kyc')} style={{ width: '100%', padding: '12px', marginBottom: 10, borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>Verify Now →</button>
+            <button onClick={() => setShowKyc(false)} style={{ width: '100%', padding: '11px', borderRadius: 12, border: '1px solid rgba(255,255,255,.12)', background: 'transparent', color: 'rgba(255,255,255,.5)', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>Maybe later</button>
+          </div>
+        </div>
+      )}
       <div style={{ maxWidth: 520, margin: '40px auto', textAlign: 'center' }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'center', color: '#10b981' }}><Icon name="checkCircle" size={64} stroke={1.6} /></div>
         <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Deposit Submitted!</h2>
