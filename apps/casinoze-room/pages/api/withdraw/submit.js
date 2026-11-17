@@ -279,17 +279,27 @@ export default async function handler(req, res) {
   // movement is unauditable. So on failure we undo everything — release the
   // reserve and delete the withdrawal — and fail the request, rather than
   // returning success over a wallet that no ledger row explains.
+  // Column shape matters: ledger has no entity/entity_id, amount_cents must be
+  // POSITIVE (CHECK > 0), reference_id and idempotency_key are UNIQUE, and
+  // type/wallet_bucket/direction are CHECK-constrained. The old row broke all
+  // of these, so it had always been failing silently behind fire-and-forget —
+  // which is exactly the reconciliation hole we're closing.
+  const reserveCashAfter = Math.max(0, wallet.cash_balance_cents - cash_deduct_cents)
   const { error: ledgerErr } = await supabaseAdmin.from('ledger').insert({
     // Without the casino, this row is invisible to every scoped read and the
     // casino's own staff never see the movement.
-    tenant_id:      profile?.tenant_id || null,
-    user_id:        user.id,
-    type:           'withdrawal_pending',
-    amount_cents:   -amount_cents, // negative = outflow
-    reference_id:   withdrawal.reference_id,
-    entity:         'withdrawals',
-    entity_id:      withdrawal.id,
-    metadata:       { cash_deduct_cents, bonus_deduct_cents, bonus_to_cash_pct: bonusToCashPct },
+    tenant_id:           profile?.tenant_id || null,
+    user_id:             user.id,
+    type:                'withdrawal_reserve',
+    wallet_bucket:       'cash',
+    amount_cents:        amount_cents,        // positive; direction carries the sign
+    direction:           'debit',
+    balance_after_cents: reserveCashAfter,
+    reference_id:        `${withdrawal.reference_id}-RESERVE`,
+    withdrawal_id:       withdrawal.id,
+    description:         `Withdraw ${withdrawal.reference_id} requested — funds held`,
+    idempotency_key:     `wd-reserve-${withdrawal.id}`,
+    metadata:            { cash_deduct_cents, bonus_deduct_cents, bonus_to_cash_pct: bonusToCashPct },
   })
 
   if (ledgerErr) {
