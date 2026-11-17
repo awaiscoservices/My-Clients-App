@@ -138,13 +138,14 @@ export default function KycSubmit() {
     setBusy(false)
   }
 
-  const two = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }
+  // Two columns on desktop, collapses to one on narrow/mobile screens.
+  const two = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }
 
   return (
     <PlayerLayout>
       <Head><title>Verify Identity — Casinoze Room</title></Head>
       <Title sub="Complete your identity verification to unlock withdrawals">KYC Verification</Title>
-      <div style={{ maxWidth: 760 }}>
+      <div style={{ maxWidth: 760, margin: '0 auto' }}>
         {latest && (
           <div style={{ ...card, marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <div><div style={{ fontWeight: 700 }}>Latest submission</div><div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)' }}>{fmtDate(latest.created_at)}</div></div>
