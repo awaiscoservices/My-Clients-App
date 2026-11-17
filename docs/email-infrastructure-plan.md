@@ -69,6 +69,50 @@ pragmatic engine, which is why the competitors use it. It's also the cheapest
 
 ---
 
+## Promo targeting & send-logging (design)
+**Principle:** Supabase is the source of truth for "who got which promo" — SES and
+Listmonk are just delivery pipes; their results are mirrored back into a log that
+staff search.
+
+**New table — `promo_email_log`:**
+```
+id              uuid pk
+tenant_id       uuid                      -- casino scope
+promotion_id    uuid  fk -> promotions
+user_id         uuid  fk -> profiles      -- the customer
+email           text                      -- SNAPSHOT of the sent-to address
+campaign_id     text                      -- Listmonk campaign id, or 'triggered'
+status          text                      -- queued|sent|delivered|opened|clicked|bounced|complained|failed|unsubscribed
+provider_msg_id text                      -- SES Message-ID (correlates webhook events)
+assigned_by     uuid                      -- staff id, or null for automated/rule
+sent_at / delivered_at / opened_at / bounced_at  timestamptz
+```
+- Add composite tenant FKs `(tenant_id, user_id)` and `(tenant_id, promotion_id)`.
+- Unique `(promotion_id, user_id, campaign_id)` — answers "already assigned?" and
+  prevents double-sends.
+- Join key across systems = `user_id` + email (store email as a snapshot).
+
+**Two send flows, both log here:**
+- **Triggered / per-customer** (welcome bonus, admin assigns promo X to customer Y):
+  backend sends via SES → insert row immediately (`status=sent`, `provider_msg_id`).
+- **Broadcast via Listmonk**: build eligible list in Supabase → insert `queued` rows
+  per recipient at launch → set each Listmonk subscriber's custom attr = `user_id`
+  so events map back.
+
+**Status pipeline:** SES events → SNS topic → Supabase Edge Function (or API route)
+→ update `promo_email_log` by `provider_msg_id` (sent→delivered/bounced/opened).
+
+**Staff search — "Promos Management" admin page** (guardAdmin + `PERMS.PROMOS_READ`
++ tenant scope via loadOwnedRow):
+- by customer → promos assigned + email status + timestamps
+- by promo → customers it went to + delivery status
+- query: `select * from promo_email_log where tenant_id=:t and user_id=:cust [and promotion_id=:promo]`
+
+**Funnel it completes:** `promotions` (definition) → `promo_email_log` (sent/assigned)
+→ `promo_redemptions` (claimed). Lets staff see "emailed but never redeemed," etc.
+
+---
+
 ## Cost
 | Item | Cost |
 |---|---|
