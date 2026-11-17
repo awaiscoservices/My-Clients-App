@@ -90,6 +90,13 @@ export default async function handler(req, res) {
   if (!profile || profile.status !== 'active')
     return res.status(403).json({ error: 'Account is not active' })
 
+  // The payment method must belong to the player's own casino. The service
+  // role bypasses RLS, so a valid method id from another tenant would
+  // otherwise be accepted — tenant identity comes from the authenticated
+  // profile, never the request body.
+  if (method.tenant_id && method.tenant_id !== profile.tenant_id)
+    return res.status(400).json({ error: 'Payment method not found or inactive' })
+
   // ── Casino switches (admin Settings) ──────────────────────
   // Hard gate: deposits can be turned off, and nothing goes through while the
   // casino is in maintenance.
@@ -167,6 +174,9 @@ export default async function handler(req, res) {
       idempotency_key,
       promotion_id,
       bonus_rule_snapshot: promo_snapshot ? { promo: promo_snapshot } : null,
+      // Stamp the player's casino explicitly. Relying on a column default
+      // filed every casino's deposits under the first tenant.
+      ...(profile?.tenant_id ? { tenant_id: profile.tenant_id } : {}),
     })
     .select()
     .single()

@@ -88,7 +88,7 @@ export default async function handler(req, res) {
   // found" — for a method the dropdown had just listed.
   const { data: method, error: methodError } = await supabaseAdmin
     .from('payment_methods')
-    .select('id, name, is_active, allow_withdraw')
+    .select('id, name, is_active, allow_withdraw, tenant_id')
     .eq('id', payment_method_id)
     .single()
 
@@ -117,6 +117,13 @@ export default async function handler(req, res) {
 
   if (!profile || profile.status !== 'active')
     return res.status(403).json({ error: 'Account is not active' })
+
+  // The payment method must belong to the player's own casino. The service
+  // role bypasses RLS, so without this a valid method id from another tenant
+  // would be accepted — tenant identity comes from the authenticated profile,
+  // never the request body.
+  if (method.tenant_id && method.tenant_id !== profile.tenant_id)
+    return res.status(400).json({ error: 'Payment method not found' })
 
   // ── Casino switches (admin Settings) ──────────────────────────────────────
   // Hard gate: withdraws can be turned off, and nothing goes through while the
@@ -267,7 +274,12 @@ export default async function handler(req, res) {
   }
 
   // ── Append-only ledger entry ──────────────────────────────────────────────
-  await supabaseAdmin.from('ledger').insert({
+  // This write is NOT fire-and-forget. The money has just been reserved; if the
+  // ledger row fails to write, the wallet and the ledger disagree and the
+  // movement is unauditable. So on failure we undo everything — release the
+  // reserve and delete the withdrawal — and fail the request, rather than
+  // returning success over a wallet that no ledger row explains.
+  const { error: ledgerErr } = await supabaseAdmin.from('ledger').insert({
     // Without the casino, this row is invisible to every scoped read and the
     // casino's own staff never see the movement.
     tenant_id:      profile?.tenant_id || null,
@@ -278,7 +290,18 @@ export default async function handler(req, res) {
     entity:         'withdrawals',
     entity_id:      withdrawal.id,
     metadata:       { cash_deduct_cents, bonus_deduct_cents, bonus_to_cash_pct: bonusToCashPct },
-  }).then(() => {}, err => console.error('[withdraw/submit] ledger error:', err))
+  })
+
+  if (ledgerErr) {
+    console.error('[withdraw/submit] ledger error — rolling back reserve:', ledgerErr)
+    await supabaseAdmin.rpc('cancel_withdrawal_reserve', {
+      p_user_id:     user.id,
+      p_cash_cents:  cash_deduct_cents,
+      p_bonus_cents: bonus_deduct_cents,
+    }).then(() => {}, e => console.error('[withdraw/submit] reserve rollback failed:', e))
+    await supabaseAdmin.from('withdrawals').delete().eq('id', withdrawal.id)
+    return res.status(500).json({ error: 'Could not record the withdrawal. No funds were held — please try again.' })
+  }
 
   // ── Notification ──────────────────────────────────────────────────────────
   await supabaseAdmin.from('notifications').insert({
