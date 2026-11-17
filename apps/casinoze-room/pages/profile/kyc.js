@@ -112,7 +112,9 @@ export default function KycSubmit() {
       const doc_back_url = needsBack ? await upload(back, 'back') : null
       const selfie_url = await upload(selfie, 'selfie')
       const full_legal_name = [form.first_name, form.middle_name, form.last_name].map(s => s.trim()).filter(Boolean).join(' ')
-      const { error } = await supabase.from('kyc_records').insert({
+      // Each user has exactly one kyc_records row (unique user_id, seeded at
+      // signup), so upsert onto it rather than inserting a second row.
+      const { error } = await supabase.from('kyc_records').upsert({
         user_id: user.id,
         tenant_id: tenantId,
         first_name: form.first_name.trim(),
@@ -131,7 +133,7 @@ export default function KycSubmit() {
         doc_front_url, doc_back_url, selfie_url,
         status: 'pending',
         submitted_at: new Date().toISOString(),
-      })
+      }, { onConflict: 'user_id' })
       if (error) throw error
       setForm(BLANK); setFront(null); setBack(null); setSelfie(null); await load()
     } catch (err) { setMsg({ kind: 'error', text: err.message || 'Submission failed. Please try again.' }) }
