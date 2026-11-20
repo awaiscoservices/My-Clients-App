@@ -143,7 +143,7 @@ export default async function handler(req, res) {
 
   const { data: level } = await supabaseAdmin
     .from('player_levels')
-    .select('min_withdrawal_cents, max_withdrawal_cents, max_daily_withdrawal_cents, bonus_to_cash_pct')
+    .select('min_withdrawal_cents, max_withdrawal_cents, daily_withdrawal_limit_cents, bonus_to_cash_pct')
     .eq('id', profile.player_level_id)
     .single()
 
@@ -154,25 +154,19 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: `Your level allows a maximum withdrawal of $${(level.max_withdrawal_cents / 100).toFixed(2)}` })
 
   // ── Daily withdrawal limit ────────────────────────────────────────────────
-  if (level?.max_daily_withdrawal_cents) {
-    const startOfDay = new Date()
-    startOfDay.setUTCHours(0, 0, 0, 0)
-
-    const { data: todayWithdrawals } = await supabaseAdmin
-      .from('withdrawals')
-      .select('amount_cents')
-      .eq('user_id', user.id)
-      // A withdrawal that has been paid is the clearest possible use of the
-      // daily allowance, and 'approved' is not a status this table can hold
-      // — so only pending requests counted. Once one was paid it stopped
-      // counting, and the same player could take the full limit again the
-      // same day, as often as staff kept approving.
-      .in('status', ['pending', 'processing', 'paid'])
-      .gte('created_at', startOfDay.toISOString())
-
-    const usedToday = (todayWithdrawals || []).reduce((s, w) => s + w.amount_cents, 0)
-    if (usedToday + amount_cents > level.max_daily_withdrawal_cents) {
-      const remaining = level.max_daily_withdrawal_cents - usedToday
+  // ONE definition, shared with the admin approval path (withdrawal_action_atomic
+  // + admin/withdrawals/action.js pre-check): the per-level
+  // daily_withdrawal_limit_cents column, a rolling 24h window over SETTLED
+  // payouts via get_daily_withdrawn_cents(), and the formula
+  // used + this_request > limit. Defaults to $500 when the level has no limit,
+  // matching the atomic gate so the request check and the approval check agree.
+  // The approval path is the authoritative gate (under row lock); this is the
+  // early UX check against the identical number.
+  {
+    const dailyLimit = level?.daily_withdrawal_limit_cents || 50000
+    const { data: usedToday } = await supabaseAdmin.rpc('get_daily_withdrawn_cents', { p_user_id: user.id })
+    if ((usedToday || 0) + amount_cents > dailyLimit) {
+      const remaining = dailyLimit - (usedToday || 0)
       return res.status(400).json({
         error: remaining > 0
           ? `Daily withdrawal limit reached. You can withdraw up to $${(remaining / 100).toFixed(2)} more today.`
