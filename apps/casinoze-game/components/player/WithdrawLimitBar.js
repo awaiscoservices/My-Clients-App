@@ -11,7 +11,7 @@ export default function WithdrawLimitBar({ withdrawalToday, level }) {
 
   const fmt = cents => `$${((cents || 0) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
-  const color = pct_used >= 100 ? '#ef4444' : pct_used >= 80 ? '#f59e0b' : '#22c55e'
+  const color = pct_used >= 100 ? '#ef4444' : pct_used >= 80 ? '#dc2626' : '#22c55e'
 
   return (
     <div style={{

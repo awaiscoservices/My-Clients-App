@@ -5,7 +5,7 @@
 export default function LevelWidget({ level, xp }) {
   if (!level || !xp) return null
 
-  const accent = level.accent_color || '#fbbf24'
+  const accent = level.accent_color || '#ef4444'
   const pct    = xp.progress_pct ?? 0
 
   return (

@@ -21,7 +21,7 @@ export default function SiteFooter() {
           <p>One account and one wallet for {GAME_CATALOG.length} game rooms.</p>
           {support_email && (
             <p style={{ marginTop: 8 }}>
-              Support: <a href={`mailto:${support_email}`} style={{ color: '#fbbf24', textDecoration: 'none' }}>{support_email}</a>
+              Support: <a href={`mailto:${support_email}`} style={{ color: '#ef4444', textDecoration: 'none' }}>{support_email}</a>
             </p>
           )}
         </div>
@@ -34,11 +34,11 @@ export default function SiteFooter() {
       </div>
       <div className="sf-bar"><span>© {new Date().getFullYear()} {brand}. All rights reserved.</span><span>18+ · Play responsibly</span></div>
       <style>{`
-        .sf{border-top:1px solid rgba(251,191,36,.12);background:rgba(4,7,13,.55);margin-top:40px}
+        .sf{border-top:1px solid rgba(239,68,68,.12);background:rgba(4,7,13,.55);margin-top:40px}
         .sf-in{max-width:1240px;margin:0 auto;padding:54px 24px 30px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:34px}
         .sf-brand p{margin:14px 0 0;color:rgba(255,255,255,.45);font-size:14px;line-height:1.7;max-width:280px}
         .sf-col{display:flex;flex-direction:column;gap:11px}
-        .sf-h{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fbbf24;margin-bottom:4px}
+        .sf-h{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#ef4444;margin-bottom:4px}
         .sf-col a{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;transition:color .2s,transform .2s;width:fit-content}
         .sf-col a:hover{color:#fff;transform:translateX(3px)}
         .sf-bar{max-width:1240px;margin:0 auto;padding:18px 24px 26px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:rgba(255,255,255,.35)}

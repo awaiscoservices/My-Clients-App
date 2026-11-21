@@ -27,7 +27,7 @@ export default function ForgotPassword() {
         <Notice kind={msg?.kind}>{msg?.text}</Notice>
         <div style={{ marginBottom: 20 }}><Label>Email</Label><input type="email" required value={email} onChange={e => setEmail(e.target.value)} style={input} /></div>
         <Btn type="submit" disabled={busy} style={{ width: '100%' }}>{busy ? 'Sending…' : 'Send reset link'}</Btn>
-        <div style={{ textAlign: 'center', marginTop: 16 }}><Link href="/auth/login" style={{ color: '#fbbf24', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>← Back to sign in</Link></div>
+        <div style={{ textAlign: 'center', marginTop: 16 }}><Link href="/auth/login" style={{ color: '#ef4444', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>← Back to sign in</Link></div>
       </form>
     </div>
   )

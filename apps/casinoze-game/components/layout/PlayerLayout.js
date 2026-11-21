@@ -8,7 +8,7 @@ import Logo from '../ui/Logo'
 import { BRAND } from '../../lib/brand'
 
 const PROMO_TEXT = `Welcome to ${BRAND.name} — add money, load a game and play.`
-const GOLD = '#fbbf24'
+const GOLD = '#ef4444'
 
 const ICONS = {
   home:     'M3 11l9-8 9 8M5 10v10h14V10',
@@ -80,7 +80,7 @@ function WinsTicker() {
   if (!wins.length) return null
   const row = [...wins, ...wins]
   return (
-    <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', borderBottom: '1px solid rgba(251,191,36,.12)', background: 'rgba(251,191,36,.03)', height: 34, display: 'flex', alignItems: 'center' }}>
+    <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', borderBottom: '1px solid rgba(239,68,68,.12)', background: 'rgba(239,68,68,.03)', height: 34, display: 'flex', alignItems: 'center' }}>
       <div className="wins-track" style={{ display: 'inline-flex', gap: 40 }}>
         {row.map((w, i) => (
           <span key={i} style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>
@@ -166,7 +166,7 @@ export default function PlayerLayout({ children }) {
         position: 'fixed', top: 0, left: 0, right: 0, height: 64, zIndex: 60,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '0 20px', maxWidth: '100vw',
         background: 'var(--panel-gradient)', backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(251,191,36,.18)', boxShadow: '0 4px 24px rgba(0,0,0,.6)',
+        borderBottom: '1px solid rgba(239,68,68,.18)', boxShadow: '0 4px 24px rgba(0,0,0,.6)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => setSidebarOpen(p => !p)} className="mobile-hamburger" aria-label="Menu"
@@ -182,9 +182,9 @@ export default function PlayerLayout({ children }) {
         <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Link href="/dashboard/deposit" className="deposit-btn" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px',
-            background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', borderRadius: 12,
+            background: 'linear-gradient(135deg,#ef4444,#dc2626)', borderRadius: 12,
             color: '#050505', fontSize: 12, fontWeight: 800, textDecoration: 'none', letterSpacing: '.06em',
-            textTransform: 'uppercase', boxShadow: '0 0 18px rgba(251,191,36,.3)',
+            textTransform: 'uppercase', boxShadow: '0 0 18px rgba(239,68,68,.3)',
           }}>
             <Icon name="plus" size={14} /> Deposit
           </Link>
@@ -194,7 +194,7 @@ export default function PlayerLayout({ children }) {
             <Icon name="bell" size={18} />
             {unread > 0 && <span style={{ position: 'absolute', top: -4, right: -4, background: GOLD, color: '#000', fontSize: 9, fontWeight: 800, padding: '1px 5px', borderRadius: 99 }}>{unread}</span>}
           </Link>
-          <Link href="/dashboard/profile" className="avatar-btn" style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg,#fbbf24,#b45309)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, color: '#050505', textDecoration: 'none', border: '2px solid rgba(251,191,36,.5)' }}>
+          <Link href="/dashboard/profile" className="avatar-btn" style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg,#ef4444,#b45309)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, color: '#050505', textDecoration: 'none', border: '2px solid rgba(239,68,68,.5)' }}>
             {(profile?.full_name || 'U')[0].toUpperCase()}
           </Link>
         </div>
@@ -203,7 +203,7 @@ export default function PlayerLayout({ children }) {
       {/* SIDEBAR */}
       <aside className={`player-sidebar${sidebarOpen ? ' open' : ''}`} style={{
         position: 'fixed', top: 64, left: 0, bottom: 0, zIndex: 50,
-        background: 'var(--panel-gradient)', borderRight: '1px solid rgba(251,191,36,.1)',
+        background: 'var(--panel-gradient)', borderRight: '1px solid rgba(239,68,68,.1)',
         display: 'flex', flexDirection: 'column',
       }}>
         <nav ref={navRef} onScroll={e => { cache.navScroll = e.currentTarget.scrollTop }} style={{ flex: 1, overflowY: 'auto', padding: '14px 12px', scrollbarWidth: 'none' }}>
@@ -217,8 +217,8 @@ export default function PlayerLayout({ children }) {
                   display: 'flex', alignItems: 'center', gap: 12, padding: '11px 12px', borderRadius: 12, marginBottom: 4,
                   textDecoration: 'none', fontSize: 14, fontWeight: active ? 700 : 500,
                   color: active ? '#050505' : 'rgba(255,255,255,.7)',
-                  background: active ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 'transparent',
-                  boxShadow: active ? '0 0 20px rgba(251,191,36,.25)' : 'none',
+                  background: active ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'transparent',
+                  boxShadow: active ? '0 0 20px rgba(239,68,68,.25)' : 'none',
                 }}>
                 <Icon name={item.icon} />
                 <span className="rail-label" style={{ flex: 1, whiteSpace: 'nowrap' }}>{item.label}</span>
@@ -227,7 +227,7 @@ export default function PlayerLayout({ children }) {
           })}
         </nav>
 
-        <div style={{ padding: 12, borderTop: '1px solid rgba(251,191,36,.1)' }}>
+        <div style={{ padding: 12, borderTop: '1px solid rgba(239,68,68,.1)' }}>
           <button onClick={handleSignOut} disabled={signingOut} title="Sign out" className="rail-btn"
             style={{ width: '100%', height: 40, padding: '0 12px', background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 10, color: '#f87171', fontSize: 13, fontWeight: 700, cursor: signingOut ? 'default' : 'pointer', fontFamily: "'Outfit', sans-serif", display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: signingOut ? .6 : 1 }}>
             <Icon name="logout" size={16} />
@@ -242,7 +242,7 @@ export default function PlayerLayout({ children }) {
       <div className="player-main" style={{ marginLeft: 72, paddingTop: 64, minHeight: '100vh' }}>
         <WinsTicker />
         {showPromo && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '10px 40px 10px 16px', position: 'relative', background: 'linear-gradient(90deg,rgba(251,191,36,.14),rgba(245,158,11,.06),rgba(251,191,36,.14))', borderBottom: '1px solid rgba(251,191,36,.18)', fontSize: 13, fontWeight: 600, textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '10px 40px 10px 16px', position: 'relative', background: 'linear-gradient(90deg,rgba(239,68,68,.14),rgba(220,38,38,.06),rgba(239,68,68,.14))', borderBottom: '1px solid rgba(239,68,68,.18)', fontSize: 13, fontWeight: 600, textAlign: 'center' }}>
             <span style={{ display: 'inline-flex', verticalAlign: '-3px', color: GOLD }}><Icon name="gift" size={15} /></span> {PROMO_TEXT}
             <button onClick={() => setPromoOpen(false)} aria-label="Dismiss" style={{ position: 'absolute', right: 14, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', fontSize: 18, cursor: 'pointer' }}>×</button>
           </div>
@@ -274,12 +274,12 @@ export default function PlayerLayout({ children }) {
         .player-sidebar:hover .rail-btn,
         .player-sidebar:focus-within .rail-btn { gap: 8px !important; padding-left: 12px !important; padding-right: 12px !important; }
 
-        .nav-link:not(.active):hover { background: rgba(251,191,36,.08) !important; color: #fff !important; }
+        .nav-link:not(.active):hover { background: rgba(239,68,68,.08) !important; color: #fff !important; }
         .player-sidebar::-webkit-scrollbar { display: none; }
         .wins-track { animation: winsScroll 40s linear infinite; padding-left: 20px; }
         @keyframes winsScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .logo-icon { display: none; }
-        .bal-chip:hover { border-color: rgba(251,191,36,.6) !important; }
+        .bal-chip:hover { border-color: rgba(239,68,68,.6) !important; }
         @media (max-width: 900px) {
           .logo-full { display: none; }
           .logo-icon { display: inline-flex !important; }

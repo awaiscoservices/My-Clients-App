@@ -85,7 +85,7 @@ function AccountCard({ account, onRequestPassword, requestingPassword }) {
   const [showPassword, setShowPassword] = useState(false)
   const [hov, setHov] = useState(false)
   const [copied, setCopied] = useState('')
-  const color = account.game_panels?.accent_color || '#fbbf24'
+  const color = account.game_panels?.accent_color || '#ef4444'
   const pwRequested = !!account.password_change_requested
 
   function copy(text, label) {
@@ -96,8 +96,8 @@ function AccountCard({ account, onRequestPassword, requestingPassword }) {
   }
 
   const copyBtn = {
-    padding: '6px 12px', background: 'rgba(251,191,36,.15)', border: '1px solid rgba(251,191,36,.3)',
-    borderRadius: 8, color: '#fbbf24', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif",
+    padding: '6px 12px', background: 'rgba(239,68,68,.15)', border: '1px solid rgba(239,68,68,.3)',
+    borderRadius: 8, color: '#ef4444', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif",
   }
 
   return (
@@ -154,8 +154,8 @@ function AccountCard({ account, onRequestPassword, requestingPassword }) {
             </div>
           </div>
         ) : account.status === 'pending' ? (
-          <div style={{ padding: 16, background: 'rgba(245,158,11,.08)', border: '1px solid rgba(245,158,11,.2)', borderRadius: 12, marginBottom: 14, textAlign: 'center' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#f59e0b' }}>Being set up</div>
+          <div style={{ padding: 16, background: 'rgba(220,38,38,.08)', border: '1px solid rgba(220,38,38,.2)', borderRadius: 12, marginBottom: 14, textAlign: 'center' }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#dc2626' }}>Being set up</div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>Our team is creating your account. You will be notified once it is ready.</div>
           </div>
         ) : null}
@@ -172,7 +172,7 @@ function AccountCard({ account, onRequestPassword, requestingPassword }) {
             one keeps working until staff replace it. */}
         {account.status === 'active' && (
           pwRequested ? (
-            <div style={{ marginBottom: 10, padding: '9px 12px', background: 'rgba(245,158,11,.1)', border: '1px solid rgba(245,158,11,.25)', borderRadius: 10, fontSize: 11.5, color: '#f59e0b', fontWeight: 700, textAlign: 'center' }}>
+            <div style={{ marginBottom: 10, padding: '9px 12px', background: 'rgba(220,38,38,.1)', border: '1px solid rgba(220,38,38,.25)', borderRadius: 10, fontSize: 11.5, color: '#dc2626', fontWeight: 700, textAlign: 'center' }}>
               New password requested — your current one still works
             </div>
           ) : (
@@ -370,8 +370,8 @@ export default function GamesPage() {
           letter-spacing: .03em; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
         }
         .pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
-        .pill-load   { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #050505; box-shadow: 0 8px 20px rgba(251,191,36,.35); }
-        .pill-load:hover   { box-shadow: 0 12px 26px rgba(251,191,36,.5); }
+        .pill-load   { background: linear-gradient(135deg, #ef4444, #dc2626); color: #050505; box-shadow: 0 8px 20px rgba(239,68,68,.35); }
+        .pill-load:hover   { box-shadow: 0 12px 26px rgba(239,68,68,.5); }
         .pill-redeem { background: linear-gradient(135deg, #2dd4bf, #0891b2); box-shadow: 0 8px 20px rgba(13,148,136,.35); }
         .pill-redeem:hover { box-shadow: 0 12px 26px rgba(13,148,136,.5); }
 
@@ -379,8 +379,8 @@ export default function GamesPage() {
         .btn-soft {
           width: 100%; margin-bottom: 10px; padding: 10px 12px; border-radius: 10px;
           font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif;
-          color: #fbbf24; border: 1px solid rgba(251,191,36,.3);
-          background: linear-gradient(135deg, rgba(251,191,36,.18), rgba(245,158,11,.08));
+          color: #ef4444; border: 1px solid rgba(239,68,68,.3);
+          background: linear-gradient(135deg, rgba(239,68,68,.18), rgba(220,38,38,.08));
           transition: filter .18s ease;
         }
         .btn-soft:hover:enabled { filter: brightness(1.12); }
@@ -407,9 +407,9 @@ export default function GamesPage() {
           border-top: 1px solid rgba(255,255,255,.08);
           font-size: 11px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: rgba(255,255,255,.88);
         }
-        .gtile-play { font-size: 8px; color: #fbbf24; }
+        .gtile-play { font-size: 8px; color: #ef4444; }
         .gtile-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .gcard:hover .gtile { transform: translateY(-6px) scale(1.04); border-color: #fbbf24; box-shadow: 0 22px 40px rgba(0,0,0,.55), 0 0 0 1px #fbbf24, 0 0 30px rgba(251,191,36,.35); z-index: 3; }
+        .gcard:hover .gtile { transform: translateY(-6px) scale(1.04); border-color: #ef4444; box-shadow: 0 22px 40px rgba(0,0,0,.55), 0 0 0 1px #ef4444, 0 0 30px rgba(239,68,68,.35); z-index: 3; }
         .gcard:hover .gtile::after { left: 135%; }
         .gcard:hover .gtile-art img { transform: scale(1.1) translateY(-3px); }
 
@@ -424,11 +424,11 @@ export default function GamesPage() {
           display: inline-flex; align-items: center; gap: 10px;
           padding: 13px 34px; border-radius: 14px; cursor: pointer;
           font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; color: #050505;
-          background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none;
-          box-shadow: 0 10px 26px rgba(251,191,36,.25);
+          background: linear-gradient(135deg, #ef4444, #dc2626); border: none;
+          box-shadow: 0 10px 26px rgba(239,68,68,.25);
           transition: transform .2s, box-shadow .2s;
         }
-        .show-more:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(251,191,36,.35); }
+        .show-more:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(239,68,68,.35); }
 
         /* Bigger, so the two tabs read as the main control on the page. */
         .gtab {
@@ -445,7 +445,7 @@ export default function GamesPage() {
       `}</style>
 
       {toast && (
-        <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, background: toast.type === 'error' ? 'rgba(239,68,68,.95)' : toast.type === 'success' ? 'rgba(16,185,129,.95)' : 'rgba(251,191,36,.95)', borderRadius: 12, padding: '12px 24px', color: '#fff', fontSize: 14, fontWeight: 600, fontFamily: "'Outfit',sans-serif", boxShadow: '0 8px 32px rgba(0,0,0,.4)' }}>
+        <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, background: toast.type === 'error' ? 'rgba(239,68,68,.95)' : toast.type === 'success' ? 'rgba(16,185,129,.95)' : 'rgba(239,68,68,.95)', borderRadius: 12, padding: '12px 24px', color: '#fff', fontSize: 14, fontWeight: 600, fontFamily: "'Outfit',sans-serif", boxShadow: '0 8px 32px rgba(0,0,0,.4)' }}>
           {toast.msg}
         </div>
       )}
@@ -463,9 +463,9 @@ export default function GamesPage() {
         <div style={{ display: 'flex', gap: 5, background: 'rgba(255,255,255,.04)', padding: 5, borderRadius: 15 }}>
           {[['all', 'All Games'], ['mine', 'My Games']].map(([key, label]) => (
             <button key={key} onClick={() => setTab(key)} className="gtab" style={{
-              background: tab === key ? 'linear-gradient(135deg,#f59e0b,#fbbf24)' : 'transparent',
+              background: tab === key ? 'linear-gradient(135deg,#dc2626,#ef4444)' : 'transparent',
               color: tab === key ? '#050505' : 'rgba(255,255,255,.5)',
-              boxShadow: tab === key ? '0 8px 20px rgba(251,191,36,.25)' : 'none',
+              boxShadow: tab === key ? '0 8px 20px rgba(239,68,68,.25)' : 'none',
             }}>
               {label}{key === 'mine' && accounts.length > 0 ? ` (${accounts.length})` : ''}
             </button>
@@ -519,7 +519,7 @@ export default function GamesPage() {
             <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 14, marginBottom: 24 }}>
               Pick a game under All Games and request an account. Our team will set it up for you.
             </p>
-            <button onClick={() => setTab('all')} style={{ padding: '12px 28px', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', border: 'none', borderRadius: 12, color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
+            <button onClick={() => setTab('all')} style={{ padding: '12px 28px', background: 'linear-gradient(135deg,#ef4444,#dc2626)', border: 'none', borderRadius: 12, color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
               Browse games
             </button>
           </div>
@@ -536,7 +536,7 @@ export default function GamesPage() {
               ))}
             </div>
             <div style={{ textAlign: 'center' }}>
-              <button onClick={() => setTab('all')} style={{ padding: '12px 28px', background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.3)', borderRadius: 12, color: '#fbbf24', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
+              <button onClick={() => setTab('all')} style={{ padding: '12px 28px', background: 'rgba(239,68,68,.12)', border: '1px solid rgba(239,68,68,.3)', borderRadius: 12, color: '#ef4444', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
                 + Request another game account
               </button>
             </div>

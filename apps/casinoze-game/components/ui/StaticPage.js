@@ -4,7 +4,7 @@ import SiteFooter from '../site/SiteFooter'
 import Reveal from '../site/Reveal'
 import { BRAND, pageTitle } from '../../lib/brand'
 
-export const panel = { background: 'rgba(255,255,255,.035)', border: '1px solid rgba(251,191,36,.14)', borderRadius: 20, padding: 26 }
+export const panel = { background: 'rgba(255,255,255,.035)', border: '1px solid rgba(239,68,68,.14)', borderRadius: 20, padding: 26 }
 
 // Public page shell (no login needed): same nav + footer as the landing page.
 export default function StaticPage({ title, subtitle, children }) {
@@ -17,7 +17,7 @@ export default function StaticPage({ title, subtitle, children }) {
       </Head>
       <SiteNav />
       <main style={{ flex: 1, width: '100%', maxWidth: 820, margin: '0 auto', padding: '56px 24px 64px' }}>
-        <Reveal><div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, color: '#fbbf24', fontSize: 12, fontWeight: 800, letterSpacing: '.18em', textTransform: 'uppercase' }}><span style={{ width: 28, height: 1, background: '#fbbf24' }} />{BRAND.name}</div></Reveal>
+        <Reveal><div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, color: '#ef4444', fontSize: 12, fontWeight: 800, letterSpacing: '.18em', textTransform: 'uppercase' }}><span style={{ width: 28, height: 1, background: '#ef4444' }} />{BRAND.name}</div></Reveal>
         <Reveal delay={80}><h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(34px,6vw,56px)', fontWeight: 700, lineHeight: 1.05, margin: '0 0 12px', letterSpacing: '-.01em' }}>{title}</h1></Reveal>
         {subtitle && <Reveal delay={140}><p style={{ color: 'rgba(255,255,255,.55)', fontSize: 17, lineHeight: 1.7, margin: '0 0 34px' }}>{subtitle}</p></Reveal>}
         <Reveal delay={200}>{children}</Reveal>

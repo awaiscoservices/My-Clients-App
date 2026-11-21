@@ -25,21 +25,21 @@ function HowItWorks() {
         .hiw-step:nth-child(3) { animation-delay: .39s; }
         @keyframes hiwIn { to { opacity: 1; transform: translateY(0); } }
         .hiw-ring { position: relative; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-          background: radial-gradient(circle at 30% 25%, rgba(251,191,36,.22), rgba(255,255,255,.03));
-          border: 1.5px solid rgba(251,191,36,.45); color: ${G}; margin-bottom: 14px; z-index: 2; }
-        .hiw-ring::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px solid rgba(251,191,36,.25);
+          background: radial-gradient(circle at 30% 25%, rgba(239,68,68,.22), rgba(255,255,255,.03));
+          border: 1.5px solid rgba(239,68,68,.45); color: ${G}; margin-bottom: 14px; z-index: 2; }
+        .hiw-ring::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px solid rgba(239,68,68,.25);
           animation: hiwPulse 2.4s ease-out infinite; }
         .hiw-step:nth-child(2) .hiw-ring::before { animation-delay: .8s; }
         .hiw-step:nth-child(3) .hiw-ring::before { animation-delay: 1.6s; }
         @keyframes hiwPulse { 0% { transform: scale(1); opacity: .6; } 70% { transform: scale(1.25); opacity: 0; } 100% { opacity: 0; } }
         .hiw-num { position: absolute; top: -4px; right: -4px; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 800;
-          color: #050505; background: linear-gradient(135deg, ${G}, #f59e0b); display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 4px 10px rgba(245,158,11,.4); z-index: 3; }
+          color: #050505; background: linear-gradient(135deg, ${G}, #dc2626); display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 4px 10px rgba(220,38,38,.4); z-index: 3; }
         .hiw-t { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 4px; }
         .hiw-d { font-size: 12.5px; color: rgba(255,255,255,.45); line-height: 1.45; max-width: 190px; }
         /* Connector line behind the rings */
         .hiw-step:not(:last-child)::after { content: ''; position: absolute; top: 43px; left: 50%; width: 100%; height: 2px; z-index: 1;
-          background: linear-gradient(90deg, rgba(251,191,36,.5), rgba(251,191,36,.12)); }
+          background: linear-gradient(90deg, rgba(239,68,68,.5), rgba(239,68,68,.12)); }
         .hiw-step:not(:last-child)::before { content: ''; position: absolute; top: 39px; left: 50%; width: 10px; height: 10px; z-index: 1;
           background: ${G}; border-radius: 50%; box-shadow: 0 0 10px ${G};
           animation: hiwFlow 2.6s linear infinite; }
@@ -51,7 +51,7 @@ function HowItWorks() {
           .hiw-ring { margin-bottom: 12px; }
           .hiw-d { max-width: 260px; }
           .hiw-step:not(:last-child)::after { top: 78px; left: 50%; transform: translateX(-50%); width: 2px; height: 20px;
-            background: linear-gradient(180deg, rgba(251,191,36,.5), rgba(251,191,36,.12)); }
+            background: linear-gradient(180deg, rgba(239,68,68,.5), rgba(239,68,68,.12)); }
           .hiw-step:not(:last-child)::before { display: none; }
         }
       `}</style>
@@ -145,7 +145,7 @@ export default function Referrals() {
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)' }}>
                 <div style={{ fontWeight: 700, fontSize: 14, flex: 1, minWidth: 120 }}>{r.name}</div>
                 <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,.4)' }}>{fmtDate(r.joined_at)}</div>
-                <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 99, background: r.has_deposited ? 'rgba(16,185,129,.12)' : 'rgba(251,191,36,.12)', color: r.has_deposited ? '#10b981' : G }}>
+                <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 99, background: r.has_deposited ? 'rgba(16,185,129,.12)' : 'rgba(239,68,68,.12)', color: r.has_deposited ? '#10b981' : G }}>
                   {r.has_deposited ? `Deposited ×${r.deposits}` : 'Awaiting deposit'}
                 </span>
                 <div style={{ minWidth: 80, textAlign: 'right' }}><MoneyDisplay cents={r.earned_cents} size="sm" color="#10b981" /></div>

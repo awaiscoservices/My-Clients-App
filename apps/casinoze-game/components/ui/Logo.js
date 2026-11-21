@@ -19,7 +19,7 @@ export default function Logo({ variant = 'full', height = 40, stack = false, cla
   }, [])
 
   const mark = failed ? (
-    <span style={{ width: height, height, borderRadius: height * 0.28, flexShrink: 0, background: 'linear-gradient(135deg,#fbbf24,#b45309)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#1a1206' }}><Icon name="gem" size={height * 0.5} stroke={2} /></span>
+    <span style={{ width: height, height, borderRadius: height * 0.28, flexShrink: 0, background: 'linear-gradient(135deg,#ef4444,#b45309)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff' }}><Icon name="gem" size={height * 0.5} stroke={2} /></span>
   ) : (
     <img ref={ref} className="logo-mark" src={SRC} alt={BRAND.name} onError={() => setFailed(true)}
       style={{ height, width: height, objectFit: 'contain', display: 'block', flexShrink: 0 }} />
@@ -32,7 +32,7 @@ export default function Logo({ variant = 'full', height = 40, stack = false, cla
       {mark}
       <span className="logo-text" style={{ lineHeight: 1.1, textAlign: stack ? 'center' : 'left' }}>
         <span style={{ display: 'block', fontFamily: "'Cinzel', serif", fontSize: height * 0.4, fontWeight: 700, letterSpacing: '.06em', color: '#fff' }}>{BRAND.markTop}</span>
-        <span style={{ display: 'block', fontFamily: "'Cinzel', serif", fontSize: height * 0.29, fontWeight: 700, letterSpacing: '.3em', color: '#fbbf24' }}>{BRAND.markBottom}</span>
+        <span style={{ display: 'block', fontFamily: "'Cinzel', serif", fontSize: height * 0.29, fontWeight: 700, letterSpacing: '.3em', color: '#ef4444' }}>{BRAND.markBottom}</span>
       </span>
     </span>
   )

@@ -46,7 +46,7 @@ export default function Login() {
         left: `${Math.random() * 100}%`, top: `${100 + Math.random() * 20}%`,
         size: `${Math.random() * 18 + 10}px`, opacity: Math.random() * 0.18 + 0.04,
         duration: Math.random() * 14 + 10, delay: -(Math.random() * 20),
-        color: Math.random() > 0.5 ? '#fbbf24' : '#f59e0b', glow: Math.random() > 0.65,
+        color: Math.random() > 0.5 ? '#ef4444' : '#dc2626', glow: Math.random() > 0.65,
       },
     }));
     setParticles(generated);
@@ -96,15 +96,15 @@ export default function Login() {
     width: '100%', padding: '14px 16px',
     background: 'rgba(255,255,255,0.05)',
     border: `1.5px solid ${focusedField === field
-      ? errors[field] ? '#ef4444' : '#fbbf24'
-      : errors[field] ? 'rgba(239,68,68,0.5)' : 'rgba(251,191,36,0.2)'}`,
+      ? errors[field] ? '#ef4444' : '#ef4444'
+      : errors[field] ? 'rgba(239,68,68,0.5)' : 'rgba(239,68,68,0.2)'}`,
     borderRadius: '10px', color: '#ffffff', fontSize: '15px',
     fontFamily: 'Outfit, sans-serif', outline: 'none', boxSizing: 'border-box',
     transition: 'border-color 0.25s, box-shadow 0.25s',
     boxShadow: focusedField === field
-      ? errors[field] ? '0 0 0 3px rgba(239,68,68,0.15)' : '0 0 0 3px rgba(251,191,36,0.15), 0 0 20px rgba(251,191,36,0.1)'
+      ? errors[field] ? '0 0 0 3px rgba(239,68,68,0.15)' : '0 0 0 3px rgba(239,68,68,0.15), 0 0 20px rgba(239,68,68,0.1)'
       : 'none',
-    caretColor: '#fbbf24',
+    caretColor: '#ef4444',
   });
 
   return (
@@ -117,11 +117,11 @@ export default function Login() {
           body{background:var(--bg-gradient);background-attachment:fixed;overflow-x:hidden}
           input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus{
             -webkit-box-shadow:0 0 0 1000px rgba(10,4,30,1) inset!important;
-            -webkit-text-fill-color:#ffffff!important;caret-color:#fbbf24!important}
+            -webkit-text-fill-color:#ffffff!important;caret-color:#ef4444!important}
           @keyframes floatUp{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-110vh) rotate(360deg);opacity:0}}
           @keyframes fadeSlideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
           @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
-          @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(251,191,36,0.15)}50%{box-shadow:0 0 40px rgba(251,191,36,0.35)}}
+          @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(239,68,68,0.15)}50%{box-shadow:0 0 40px rgba(239,68,68,0.35)}}
           @keyframes spin{to{transform:rotate(360deg)}}
           @keyframes orb-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.06)}}
           @keyframes toastIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
@@ -151,12 +151,12 @@ export default function Login() {
         {/* Logo */}
         <div style={{ animation: 'fadeSlideUp 0.6s ease both', marginBottom: 36, textAlign: 'center' }}>
           <Logo variant="full" stack height={88} />
-          <div style={{ marginTop: 6, fontSize: 11, letterSpacing: 4, color: 'rgba(251,191,36,0.7)', textTransform: 'uppercase', fontWeight: 500 }}>{BRAND.tagline}</div>
+          <div style={{ marginTop: 6, fontSize: 11, letterSpacing: 4, color: 'rgba(239,68,68,0.7)', textTransform: 'uppercase', fontWeight: 500 }}>{BRAND.tagline}</div>
         </div>
 
         {/* Card */}
-        <div style={{ width: '100%', maxWidth: 440, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 20, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', animation: 'fadeSlideUp 0.7s ease 0.1s both, pulse-glow 4s ease-in-out infinite', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: 1, background: 'linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #fbbf24, transparent)' }} />
+        <div style={{ width: '100%', maxWidth: 440, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 20, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', animation: 'fadeSlideUp 0.7s ease 0.1s both, pulse-glow 4s ease-in-out infinite', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: 1, background: 'linear-gradient(90deg, transparent, #ef4444, #dc2626, #ef4444, transparent)' }} />
 
           <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 6, textAlign: 'center' }}>Welcome Back</h2>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, textAlign: 'center', marginBottom: 28 }}>Sign in to your {BRAND.short} account</p>
@@ -175,10 +175,10 @@ export default function Login() {
             </div>
 
             <div style={{ textAlign: 'right', marginBottom: 24 }}>
-              <Link href="/auth/forgot-password" style={{ color: 'rgba(251,191,36,0.7)', fontSize: 12, textDecoration: 'none', fontWeight: 500 }}>Forgot password?</Link>
+              <Link href="/auth/forgot-password" style={{ color: 'rgba(239,68,68,0.7)', fontSize: 12, textDecoration: 'none', fontWeight: 500 }}>Forgot password?</Link>
             </div>
 
-            <button type="submit" disabled={loading} style={{ width: '100%', padding: 15, background: loading ? 'rgba(245,158,11,0.4)' : 'linear-gradient(135deg, #f59e0b, #fbbf24)', border: 'none', borderRadius: 10, color: '#0a0410', fontSize: 15, fontWeight: 700, fontFamily: 'Outfit, sans-serif', letterSpacing: 0.5, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'transform 0.15s, box-shadow 0.15s', boxShadow: loading ? 'none' : '0 4px 24px rgba(245,158,11,0.35)' }}
+            <button type="submit" disabled={loading} style={{ width: '100%', padding: 15, background: loading ? 'rgba(220,38,38,0.4)' : 'linear-gradient(135deg, #dc2626, #ef4444)', border: 'none', borderRadius: 10, color: '#0a0410', fontSize: 15, fontWeight: 700, fontFamily: 'Outfit, sans-serif', letterSpacing: 0.5, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'transform 0.15s, box-shadow 0.15s', boxShadow: loading ? 'none' : '0 4px 24px rgba(220,38,38,0.35)' }}
               onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'scale(1.02)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}>
               {loading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Signing in…</>) : 'Sign In to Play'}
@@ -187,7 +187,7 @@ export default function Login() {
 
           <p style={{ textAlign: 'center', marginTop: 24, color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
             New to {BRAND.short}?{' '}
-            <Link href="/auth/register" style={{ color: '#fbbf24', fontWeight: 600, textDecoration: 'none', borderBottom: '1px solid rgba(251,191,36,0.3)', paddingBottom: 1 }}>Create an account →</Link>
+            <Link href="/auth/register" style={{ color: '#ef4444', fontWeight: 600, textDecoration: 'none', borderBottom: '1px solid rgba(239,68,68,0.3)', paddingBottom: 1 }}>Create an account →</Link>
           </p>
         </div>
 

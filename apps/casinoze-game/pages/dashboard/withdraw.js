@@ -118,7 +118,7 @@ export default function Withdraw() {
       <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <Title sub="Send your withdrawable balance to your own account">Withdraw</Title>
       {kyc && !verified && (
-        <Notice kind="info">Identity verification is required before you can withdraw. <Link href="/dashboard/kyc" style={{ color: '#fbbf24', fontWeight: 800 }}>Verify now →</Link></Notice>
+        <Notice kind="info">Identity verification is required before you can withdraw. <Link href="/dashboard/kyc" style={{ color: '#ef4444', fontWeight: 800 }}>Verify now →</Link></Notice>
       )}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 20 }}>
         <form onSubmit={submit} style={card}>
@@ -164,7 +164,7 @@ export default function Withdraw() {
           {history.length === 0 ? <Empty text="No withdrawals yet" /> : history.map(r => (
             <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 20px', borderBottom: '1px solid rgba(255,255,255,.04)' }}>
               <div><div style={{ fontSize: 13, fontWeight: 600 }}>{r.method}</div><div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)' }}>{fmtDate(r.created_at)}</div></div>
-              <div style={{ textAlign: 'right' }}><MoneyDisplay cents={r.amount_cents} size="sm" color="#fbbf24" /><div><StatusBadge status={r.status} size="xs" /></div></div>
+              <div style={{ textAlign: 'right' }}><MoneyDisplay cents={r.amount_cents} size="sm" color="#ef4444" /><div><StatusBadge status={r.status} size="xs" /></div></div>
             </div>
           ))}
         </div>

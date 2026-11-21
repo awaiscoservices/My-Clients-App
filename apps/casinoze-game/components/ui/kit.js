@@ -4,8 +4,8 @@ import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
 import Icon from './Icon'
 
-export const G = '#fbbf24'
-export const card = { background: 'rgba(255,255,255,.03)', border: '1px solid rgba(251,191,36,.14)', borderRadius: 18, padding: 22 }
+export const G = '#ef4444'
+export const card = { background: 'rgba(255,255,255,.03)', border: '1px solid rgba(239,68,68,.14)', borderRadius: 18, padding: 22 }
 export const input = { width: '100%', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.14)', borderRadius: 12, padding: '12px 14px', color: '#fff', fontSize: 14, fontFamily: 'inherit', outline: 'none' }
 
 // Returns the logged-in user, or sends the visitor to the login page
@@ -39,8 +39,8 @@ export function Btn({ children, ghost, style, ...p }) {
     <button {...p} style={{
       padding: '12px 26px', borderRadius: 12, fontSize: 14, fontWeight: 800, fontFamily: 'inherit',
       cursor: p.disabled ? 'not-allowed' : 'pointer', opacity: p.disabled ? .5 : 1,
-      border: ghost ? '1px solid rgba(251,191,36,.4)' : 'none',
-      background: ghost ? 'transparent' : 'linear-gradient(135deg,#fbbf24,#f59e0b)',
+      border: ghost ? '1px solid rgba(239,68,68,.4)' : 'none',
+      background: ghost ? 'transparent' : 'linear-gradient(135deg,#ef4444,#dc2626)',
       color: ghost ? G : '#050505', ...style,
     }}>{children}</button>
   )
@@ -48,7 +48,7 @@ export function Btn({ children, ghost, style, ...p }) {
 
 export function Notice({ kind = 'info', children }) {
   if (!children) return null
-  const c = { error: ['239,68,68', '#f87171'], success: ['16,185,129', '#10b981'], info: ['251,191,36', G] }[kind]
+  const c = { error: ['239,68,68', '#f87171'], success: ['16,185,129', '#10b981'], info: ['239,68,68', G] }[kind]
   return <div style={{ padding: '12px 16px', borderRadius: 12, marginBottom: 16, fontSize: 13, fontWeight: 600, background: `rgba(${c[0]},.1)`, border: `1px solid rgba(${c[0]},.3)`, color: c[1] }}>{children}</div>
 }
 
@@ -65,7 +65,7 @@ export function WaitPopup({ data, onClose, icon = 'checkCircle' }) {
   const popColor = data.iconColor || '#10b981'
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-      <div onClick={e => e.stopPropagation()} style={{ position: 'relative', background: '#0e1a2e', border: '1px solid rgba(251,191,36,.3)', borderRadius: 20, padding: '30px 28px', width: '100%', maxWidth: 420, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,.5)' }}>
+      <div onClick={e => e.stopPropagation()} style={{ position: 'relative', background: '#0e1a2e', border: '1px solid rgba(239,68,68,.3)', borderRadius: 20, padding: '30px 28px', width: '100%', maxWidth: 420, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,.5)' }}>
         <button onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', lineHeight: 1, cursor: 'pointer', display: 'inline-flex' }}><Icon name="x" size={20} /></button>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14, color: popColor }}><Icon name={popIcon} size={46} /></div>
         <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: '#fff', margin: '0 0 10px' }}>{data.title}</h3>
@@ -85,7 +85,7 @@ export const WAIT_MESSAGES = {
   game_account: { title: 'Account Requested', text: 'Your game account request has been received. Our team is setting it up and your login details will be ready shortly — thank you for your patience.' },
   game_password: { title: 'Reset Requested', text: 'Your game password reset request has been received. Our team will update your login shortly — thank you for your patience.' },
   password: { title: 'Password Updated', text: 'Your password has been updated successfully. Please use your new password the next time you sign in.' },
-  maintenance: { title: 'Temporarily unavailable', text: 'This game is temporarily unavailable. Please try again later.', icon: 'alert', iconColor: '#f59e0b' },
+  maintenance: { title: 'Temporarily unavailable', text: 'This game is temporarily unavailable. Please try again later.', icon: 'alert', iconColor: '#dc2626' },
 }
 
 // The server raises / returns this exact text when a game is under maintenance;

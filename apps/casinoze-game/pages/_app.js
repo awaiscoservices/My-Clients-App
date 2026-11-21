@@ -9,9 +9,9 @@ import { SettingsProvider, useSettings } from '../lib/settings'
 function MaintenanceScreen({ message }) {
   return (
     <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: 'var(--bg-gradient)', backgroundAttachment: 'fixed', fontFamily: "'Outfit', sans-serif", padding: '32px 16px' }}>
-      <div style={{ maxWidth: 460, width: '100%', textAlign: 'center', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 20, padding: 'clamp(28px, 6vw, 48px)', backdropFilter: 'blur(20px)' }}>
+      <div style={{ maxWidth: 460, width: '100%', textAlign: 'center', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 20, padding: 'clamp(28px, 6vw, 48px)', backdropFilter: 'blur(20px)' }}>
         <div style={{ fontSize: 44, marginBottom: 12 }}>🛠️</div>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 24, fontWeight: 700, color: '#fbbf24', margin: '0 0 12px' }}>Under Maintenance</h1>
+        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 24, fontWeight: 700, color: '#ef4444', margin: '0 0 12px' }}>Under Maintenance</h1>
         <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, lineHeight: 1.7, margin: 0 }}>
           {message || "We're performing scheduled maintenance. We'll be back shortly."}
         </p>

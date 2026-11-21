@@ -8,21 +8,22 @@
   padding: 0;
 }
 
-/* ── THEME: obsidian black-gold luxury, deep royal glow ──
-   A near-black base so the page reads genuinely dark. A gold "crown"
+/* ── THEME (Casinoze Game): obsidian black-crimson luxury ──
+   A near-black base so the page reads genuinely dark. A crimson "crown"
    glow at the top, a royal-purple light upper-right and a deep indigo
-   light lower-left give it depth without the muddy brown/teal it had. */
+   light lower-left give it depth. (--gold / --gold-sheen keep their names
+   for compatibility but now hold the crimson accent.) */
 :root {
   --bg-gradient:
-    radial-gradient(1150px 560px at 50% -16%, rgba(251,191,36,.17), transparent 55%),
+    radial-gradient(1150px 560px at 50% -16%, rgba(239,68,68,.17), transparent 55%),
     radial-gradient(760px 520px at 94% 4%, rgba(139,60,230,.15), transparent 60%),
     radial-gradient(880px 640px at 4% 104%, rgba(49,36,140,.14), transparent 58%),
     linear-gradient(165deg, #05060c 0%, #080912 40%, #090813 72%, #050409 100%);
   /* Darker, indigo-tinted glass for topbar / sidebar / cards. */
   --panel-gradient:
     linear-gradient(180deg, rgba(26,27,48,.90), rgba(8,9,17,.96));
-  --gold-sheen: linear-gradient(135deg, #fde68a 0%, #fbbf24 42%, #f59e0b 72%, #d97706 100%);
-  --gold: #fbbf24;
+  --gold-sheen: linear-gradient(135deg, #fca5a5 0%, #ef4444 42%, #dc2626 72%, #b91c1c 100%);
+  --gold: #ef4444;
 }
 html { background: #05060c; }
 
@@ -49,7 +50,7 @@ body::before {
 /* ── SHINE HELPERS (opt-in, shared) ── */
 /* Gold gradient text — use on headings/amounts you want to pop. */
 .shine-text {
-  background: linear-gradient(100deg, #fff7e0, #fbbf24 45%, #f59e0b 70%, #fff7e0);
+  background: linear-gradient(100deg, #fee2e2, #ef4444 45%, #dc2626 70%, #fee2e2);
   background-size: 200% auto;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: transparent;
@@ -60,16 +61,16 @@ body::before {
 /* Gold gradient fill (buttons, chips, active pills). */
 .gold-fill {
   background: var(--gold-sheen) !important;
-  color: #1a1206 !important;
-  box-shadow: 0 6px 20px rgba(251,191,36,.28), inset 0 1px 0 rgba(255,255,255,.4);
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(239,68,68,.28), inset 0 1px 0 rgba(255,255,255,.4);
 }
 
 /* Lift + gold glow on interactive cards. */
 .glow-card { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
 .glow-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(251,191,36,.5) !important;
-  box-shadow: 0 16px 40px rgba(0,0,0,.45), 0 0 26px rgba(251,191,36,.18);
+  border-color: rgba(239,68,68,.5) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.45), 0 0 26px rgba(239,68,68,.18);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,16 +80,16 @@ body::before {
 
 /* Slimmer gold-tinted scrollbars to match the theme. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(251,191,36,.5), rgba(245,158,11,.3)); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(239,68,68,.5), rgba(220,38,38,.3)); border-radius: 99px; }
 ::-webkit-scrollbar-track { background: rgba(255,255,255,.03); }
 
 @layer components {
   .btn-primary {
-    @apply bg-amber-500 hover:bg-amber-400 text-black font-semibold
+    @apply bg-red-500 hover:bg-red-400 text-white font-semibold
            py-3 px-6 rounded-xl transition-all duration-200 cursor-pointer;
   }
   .btn-gold {
-    @apply bg-amber-500 hover:bg-amber-400 text-black font-bold
+    @apply bg-red-500 hover:bg-red-400 text-white font-bold
            py-3 px-6 rounded-xl transition-all duration-200 cursor-pointer;
   }
   .card {
@@ -97,7 +98,7 @@ body::before {
   .input-field {
     @apply w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3
            text-white placeholder-white/40 focus:outline-none
-           focus:border-amber-400 transition-colors;
+           focus:border-red-400 transition-colors;
   }
 }
 
@@ -123,8 +124,8 @@ a, button, select, label { touch-action: manipulation; -webkit-tap-highlight-col
 .player-content>*:nth-child(2){animation-delay:.06s}.player-content>*:nth-child(3){animation-delay:.12s}.player-content>*:nth-child(4){animation-delay:.18s}
 .player-content>*:nth-child(5){animation-delay:.24s}.player-content>*:nth-child(6){animation-delay:.3s}.player-content>*:nth-child(n+7){animation-delay:.36s}
 @keyframes pageRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-main [style*="251,191,36,.14"]{transition:border-color .25s,box-shadow .25s}
-main [style*="251,191,36,.14"]:hover{border-color:rgba(251,191,36,.34)!important}
+main [style*="239,68,68,.14"]{transition:border-color .25s,box-shadow .25s}
+main [style*="239,68,68,.14"]:hover{border-color:rgba(239,68,68,.34)!important}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.page-enter>*,.player-content>*{animation:none}}
 
 /* headings across the logged-in side use the same display font as the public site */

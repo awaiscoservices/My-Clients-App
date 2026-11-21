@@ -24,7 +24,7 @@ const iconFor = lvl => {
 }
 const shape = lvl => lvl && ({
   name: lvl.name,
-  color: lvl.accent_color || lvl.badge_color || '#fbbf24',
+  color: lvl.accent_color || lvl.badge_color || '#ef4444',
   icon: iconFor(lvl),
   min_xp: lvl.xp_required || 0,
   perks: lvl.perks || null,
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
     kyc_status: profile.kyc_status,
     status: profile.status,
     xp_points: profile.total_xp || 0,
-    level: shape(current) || { name: 'Unranked', color: '#fbbf24', icon: 'star', min_xp: 0, perks: null },
+    level: shape(current) || { name: 'Unranked', color: '#ef4444', icon: 'star', min_xp: 0, perks: null },
     next_level: shape(next),
     my_referral_code: profile.referral_code,
     cash_balance_cents: wallet.cash_balance_cents || 0,

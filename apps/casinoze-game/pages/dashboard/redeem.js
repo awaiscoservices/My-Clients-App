@@ -68,7 +68,7 @@ export default function Redeem() {
         <form onSubmit={submit} style={card}>
           <Notice kind={msg?.kind}>{msg?.text}</Notice>
           {accounts.length === 0 ? (
-            <Empty icon="gamepad" text={<>You need an active game account first. <Link href="/dashboard/games" style={{ color: '#fbbf24' }}>Browse games →</Link></>} />
+            <Empty icon="gamepad" text={<>You need an active game account first. <Link href="/dashboard/games" style={{ color: '#ef4444' }}>Browse games →</Link></>} />
           ) : (<>
             <div style={{ marginBottom: 16 }}><Label>Game account</Label>
               <select value={acct} onChange={e => setAcct(e.target.value)} style={input}>
@@ -79,9 +79,9 @@ export default function Redeem() {
               <Label>{isBonus ? 'Winnings amount (USD)' : 'Amount (USD)'}</Label>
               <input type="number" min="1" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" style={input} /></div>
             {isBonus && entered > 0 && (
-              <div style={{ marginBottom: 20, padding: '12px 14px', borderRadius: 12, background: 'rgba(251,191,36,.08)', border: '1px solid rgba(251,191,36,.25)' }}>
+              <div style={{ marginBottom: 20, padding: '12px 14px', borderRadius: 12, background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.25)' }}>
                 <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.7)' }}>You'll get </span>
-                <span style={{ fontSize: 16, fontWeight: 800, color: '#fbbf24' }}>${payout.toFixed(2)}</span>
+                <span style={{ fontSize: 16, fontWeight: 800, color: '#ef4444' }}>${payout.toFixed(2)}</span>
                 <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,.7)' }}> ({pct}% of ${entered.toFixed(2)})</span>
               </div>
             )}
@@ -93,7 +93,7 @@ export default function Redeem() {
         <div style={{ ...card, padding: 0, overflow: 'hidden' }}>
           <div style={{ padding: '16px 20px', fontWeight: 700, borderBottom: '1px solid rgba(255,255,255,.06)' }}>Recent requests</div>
           {history.length === 0 ? <Empty text="No redemptions yet" /> : history.map(r => {
-            const src = r.source_bucket === 'bonus' ? { t: 'Bonus winnings', c: '#fbbf24' } : r.source_bucket === 'cash' ? { t: 'Cash winnings', c: '#10b981' } : null
+            const src = r.source_bucket === 'bonus' ? { t: 'Bonus winnings', c: '#ef4444' } : r.source_bucket === 'cash' ? { t: 'Cash winnings', c: '#10b981' } : null
             return (
             <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 20px', borderBottom: '1px solid rgba(255,255,255,.04)' }}>
               <div>
@@ -101,7 +101,7 @@ export default function Redeem() {
                 {src && <div style={{ fontSize: 10.5, fontWeight: 700, color: src.c, marginTop: 1 }}>{src.t}</div>}
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)' }}>{fmtDate(r.created_at)}</div>
               </div>
-              <div style={{ textAlign: 'right' }}><MoneyDisplay cents={r.amount_cents} size="sm" color="#fbbf24" /><div><StatusBadge status={r.status} size="xs" /></div></div>
+              <div style={{ textAlign: 'right' }}><MoneyDisplay cents={r.amount_cents} size="sm" color="#ef4444" /><div><StatusBadge status={r.status} size="xs" /></div></div>
             </div>
           )})}
         </div>

@@ -5,7 +5,7 @@ const SPOTS = [[4, 8, -9, 0], [86, 6, 8, 1], [8, 62, 7, 2], [88, 58, -7, 3], [20
 export default function AuthBackdrop() {
   return (
     <div className="ab" aria-hidden="true">
-      <svg className="ab-rings" viewBox="0 0 800 800"><g fill="none" stroke="#fbbf24"><circle cx="400" cy="400" r="190" opacity=".1" /><circle cx="400" cy="400" r="290" opacity=".07" strokeDasharray="3 9" /><circle cx="400" cy="400" r="390" opacity=".05" /></g></svg>
+      <svg className="ab-rings" viewBox="0 0 800 800"><g fill="none" stroke="#ef4444"><circle cx="400" cy="400" r="190" opacity=".1" /><circle cx="400" cy="400" r="290" opacity=".07" strokeDasharray="3 9" /><circle cx="400" cy="400" r="390" opacity=".05" /></g></svg>
       {SPOTS.map(([x, y, r, i]) => {
         const g = GAME_CATALOG[(i * 4 + 1) % GAME_CATALOG.length]
         return <div key={i} className="ab-card" style={{ left: `${x}%`, top: `${y}%`, '--r': `${r}deg`, '--d': `${7 + i}s`, background: `linear-gradient(165deg,${g.tint[0]},${g.tint[1]})` }}><img src={g.src} alt="" /></div>

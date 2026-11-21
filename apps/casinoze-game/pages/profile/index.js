@@ -57,7 +57,7 @@ export default function Profile() {
       <Title sub="Your details, verification and level">My Profile</Title>
 
       <div style={{ ...card, display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap', marginBottom: 20 }}>
-        <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg,#fbbf24,#b45309)', color: '#050505', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, fontWeight: 800, border: '3px solid rgba(251,191,36,.5)', flexShrink: 0 }}>{initials(p?.full_name, user?.email)}</div>
+        <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg,#ef4444,#b45309)', color: '#050505', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, fontWeight: 800, border: '3px solid rgba(239,68,68,.5)', flexShrink: 0 }}>{initials(p?.full_name, user?.email)}</div>
         <div style={{ flex: '1 1 200px', minWidth: 0 }}>
           <div style={{ fontSize: 20, fontWeight: 800, wordBreak: 'break-word' }}>{p?.full_name || 'Player'}</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', wordBreak: 'break-all' }}>{user?.email}</div>
@@ -85,7 +85,7 @@ export default function Profile() {
               <span style={{ fontSize: 13, color: 'rgba(255,255,255,.5)' }}>{xp.toLocaleString()} XP</span>
             </div>
             <div style={{ height: 10, borderRadius: 99, background: 'rgba(255,255,255,.08)', overflow: 'hidden' }}>
-              <div style={{ width: `${pct}%`, height: '100%', borderRadius: 99, background: `linear-gradient(90deg,${color},#f59e0b)`, transition: 'width .6s' }} />
+              <div style={{ width: `${pct}%`, height: '100%', borderRadius: 99, background: `linear-gradient(90deg,${color},#dc2626)`, transition: 'width .6s' }} />
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,.45)', marginTop: 8 }}>{next ? `${(next.xp_required - xp).toLocaleString()} XP to reach ${next.name}` : 'You are at the top level'}</div>
           </div>

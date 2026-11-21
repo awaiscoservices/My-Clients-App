@@ -5,7 +5,7 @@
 
 const STATUS_CONFIG = {
   // Financial statuses
-  pending:           { label: 'Pending',        bg: 'rgba(245,158,11,.15)',  color: '#f59e0b', dot: '#f59e0b' },
+  pending:           { label: 'Pending',        bg: 'rgba(220,38,38,.15)',  color: '#dc2626', dot: '#dc2626' },
   under_review:      { label: 'Processing',     bg: 'rgba(59,130,246,.15)',  color: '#60a5fa', dot: '#60a5fa' },
   processing:        { label: 'Processing',     bg: 'rgba(59,130,246,.15)',  color: '#60a5fa', dot: '#60a5fa' },
   approved:          { label: 'Approved',       bg: 'rgba(16,185,129,.15)', color: '#10b981', dot: '#10b981' },
@@ -19,18 +19,18 @@ const STATUS_CONFIG = {
   // KYC statuses
   not_started:       { label: 'Not Started',    bg: 'rgba(107,114,128,.15)',color: '#9ca3af', dot: '#9ca3af' },
   verified:          { label: 'Verified',       bg: 'rgba(16,185,129,.15)', color: '#10b981', dot: '#10b981' },
-  more_info_required:{ label: 'More Info',      bg: 'rgba(245,158,11,.15)', color: '#f59e0b', dot: '#f59e0b' },
+  more_info_required:{ label: 'More Info',      bg: 'rgba(220,38,38,.15)', color: '#dc2626', dot: '#dc2626' },
   expired:           { label: 'Expired',        bg: 'rgba(239,68,68,.15)',  color: '#f87171', dot: '#f87171' },
 
   // Account statuses
   active:            { label: 'Active',         bg: 'rgba(16,185,129,.15)', color: '#10b981', dot: '#10b981' },
-  suspended:         { label: 'Suspended',      bg: 'rgba(245,158,11,.15)', color: '#f59e0b', dot: '#f59e0b' },
+  suspended:         { label: 'Suspended',      bg: 'rgba(220,38,38,.15)', color: '#dc2626', dot: '#dc2626' },
   banned:            { label: 'Banned',         bg: 'rgba(239,68,68,.15)',  color: '#f87171', dot: '#f87171' },
 
   // Support
   open:              { label: 'Open',           bg: 'rgba(59,130,246,.15)', color: '#60a5fa', dot: '#60a5fa' },
-  in_progress:       { label: 'In Progress',    bg: 'rgba(251,191,36,.15)', color: '#fbbf24', dot: '#fbbf24' },
-  waiting_player:    { label: 'Waiting You',    bg: 'rgba(245,158,11,.15)', color: '#f59e0b', dot: '#f59e0b' },
+  in_progress:       { label: 'In Progress',    bg: 'rgba(239,68,68,.15)', color: '#ef4444', dot: '#ef4444' },
+  waiting_player:    { label: 'Waiting You',    bg: 'rgba(220,38,38,.15)', color: '#dc2626', dot: '#dc2626' },
   resolved:          { label: 'Resolved',       bg: 'rgba(16,185,129,.15)', color: '#10b981', dot: '#10b981' },
   closed:            { label: 'Closed',         bg: 'rgba(107,114,128,.15)',color: '#9ca3af', dot: '#9ca3af' },
 }

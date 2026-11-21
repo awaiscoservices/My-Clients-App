@@ -24,14 +24,14 @@ export default function About() {
       <div style={{ display: 'grid', gap: 12 }}>
         {STEPS.map(([t, d], i) => (
           <div key={t} style={{ ...panel, padding: '16px 20px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-            <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</div>
+            <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg,#ef4444,#dc2626)', color: '#050505', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</div>
             <div><div style={{ fontWeight: 700, marginBottom: 2 }}>{t}</div><div style={{ color: 'rgba(255,255,255,.55)', fontSize: 14, lineHeight: 1.7 }}>{d}</div></div>
           </div>
         ))}
       </div>
       <div style={{ marginTop: 28, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-        <Link href="/auth/register" style={{ padding: '12px 28px', borderRadius: 12, background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontWeight: 800, textDecoration: 'none', fontSize: 14 }}>Create free account</Link>
-        <Link href="/faq" style={{ padding: '12px 28px', borderRadius: 12, border: '1px solid rgba(251,191,36,.4)', color: '#fbbf24', fontWeight: 700, textDecoration: 'none', fontSize: 14 }}>Read the FAQ</Link>
+        <Link href="/auth/register" style={{ padding: '12px 28px', borderRadius: 12, background: 'linear-gradient(135deg,#ef4444,#dc2626)', color: '#050505', fontWeight: 800, textDecoration: 'none', fontSize: 14 }}>Create free account</Link>
+        <Link href="/faq" style={{ padding: '12px 28px', borderRadius: 12, border: '1px solid rgba(239,68,68,.4)', color: '#ef4444', fontWeight: 700, textDecoration: 'none', fontSize: 14 }}>Read the FAQ</Link>
       </div>
       <p style={{ marginTop: 28, color: 'rgba(255,255,255,.35)', fontSize: 13 }}>You must be 18 or older to use {BRAND.name}. Please play responsibly.</p>
     </StaticPage>

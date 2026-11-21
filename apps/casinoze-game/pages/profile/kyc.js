@@ -40,9 +40,9 @@ function Upload({ label, req, file, onPick, disabled }) {
       <label style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         padding: '14px', borderRadius: 12, cursor: disabled ? 'not-allowed' : 'pointer',
-        border: `1px dashed ${file ? 'rgba(16,185,129,.5)' : 'rgba(251,191,36,.4)'}`,
-        background: file ? 'rgba(16,185,129,.08)' : 'rgba(251,191,36,.05)',
-        color: file ? '#10b981' : '#fbbf24', fontSize: 13, fontWeight: 700,
+        border: `1px dashed ${file ? 'rgba(16,185,129,.5)' : 'rgba(239,68,68,.4)'}`,
+        background: file ? 'rgba(16,185,129,.08)' : 'rgba(239,68,68,.05)',
+        color: file ? '#10b981' : '#ef4444', fontSize: 13, fontWeight: 700,
       }}>
         {file ? `✓ ${file.name}` : `+ ${label}`}
         <input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" disabled={disabled} onChange={onPick} style={{ display: 'none' }} />
@@ -163,7 +163,7 @@ export default function KycSubmit() {
           <Notice kind={msg?.kind}>{msg?.text}</Notice>
 
           {/* 1 — Personal */}
-          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fbbf24', margin: '4px 0 16px' }}>Personal Information</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#ef4444', margin: '4px 0 16px' }}>Personal Information</h3>
           <div style={two}>
             <Field label="First Name" req><input style={input} value={form.first_name} onChange={set('first_name')} placeholder="Enter first name" disabled={busy} /></Field>
             <Field label="Middle Name"><input style={input} value={form.middle_name} onChange={set('middle_name')} placeholder="Optional" disabled={busy} /></Field>
@@ -172,7 +172,7 @@ export default function KycSubmit() {
           </div>
 
           {/* 2 — Address */}
-          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fbbf24', margin: '18px 0 16px' }}>Address Information</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#ef4444', margin: '18px 0 16px' }}>Address Information</h3>
           <div style={two}>
             <Field label="Country" req><input style={input} value={form.country} onChange={set('country')} placeholder="Enter country" disabled={busy} /></Field>
             <Field label="State/Province" req><input style={input} value={form.state} onChange={set('state')} placeholder="Enter state" disabled={busy} /></Field>
@@ -182,7 +182,7 @@ export default function KycSubmit() {
           <Field label="Address" req><input style={input} value={form.address} onChange={set('address')} placeholder="Enter street address" disabled={busy} /></Field>
 
           {/* 3 — Document */}
-          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fbbf24', margin: '18px 0 16px' }}>Document Information</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#ef4444', margin: '18px 0 16px' }}>Document Information</h3>
           <div style={two}>
             <Field label="SSN" req><input style={input} value={form.ssn} onChange={set('ssn')} placeholder="Enter SSN" disabled={busy} /></Field>
             <Field label="Document Type" req>
@@ -195,7 +195,7 @@ export default function KycSubmit() {
           </div>
 
           {/* 4 — Images */}
-          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fbbf24', margin: '18px 0 16px' }}>Document Images</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#ef4444', margin: '18px 0 16px' }}>Document Images</h3>
           <div style={two}>
             <Upload label="Document Front" req file={front} onPick={pick(setFront)} disabled={busy} />
             {needsBack && <Upload label="Document Back" req file={back} onPick={pick(setBack)} disabled={busy} />}
@@ -205,7 +205,7 @@ export default function KycSubmit() {
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', margin: '6px 0 18px' }}>Use a government-issued ID. JPG, PNG, WebP or PDF, up to 8 MB each. Make sure all corners and text are clearly visible.</div>
           <Btn type="submit" disabled={locked || busy || latest === undefined} style={{ width: '100%' }}>{busy ? 'Submitting…' : locked ? (latest.status === 'verified' ? 'Already verified' : 'Under review') : 'Submit for verification'}</Btn>
         </form>
-        <div style={{ marginTop: 16 }}><Link href="/profile" style={{ color: '#fbbf24', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>← Back to profile</Link></div>
+        <div style={{ marginTop: 16 }}><Link href="/profile" style={{ color: '#ef4444', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>← Back to profile</Link></div>
       </div>
     </PlayerLayout>
   )

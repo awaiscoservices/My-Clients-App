@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import Icon from '../../components/ui/Icon'
 import { useSettings, formatInTimezone } from '../../lib/settings'
 
-const gold = '#fbbf24'; const green = '#22c55e'; const red = '#ef4444'; const purple = '#a855f7'; const blue = '#3b82f6'
+const gold = '#ef4444'; const green = '#22c55e'; const red = '#ef4444'; const purple = '#a855f7'; const blue = '#3b82f6'
 
 const fmt = (cents) => '$' + (Math.abs(cents) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 // Timestamps show in the casino's timezone (admin Settings), not the viewer's.
@@ -61,7 +61,7 @@ const SETTLED_REQUEST = {
 }
 
 const STATUS_STYLE = {
-  pending:    { bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.35)', color: gold,                        label: 'Pending' },
+  pending:    { bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.35)', color: gold,                        label: 'Pending' },
   under_review: { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.35)', color: blue,                      label: 'Processing' },
   processing: { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.35)', color: blue,                       label: 'Processing' },
   approved:   { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   color: green,                       label: 'Completed' },
@@ -180,7 +180,7 @@ export default function TransactionsPage() {
 
         {/* Pending banner */}
         {!loading && pendingCount > 0 && (
-          <div style={{ background: 'rgba(251,191,36,0.07)', border: '1px solid rgba(251,191,36,0.25)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
+          <div style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
             <p style={{ color: gold, fontSize: 13, margin: '0 0 12px', fontWeight: 700 }}>⏳ {pendingCount} Pending Request{pendingCount > 1 ? 's' : ''} — awaiting admin review</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {data.pending.deposits.map(d => (

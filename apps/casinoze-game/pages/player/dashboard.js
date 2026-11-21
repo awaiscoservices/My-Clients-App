@@ -151,7 +151,7 @@ function SectionTitle({ children }) {
 
 function WithdrawSummaryInline({ w, level }) {
   const fmt = c => `$${((c||0)/100).toLocaleString('en-US',{minimumFractionDigits:2})}`
-  const color = w.pct_used >= 100 ? '#ef4444' : w.pct_used >= 80 ? '#f59e0b' : '#22c55e'
+  const color = w.pct_used >= 100 ? '#ef4444' : w.pct_used >= 80 ? '#dc2626' : '#22c55e'
   return (
     <div style={{ background:'rgba(255,255,255,.03)', border:'1px solid rgba(255,255,255,.07)', borderRadius:14, padding:16 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>

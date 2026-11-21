@@ -63,7 +63,7 @@ function levelIcon(level) {
 // ─── Level card ───────────────────────────────────────────────────────────────
 // status: 'active' | 'achieved' | 'locked'
 function LevelCard({ level, status, bonusRows }) {
-  const accent = level.accent_color || level.badge_color || '#fbbf24'
+  const accent = level.accent_color || level.badge_color || '#ef4444'
 
   const badgeCfg = {
     active:   { label: 'Active',   bg: `${accent}25`,              border: `1px solid ${accent}66`,           color: accent,      },
@@ -266,7 +266,7 @@ export default function PlayerLevels() {
           borderRadius: 16, padding: '18px 22px', marginBottom: 24,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: currentLevel?.accent_color || '#fbbf24' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: currentLevel?.accent_color || '#ef4444' }}>
               {currentLevel?.name || 'Unranked'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -275,21 +275,21 @@ export default function PlayerLevels() {
                   Next: <span style={{ color: nextLevel.accent_color || '#fff', fontWeight: 700 }}>{nextLevel.name}</span>
                 </span>
               )}
-              <span style={{ fontSize: 13, fontWeight: 800, color: '#fbbf24' }}>{progressPct}%</span>
+              <span style={{ fontSize: 13, fontWeight: 800, color: '#ef4444' }}>{progressPct}%</span>
             </div>
           </div>
           <div style={{ height: 10, background: 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
             <div style={{
               height: '100%',
               width: `${progressPct}%`,
-              background: `linear-gradient(90deg, ${currentLevel?.accent_color || '#fbbf24'}, ${nextLevel?.accent_color || '#f59e0b'})`,
+              background: `linear-gradient(90deg, ${currentLevel?.accent_color || '#ef4444'}, ${nextLevel?.accent_color || '#dc2626'})`,
               borderRadius: 99,
               transition: 'width .6s ease',
-              boxShadow: `0 0 10px ${currentLevel?.accent_color || '#fbbf24'}66`,
+              boxShadow: `0 0 10px ${currentLevel?.accent_color || '#ef4444'}66`,
             }} />
           </div>
           {progressPct === 100 && (
-            <div style={{ fontSize: 12, color: '#fbbf24', marginTop: 8, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 7 }}><Icon name="trophy" size={14} /> Maximum level reached!</div>
+            <div style={{ fontSize: 12, color: '#ef4444', marginTop: 8, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 7 }}><Icon name="trophy" size={14} /> Maximum level reached!</div>
           )}
         </div>
       )}
@@ -299,7 +299,7 @@ export default function PlayerLevels() {
         <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,.3)', fontSize: 14 }}>Loading…</div>
       ) : levels.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center', color: '#fbbf24' }}><Icon name="star" size={40} /></div>
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center', color: '#ef4444' }}><Icon name="star" size={40} /></div>
           <div style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>Levels coming soon</div>
         </div>
       ) : (

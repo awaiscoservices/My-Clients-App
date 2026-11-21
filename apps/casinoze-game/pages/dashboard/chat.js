@@ -40,7 +40,7 @@ function EmojiButton({ onPick, disabled }) {
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><path d="M9 9h.01M15 9h.01" /></svg>
       </button>
       {open && (
-        <div style={{ position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, width: 268, background: '#0e1a2e', border: '1px solid rgba(251,191,36,.25)', borderRadius: 12, boxShadow: '0 16px 40px rgba(0,0,0,.6)', padding: 8, display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 2, zIndex: 30 }}>
+        <div style={{ position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, width: 268, background: '#0e1a2e', border: '1px solid rgba(239,68,68,.25)', borderRadius: 12, boxShadow: '0 16px 40px rgba(0,0,0,.6)', padding: 8, display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 2, zIndex: 30 }}>
           {EMOJIS.map(em => (
             <button key={em} type="button" onClick={() => { onPick(em); setOpen(false) }}
               style={{ background: 'transparent', border: 'none', fontSize: 20, lineHeight: 1, padding: '5px 0', cursor: 'pointer', borderRadius: 6 }}>
@@ -80,7 +80,7 @@ function Bubble({ msg }) {
         fontSize: 14, color: '#fff', lineHeight: 1.5, wordBreak: 'break-word',
       }}>
         {!isMe && msg.body && (
-          <div style={{ fontSize: 10, fontWeight: 800, color: '#fbbf24', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, color: '#ef4444', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 4 }}>
             Support
           </div>
         )}
@@ -235,7 +235,7 @@ export default function PlayerChat() {
     e.target.value = ''
   }
 
-  const PANEL = { background: 'linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018))', border: '1px solid rgba(251,191,36,.13)', borderRadius: 20 }
+  const PANEL = { background: 'linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018))', border: '1px solid rgba(239,68,68,.13)', borderRadius: 20 }
 
   return (
     <PlayerLayout>
@@ -285,7 +285,7 @@ export default function PlayerChat() {
               style={{ flex: 1, minWidth: 0, padding: '11px 16px', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 12, color: '#fff', fontSize: 14, fontFamily: "'Outfit',sans-serif", outline: 'none' }}
             />
             <button type="submit" disabled={!body.trim() || sending || loading}
-              style={{ flexShrink: 0, padding: '11px 18px', background: (body.trim() && !sending) ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 'rgba(255,255,255,.07)', border: 'none', borderRadius: 12, color: (body.trim() && !sending) ? '#000' : 'rgba(255,255,255,.35)', fontWeight: 800, fontSize: 14, cursor: (body.trim() && !sending) ? 'pointer' : 'default', fontFamily: "'Outfit',sans-serif", transition: 'all .15s' }}>
+              style={{ flexShrink: 0, padding: '11px 18px', background: (body.trim() && !sending) ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'rgba(255,255,255,.07)', border: 'none', borderRadius: 12, color: (body.trim() && !sending) ? '#000' : 'rgba(255,255,255,.35)', fontWeight: 800, fontSize: 14, cursor: (body.trim() && !sending) ? 'pointer' : 'default', fontFamily: "'Outfit',sans-serif", transition: 'all .15s' }}>
               {sending ? '…' : 'Send'}
             </button>
           </form>

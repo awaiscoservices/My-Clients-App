@@ -70,13 +70,13 @@ export default function LoadGame() {
           <div style={{ marginBottom: 18 }}>
             <Label>Load from</Label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {[['cash', 'Cash', wallet?.cash_balance_cents, '#10b981'], ['bonus', 'Bonus', wallet?.bonus_balance_cents, '#fbbf24']].map(([key, name, cents, clr]) => (
+              {[['cash', 'Cash', wallet?.cash_balance_cents, '#10b981'], ['bonus', 'Bonus', wallet?.bonus_balance_cents, '#ef4444']].map(([key, name, cents, clr]) => (
                 <button type="button" key={key} onClick={() => setBucket(key)} style={{
                   textAlign: 'left', padding: '12px 14px', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit',
-                  background: bucket === key ? 'rgba(251,191,36,.12)' : 'rgba(255,255,255,.04)',
-                  border: `1px solid ${bucket === key ? 'rgba(251,191,36,.5)' : 'rgba(255,255,255,.1)'}`, color: '#fff',
+                  background: bucket === key ? 'rgba(239,68,68,.12)' : 'rgba(255,255,255,.04)',
+                  border: `1px solid ${bucket === key ? 'rgba(239,68,68,.5)' : 'rgba(255,255,255,.1)'}`, color: '#fff',
                 }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: bucket === key ? '#fbbf24' : 'rgba(255,255,255,.45)' }}>{name}</div>
+                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: bucket === key ? '#ef4444' : 'rgba(255,255,255,.45)' }}>{name}</div>
                   <div style={{ fontSize: 18, fontWeight: 800, marginTop: 2, color: clr }}>${(((cents || 0)) / 100).toFixed(2)}</div>
                 </button>
               ))}
@@ -89,7 +89,7 @@ export default function LoadGame() {
           </div>
           <Notice kind={msg?.kind}>{msg?.text}</Notice>
           {accounts.length === 0 ? (
-            <Empty icon="gamepad" text={<>You need an active game account first. <Link href="/dashboard/games" style={{ color: '#fbbf24' }}>Browse games →</Link></>} />
+            <Empty icon="gamepad" text={<>You need an active game account first. <Link href="/dashboard/games" style={{ color: '#ef4444' }}>Browse games →</Link></>} />
           ) : (<>
             <div style={{ marginBottom: 16 }}><Label>Game account</Label>
               <select value={acct} onChange={e => setAcct(e.target.value)} style={input}>
@@ -103,7 +103,7 @@ export default function LoadGame() {
               {QUICK.map(q => <Btn key={q} type="button" ghost onClick={() => setAmount(String(q))} style={{ flex: 1, padding: '8px 0', fontSize: 13 }}>${q}</Btn>)}
             </div>
             <Btn type="submit" disabled={busy} style={{ width: '100%' }}>{busy ? 'Submitting…' : 'Load Credits'}</Btn>
-            <div style={{ textAlign: 'center', marginTop: 14 }}><Link href="/dashboard/deposit" style={{ color: '#fbbf24', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>Need more cash? Add money →</Link></div>
+            <div style={{ textAlign: 'center', marginTop: 14 }}><Link href="/dashboard/deposit" style={{ color: '#ef4444', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>Need more cash? Add money →</Link></div>
           </>)}
         </form>
         <div style={{ ...card, padding: 0, overflow: 'hidden' }}>
@@ -111,7 +111,7 @@ export default function LoadGame() {
           {history.length === 0 ? <Empty text="No loads yet" /> : history.map(r => (
             <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 20px', borderBottom: '1px solid rgba(255,255,255,.04)' }}>
               <div><div style={{ fontSize: 13, fontWeight: 600 }}>{r.game_accounts?.game_panels?.name || 'Game'}</div><div style={{ fontSize: 11, color: 'rgba(255,255,255,.35)' }}>{fmtDate(r.created_at)}</div></div>
-              <div style={{ textAlign: 'right' }}><MoneyDisplay cents={r.amount_cents} size="sm" color="#fbbf24" /><div><StatusBadge status={r.status} size="xs" /></div></div>
+              <div style={{ textAlign: 'right' }}><MoneyDisplay cents={r.amount_cents} size="sm" color="#ef4444" /><div><StatusBadge status={r.status} size="xs" /></div></div>
             </div>
           ))}
         </div>

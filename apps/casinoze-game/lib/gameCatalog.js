@@ -40,7 +40,7 @@ export const GAME_CATALOG = GAMES.map(([name, file, aliases], i) => ({
   name, file, slug: norm(name), aliases,
   src: `/images/games/${file}`,
   tint: TINTS[i % TINTS.length],
-  accent: '#fbbf24',
+  accent: '#ef4444',
   bonus: null,
   hot: false,
 }))

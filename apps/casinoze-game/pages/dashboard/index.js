@@ -29,8 +29,8 @@ const SEGMENTS = [
 const SEG_ANGLE = (Math.PI * 2) / SEGMENTS.length
 
 // ─── LOOK & FEEL (design only) ────────────────────────────────────────────────
-const PANEL = { background: 'linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018))', border: '1px solid rgba(251,191,36,.13)', boxShadow: '0 14px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05)' }
-const LABEL = { fontSize: 11, fontWeight: 800, letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(251,191,36,.78)' }
+const PANEL = { background: 'linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018))', border: '1px solid rgba(239,68,68,.13)', boxShadow: '0 14px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05)' }
+const LABEL = { fontSize: 11, fontWeight: 800, letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(239,68,68,.78)' }
 const TILE_TINTS = [['#1f9d7a', '#0f3b4a'], ['#2b5fd9', '#13264f'], ['#7a3fe0', '#2a1450'], ['#12b8d6', '#0c3350'], ['#2b6fe0', '#14285a'], ['#1fa77f', '#0c3a3f']]
 const I_PATHS = {
   plus: 'M12 5v14M5 12h14', gamepad: 'M6 12h4M8 10v4M15 13h.01M18 11h.01M7 7h10a4 4 0 014 4v2a4 4 0 01-4 4l-2-2H9l-2 2a4 4 0 01-4-4v-2a4 4 0 014-4z',
@@ -64,7 +64,7 @@ const ICO = {
   gift: 'M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H8.5a2.5 2.5 0 110-5C11 2 12 7 12 7zM12 7h3.5a2.5 2.5 0 100-5C13 2 12 7 12 7z',
   bag: 'M9 3h6l-1.2 3h-3.6L9 3zM8.6 6C5.2 9 4 12 4 15a5 5 0 005 5h6a5 5 0 005-5c0-3-1.2-6-4.6-9M12 11v7M14 12.6c-.4-.8-1.1-1.1-2-1.1s-1.8.5-1.8 1.4 1 1.3 1.8 1.5 1.8.6 1.8 1.5-.9 1.4-1.8 1.4-1.7-.4-2-1.2',
 }
-const SEG_ICON = [['trophy', '#f5c451'], ['gem', '#f59e42'], ['coin', '#a78bfa'], ['gift', '#2dd4bf'], ['bag', '#f59e42'], ['gem', '#22d3ee'], ['coin', '#4ade80'], ['bag', '#a78bfa'], ['gift', '#2dd4bf'], ['coin', '#fbbf24']]
+const SEG_ICON = [['trophy', '#f5c451'], ['gem', '#f59e42'], ['coin', '#a78bfa'], ['gift', '#2dd4bf'], ['bag', '#f59e42'], ['gem', '#22d3ee'], ['coin', '#4ade80'], ['bag', '#a78bfa'], ['gift', '#2dd4bf'], ['coin', '#ef4444']]
 const polar = (R, th) => [200 + R * Math.sin(th), 200 - R * Math.cos(th)]
 const WEDGE = (() => {
   const w = SEG_ANGLE * 0.84, Ro = 152, Ri = 57
@@ -251,16 +251,16 @@ function WheelSection({ wallet, onBalanceChange }) {
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>Spin to multiply your bet, up to {maxMult}×</div>
           </div>
         </div>
-        <div style={{ fontSize: 11, padding: '5px 14px', borderRadius: 99, background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.35)', color: '#fbbf24', fontWeight: 800, letterSpacing: '.12em' }}>WINS → {bucket === 'cash' ? 'CASH' : 'BONUS'}</div>
+        <div style={{ fontSize: 11, padding: '5px 14px', borderRadius: 99, background: 'rgba(239,68,68,.12)', border: '1px solid rgba(239,68,68,.35)', color: '#ef4444', fontWeight: 800, letterSpacing: '.12em' }}>WINS → {bucket === 'cash' ? 'CASH' : 'BONUS'}</div>
       </div>
 
       {!hasDeposit ? (
         /* Locked state */
         <div style={{ position: 'relative', textAlign: 'center', padding: '36px 16px 28px' }}>
-          <div style={{ width: 72, height: 72, margin: '0 auto 16px', borderRadius: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', background: 'rgba(251,191,36,.1)', border: '1px solid rgba(251,191,36,.3)' }}><I name="lock" size={32} stroke={1.6} /></div>
+          <div style={{ width: 72, height: 72, margin: '0 auto 16px', borderRadius: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.3)' }}><I name="lock" size={32} stroke={1.6} /></div>
           <div style={{ fontSize: 17, fontWeight: 800, color: '#fff', marginBottom: 8 }}>Free Spin Locked</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', marginBottom: 22, lineHeight: 1.7 }}>Deposit now to unlock 7 days of daily free spins!</div>
-          <Link href="/dashboard/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 26px', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', borderRadius: 12, fontSize: 14, fontWeight: 800, color: '#000', textDecoration: 'none', boxShadow: '0 10px 26px rgba(251,191,36,.25)' }}>Deposit Now <I name="arrow" size={16} stroke={2.4} /></Link>
+          <Link href="/dashboard/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 26px', background: 'linear-gradient(135deg,#ef4444,#dc2626)', borderRadius: 12, fontSize: 14, fontWeight: 800, color: '#000', textDecoration: 'none', boxShadow: '0 10px 26px rgba(239,68,68,.25)' }}>Deposit Now <I name="arrow" size={16} stroke={2.4} /></Link>
         </div>
       ) : (
         <div style={{ position: 'relative', display: 'flex', gap: 'clamp(24px,4vw,56px)', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
@@ -284,12 +284,12 @@ function WheelSection({ wallet, onBalanceChange }) {
               <div style={smallLabel}>Bet Amount</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <button onClick={() => changeBet(-1)} style={stepBtn} aria-label="Lower bet">−</button>
-                <div style={{ flex: 1, textAlign: 'center', fontSize: 32, fontWeight: 800, color: '#fbbf24', fontVariantNumeric: 'tabular-nums', letterSpacing: '-.01em' }}>${(betCents / 100).toFixed(2)}</div>
+                <div style={{ flex: 1, textAlign: 'center', fontSize: 32, fontWeight: 800, color: '#ef4444', fontVariantNumeric: 'tabular-nums', letterSpacing: '-.01em' }}>${(betCents / 100).toFixed(2)}</div>
                 <button onClick={() => changeBet(1)} style={stepBtn} aria-label="Raise bet">+</button>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginTop: 12 }}>
                 {[500, 1000, 2500, 5000].map(v => (
-                  <button key={v} onClick={() => setBetCents(v)} style={{ padding: '8px 4px', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 800, background: betCents === v ? 'rgba(251,191,36,.18)' : 'rgba(255,255,255,.04)', border: `1px solid ${betCents === v ? 'rgba(251,191,36,.6)' : 'rgba(255,255,255,.1)'}`, color: betCents === v ? '#fbbf24' : 'rgba(255,255,255,.65)', transition: 'all .2s' }}>${v / 100}</button>
+                  <button key={v} onClick={() => setBetCents(v)} style={{ padding: '8px 4px', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 800, background: betCents === v ? 'rgba(239,68,68,.18)' : 'rgba(255,255,255,.04)', border: `1px solid ${betCents === v ? 'rgba(239,68,68,.6)' : 'rgba(255,255,255,.1)'}`, color: betCents === v ? '#ef4444' : 'rgba(255,255,255,.65)', transition: 'all .2s' }}>${v / 100}</button>
                 ))}
               </div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 10, textAlign: 'center' }}>Top prize: <span style={{ color: '#5eead4', fontWeight: 800 }}>${((betCents * maxMult) / 100).toFixed(2)}</span> ({maxMult}×)</div>
@@ -302,14 +302,14 @@ function WheelSection({ wallet, onBalanceChange }) {
               <div style={{ marginBottom: 16, padding: '14px 18px', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, background: won ? 'linear-gradient(135deg,rgba(16,185,129,.18),rgba(16,185,129,.05))' : 'linear-gradient(135deg,rgba(239,68,68,.14),rgba(239,68,68,.04))', border: `1px solid ${won ? 'rgba(16,185,129,.4)' : 'rgba(239,68,68,.3)'}` }}>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.6)' }}>{won ? 'You won' : 'You get back'}</div>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: '#fbbf24', fontVariantNumeric: 'tabular-nums' }}>${(result.winCents / 100).toFixed(2)}</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: '#ef4444', fontVariantNumeric: 'tabular-nums' }}>${(result.winCents / 100).toFixed(2)}</div>
                 </div>
                 <div style={{ fontSize: 30, fontWeight: 800, color: won ? '#10b981' : '#f87171' }}>{result.seg.label}</div>
               </div>
             )}
 
             {/* Spin button */}
-            <button onClick={spin} disabled={spinning || starting} style={{ position: 'relative', overflow: 'hidden', width: '100%', padding: '15px', background: (spinning || starting) ? 'rgba(255,255,255,.07)' : 'linear-gradient(135deg,#fbbf24,#d97706)', border: 'none', borderRadius: 14, fontSize: 16, fontWeight: 800, color: (spinning || starting) ? 'rgba(255,255,255,.5)' : '#000', cursor: (spinning || starting) ? 'not-allowed' : 'pointer', fontFamily: 'inherit', boxShadow: (spinning || starting) ? 'none' : '0 12px 30px rgba(251,191,36,.25)', transition: 'transform .2s,box-shadow .2s' }}>
+            <button onClick={spin} disabled={spinning || starting} style={{ position: 'relative', overflow: 'hidden', width: '100%', padding: '15px', background: (spinning || starting) ? 'rgba(255,255,255,.07)' : 'linear-gradient(135deg,#ef4444,#b91c1c)', border: 'none', borderRadius: 14, fontSize: 16, fontWeight: 800, color: (spinning || starting) ? 'rgba(255,255,255,.5)' : '#000', cursor: (spinning || starting) ? 'not-allowed' : 'pointer', fontFamily: 'inherit', boxShadow: (spinning || starting) ? 'none' : '0 12px 30px rgba(239,68,68,.25)', transition: 'transform .2s,box-shadow .2s' }}>
               {(spinning || starting) ? 'Spinning…' : 'Spin Now!'}
             </button>
 
@@ -324,7 +324,7 @@ function WheelSection({ wallet, onBalanceChange }) {
                   {history.map((h, i) => (
                     <div key={h.id} style={{ display: 'grid', gridTemplateColumns: '36px 1fr 1fr', padding: '9px 14px', borderBottom: i < history.length - 1 ? '1px solid rgba(255,255,255,.04)' : 'none', fontSize: 13 }}>
                       <span style={{ color: 'rgba(255,255,255,.3)' }}>{i + 1}</span>
-                      <span style={{ fontWeight: 800, color: '#fbbf24' }}>{h.label}</span>
+                      <span style={{ fontWeight: 800, color: '#ef4444' }}>{h.label}</span>
                       <span style={{ textAlign: 'right', fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: h.win >= betCents ? '#10b981' : '#f87171' }}>${(h.win / 100).toFixed(2)}</span>
                     </div>
                   ))}
@@ -365,9 +365,9 @@ function DailyBonusCard() {
   }, [])
 
   return (
-    <div style={{ background: 'linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.04))', border: '1px solid rgba(251,191,36,.2)', borderRadius: 18, padding: '18px 20px' }}>
+    <div style={{ background: 'linear-gradient(135deg,rgba(239,68,68,.08),rgba(220,38,38,.04))', border: '1px solid rgba(239,68,68,.2)', borderRadius: 18, padding: '18px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-        <span style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', background: 'rgba(251,191,36,.12)', border: '1px solid rgba(251,191,36,.3)' }}><I name="gift" size={22} /></span>
+        <span style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', background: 'rgba(239,68,68,.12)', border: '1px solid rgba(239,68,68,.3)' }}><I name="gift" size={22} /></span>
         <div>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>Daily Bonus</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,.4)' }}>Resets every midnight</div>
@@ -376,15 +376,15 @@ function DailyBonusCard() {
       {claimed ? (
         <div style={{ textAlign: 'center', padding: '8px 0' }}>
           <div style={{ fontSize: 12, color: '#10b981', fontWeight: 700, marginBottom: 4, display: 'inline-flex', alignItems: 'center', gap: 6 }}><I name="check" size={14} stroke={2.4} /> Claimed! Next in:</div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: '#fbbf24', fontVariantNumeric: 'tabular-nums' }}>{timeLeft}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: '#ef4444', fontVariantNumeric: 'tabular-nums' }}>{timeLeft}</div>
         </div>
       ) : (
         <>
           <div style={{ marginBottom: 12 }}>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 4 }}>Today's reward</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#fbbf24' }}>$0.50 Bonus</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#ef4444' }}>$0.50 Bonus</div>
           </div>
-          <button onClick={() => setClaimed(true)} style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg,#fbbf24,#d97706)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#000', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
+          <button onClick={() => setClaimed(true)} style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg,#ef4444,#b91c1c)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#000', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
             <I name="gift" size={16} stroke={2} /> Claim Now
           </button>
         </>
@@ -417,7 +417,7 @@ function VIPProgressCard({ level, profile }) {
           </div>
         </div>
       </div>
-      <Link href="/dashboard/rewards" style={{ fontSize: 12, color: '#fbbf24', fontWeight: 600, textDecoration: 'none' }}>View VIP benefits →</Link>
+      <Link href="/dashboard/rewards" style={{ fontSize: 12, color: '#ef4444', fontWeight: 600, textDecoration: 'none' }}>View VIP benefits →</Link>
     </div>
   )
 }
@@ -447,7 +447,7 @@ function LuckyNumberCard() {
               <div key={i} style={{ width: 38, height: 38, borderRadius: '50%', background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,.2)' }}>?</div>
             ))
           : nums.map((n, i) => {
-              const colors = ['#ef4444','#fbbf24','#10b981','#3b82f6','#8b5cf6','#ec4899']
+              const colors = ['#ef4444','#ef4444','#10b981','#3b82f6','#8b5cf6','#ec4899']
               return (
                 <div key={i} style={{ width: 38, height: 38, borderRadius: '50%', background: `${colors[i]}22`, border: `2px solid ${colors[i]}66`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: colors[i] }}>{n}</div>
               )
@@ -578,17 +578,17 @@ function ClaimPromoCard({ onClaimed }) {
   }
 
   return (
-    <div style={{ marginBottom: 24, padding: '16px 20px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(251,191,36,.1),rgba(245,158,11,.04))', border: '1px solid rgba(251,191,36,.28)' }}>
+    <div style={{ marginBottom: 24, padding: '16px 20px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(239,68,68,.1),rgba(220,38,38,.04))', border: '1px solid rgba(239,68,68,.28)' }}>
       <div className="cpc-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
         <div className="cpc-info" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', background: 'rgba(251,191,36,.16)', border: '1px solid rgba(251,191,36,.4)' }}><I name="gift" size={24} /></span>
+          <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', background: 'rgba(239,68,68,.16)', border: '1px solid rgba(239,68,68,.4)' }}><I name="gift" size={24} /></span>
           <div>
             <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>Have a Promo Code?</div>
             <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>Claim it straight to your Bonus balance.</div>
           </div>
         </div>
         {!open && (
-          <button className="cpc-btn" onClick={() => { setOpen(true); setMsg(null) }} style={{ padding: '11px 22px', borderRadius: 11, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer' }}>Claim Promo</button>
+          <button className="cpc-btn" onClick={() => { setOpen(true); setMsg(null) }} style={{ padding: '11px 22px', borderRadius: 11, border: 'none', background: 'linear-gradient(135deg,#ef4444,#dc2626)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: 'pointer' }}>Claim Promo</button>
         )}
       </div>
 
@@ -597,7 +597,7 @@ function ClaimPromoCard({ onClaimed }) {
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <input value={code} onChange={e => { setCode(e.target.value.toUpperCase()); setMsg(null) }} placeholder="ENTER CODE"
               style={{ flex: '1 1 200px', padding: '12px 14px', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 10, color: '#fff', fontSize: 15, fontFamily: 'monospace', letterSpacing: '.08em', textTransform: 'uppercase', outline: 'none' }} />
-            <button onClick={claim} disabled={busy || !code.trim()} style={{ padding: '0 24px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: busy ? 'default' : 'pointer' }}>{busy ? 'Claiming…' : 'Claim'}</button>
+            <button onClick={claim} disabled={busy || !code.trim()} style={{ padding: '0 24px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#ef4444,#dc2626)', color: '#050505', fontSize: 14, fontWeight: 800, cursor: busy ? 'default' : 'pointer' }}>{busy ? 'Claiming…' : 'Claim'}</button>
           </div>
           {msg && (
             <div style={{ marginTop: 10, fontSize: 13, fontWeight: 600, color: msg.ok ? '#10b981' : '#f87171', display: 'flex', alignItems: 'center', gap: 7 }}>
@@ -679,7 +679,7 @@ export default function Dashboard() {
     <PlayerLayout>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: 12, animation: 'spin 1s linear infinite', display: 'inline-flex', color: '#fbbf24' }}><I name="spin" size={34} stroke={2.2} /></div>
+          <div style={{ marginBottom: 12, animation: 'spin 1s linear infinite', display: 'inline-flex', color: '#ef4444' }}><I name="spin" size={34} stroke={2.2} /></div>
           <div style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>Loading your dashboard…</div>
         </div>
       </div>
@@ -704,15 +704,15 @@ export default function Dashboard() {
       {/* KYC BANNER */}
       {profile?.kyc_status === 'not_started' && (
         <Link href="/dashboard/kyc" style={{ textDecoration: 'none', display: 'block', marginBottom: 20 }}>
-          <div style={{ padding: '14px 20px', borderRadius: 14, background: 'rgba(245,158,11,.1)', border: '1px solid rgba(245,158,11,.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+          <div style={{ padding: '14px 20px', borderRadius: 14, background: 'rgba(220,38,38,.1)', border: '1px solid rgba(220,38,38,.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <span style={{ color: '#f59e0b', display: 'flex' }}><I name="alert" size={20} /></span>
+              <span style={{ color: '#dc2626', display: 'flex' }}><I name="alert" size={20} /></span>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#f59e0b' }}>Verify Your Identity</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#dc2626' }}>Verify Your Identity</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,.45)' }}>Complete KYC to unlock withdrawals and higher limits</div>
               </div>
             </div>
-            <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>Verify Now →</span>
+            <span style={{ color: '#dc2626', fontSize: 13, fontWeight: 700 }}>Verify Now →</span>
           </div>
         </Link>
       )}
@@ -727,11 +727,11 @@ export default function Dashboard() {
       {wallet && (
         <div style={{ marginBottom: 26 }}>
           <div style={{ ...LABEL, marginBottom: 12 }}>Your Wallet</div>
-          <div className="wl-grid" style={{ ...PANEL, borderRadius: 24, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px,100%),1fr))', gap: 1, background: 'rgba(251,191,36,.14)' }}>
+          <div className="wl-grid" style={{ ...PANEL, borderRadius: 24, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px,100%),1fr))', gap: 1, background: 'rgba(239,68,68,.14)' }}>
             <WalletCard label="Cash"         cents={wallet.cash_balance_cents}   color="#10b981" icon="wallet" sub="Available to play" />
-            <WalletCard label="Bonus"        cents={wallet.bonus_balance_cents}  color="#f59e0b" icon="gift"   sub="Bonus credits" />
+            <WalletCard label="Bonus"        cents={wallet.bonus_balance_cents}  color="#dc2626" icon="gift"   sub="Bonus credits" />
             <WalletCard label="Reserved"     cents={wallet.reserved_cents}       color="#94a3b8" icon="lock"   sub="Held pending" />
-            <WalletCard label="Withdrawable" cents={wallet.withdrawable_cents}   color="#fbbf24" icon="out"    sub="Ready to withdraw" />
+            <WalletCard label="Withdrawable" cents={wallet.withdrawable_cents}   color="#ef4444" icon="out"    sub="Ready to withdraw" />
           </div>
         </div>
       )}
@@ -742,8 +742,8 @@ export default function Dashboard() {
         <div style={{ ...LABEL, marginBottom: 12 }}>Quick Actions</div>
         <div className="qa-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px,100%),1fr))', gap: 12 }}>
           <QuickAction href="/dashboard/deposit"   icon="plus" label="Add Money"  desc="Deposit funds to your wallet"   color="#10b981" />
-          <QuickAction href="/dashboard/load-game" icon="gamepad" label="Load Game"  desc="Send credits to a game room"    color="#fbbf24" />
-          <QuickAction href="/dashboard/redeem"    icon="trophy" label="Redeem"     desc="Request a redemption from game" color="#f59e0b" />
+          <QuickAction href="/dashboard/load-game" icon="gamepad" label="Load Game"  desc="Send credits to a game room"    color="#ef4444" />
+          <QuickAction href="/dashboard/redeem"    icon="trophy" label="Redeem"     desc="Request a redemption from game" color="#dc2626" />
           <QuickAction href="/dashboard/withdraw"  icon="out" label="Withdraw"   desc="Withdraw to your account"      color="#3b82f6" />
         </div>
       </div>
@@ -753,7 +753,7 @@ export default function Dashboard() {
         <div style={{ marginBottom: 28 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <span style={LABEL}>Our Games</span>
-            <Link href="/dashboard/games" style={{ fontSize: 12, color: '#fbbf24', fontWeight: 700, textDecoration: 'none' }}>View all →</Link>
+            <Link href="/dashboard/games" style={{ fontSize: 12, color: '#ef4444', fontWeight: 700, textDecoration: 'none' }}>View all →</Link>
           </div>
           {/* A wrapping grid, not a sideways scroller. This was a flex row
               with overflow-x:auto, so the catalogue sat behind a scrollbar
@@ -779,11 +779,11 @@ export default function Dashboard() {
       {totalPending > 0 && (
         <div style={{ marginBottom: 28 }}>
           <div style={{ ...LABEL, marginBottom: 12 }}>
-            Pending Requests <span style={{ background: '#fbbf24', color: '#000', fontSize: 9, padding: '2px 7px', borderRadius: 99, marginLeft: 6, fontWeight: 800 }}>{totalPending}</span>
+            Pending Requests <span style={{ background: '#ef4444', color: '#000', fontSize: 9, padding: '2px 7px', borderRadius: 99, marginLeft: 6, fontWeight: 800 }}>{totalPending}</span>
           </div>
           <PendingCard label="Deposits"    count={pending.deposits}    href="/dashboard/deposit"       color="#10b981" />
-          <PendingCard label="Game Loads"  count={pending.loads}       href="/dashboard/games?tab=mine" color="#fbbf24" />
-          <PendingCard label="Redeems" count={pending.redeems}     href="/dashboard/redeem"        color="#f59e0b" />
+          <PendingCard label="Game Loads"  count={pending.loads}       href="/dashboard/games?tab=mine" color="#ef4444" />
+          <PendingCard label="Redeems" count={pending.redeems}     href="/dashboard/redeem"        color="#dc2626" />
           <PendingCard label="Withdraws" count={pending.withdrawals} href="/dashboard/withdraw"      color="#3b82f6" />
         </div>
       )}
@@ -803,7 +803,7 @@ export default function Dashboard() {
         <div style={{ ...PANEL, borderRadius: 18, overflow: 'hidden' }}>
           <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>My Games</span>
-            <Link href="/dashboard/games?tab=mine" style={{ fontSize: 12, color: '#fbbf24', fontWeight: 600, textDecoration: 'none' }}>View All →</Link>
+            <Link href="/dashboard/games?tab=mine" style={{ fontSize: 12, color: '#ef4444', fontWeight: 600, textDecoration: 'none' }}>View All →</Link>
           </div>
 
           {gameAccounts.length === 0 ? (
@@ -812,14 +812,14 @@ export default function Dashboard() {
               <div style={{ color: 'rgba(255,255,255,.3)', fontSize: 12.5, marginBottom: 16 }}>
                 Pick a game and our team will set an account up for you.
               </div>
-              <Link href="/dashboard/games" style={{ display: 'inline-block', padding: '11px 26px', background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', borderRadius: 12, color: '#050505', fontSize: 13, fontWeight: 800, textDecoration: 'none' }}>
+              <Link href="/dashboard/games" style={{ display: 'inline-block', padding: '11px 26px', background: 'linear-gradient(135deg,#ef4444,#dc2626)', borderRadius: 12, color: '#050505', fontSize: 13, fontWeight: 800, textDecoration: 'none' }}>
                 Browse games
               </Link>
             </div>
           ) : (
             <div>
               {gameAccounts.slice(0, 5).map((ga, i) => {
-                const accent = ga.game_panels?.accent_color || '#fbbf24'
+                const accent = ga.game_panels?.accent_color || '#ef4444'
                 const logo   = ga.game_panels?.logo_url || gameLogoFor(ga.game_panels?.slug, ga.game_panels?.name)
                 return (
                   <div key={ga.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 20px', borderBottom: i < Math.min(gameAccounts.length, 5) - 1 ? '1px solid rgba(255,255,255,.04)' : 'none' }}>
@@ -849,7 +849,7 @@ export default function Dashboard() {
               })}
 
               {gameAccounts.length > 5 && (
-                <Link href="/dashboard/games?tab=mine" style={{ display: 'block', padding: '13px 20px', textAlign: 'center', fontSize: 12.5, fontWeight: 700, color: '#fbbf24', textDecoration: 'none', borderTop: '1px solid rgba(255,255,255,.04)' }}>
+                <Link href="/dashboard/games?tab=mine" style={{ display: 'block', padding: '13px 20px', textAlign: 'center', fontSize: 12.5, fontWeight: 700, color: '#ef4444', textDecoration: 'none', borderTop: '1px solid rgba(255,255,255,.04)' }}>
                   {gameAccounts.length - 5} more →
                 </Link>
               )}
@@ -870,7 +870,7 @@ export default function Dashboard() {
               <StatusBadge status={profile?.kyc_status || 'not_started'} size="xs" />
             </div>
             {profile?.kyc_status !== 'verified' && (
-              <Link href="/dashboard/kyc" style={{ display: 'block', marginTop: 10, fontSize: 12, color: '#fbbf24', fontWeight: 600, textDecoration: 'none' }}>
+              <Link href="/dashboard/kyc" style={{ display: 'block', marginTop: 10, fontSize: 12, color: '#ef4444', fontWeight: 600, textDecoration: 'none' }}>
                 {profile?.kyc_status === 'not_started' ? 'Start verification →' : 'Check status →'}
               </Link>
             )}
@@ -901,9 +901,9 @@ export default function Dashboard() {
         .hg-art{height:128px;display:flex;align-items:center;justify-content:center;padding:16px 12px 6px}
         .hg-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.5));transition:transform .35s cubic-bezier(.2,.9,.3,1.35)}
         .hg-bar{display:flex;align-items:center;gap:7px;padding:11px 12px;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.6));border-top:1px solid rgba(255,255,255,.08);font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.88)}
-        .hg-p{font-size:8px;color:#fbbf24}.hg-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .hg-p{font-size:8px;color:#ef4444}.hg-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .hg-b{position:absolute;top:0;right:0;z-index:2;background:#e5484d;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-bottom-left-radius:10px}
-        .hg:hover{transform:translateY(-8px) scale(1.05);border-color:#fbbf24;box-shadow:0 22px 40px rgba(0,0,0,.55),0 0 0 1px #fbbf24,0 0 30px rgba(251,191,36,.35);z-index:3}
+        .hg:hover{transform:translateY(-8px) scale(1.05);border-color:#ef4444;box-shadow:0 22px 40px rgba(0,0,0,.55),0 0 0 1px #ef4444,0 0 30px rgba(239,68,68,.35);z-index:3}
         .hg:hover::after{left:135%}.hg:hover .hg-art img{transform:scale(1.1) translateY(-3px)}
         @media(max-width:560px){.qa-grid{grid-template-columns:1fr 1fr!important;gap:10px!important}.qa{padding:14px!important}.qa-desc{font-size:12px!important}.wl-grid{grid-template-columns:1fr 1fr!important}.wl-grid .wc{padding:16px 14px 14px!important}.wc-num *{font-size:22px!important}}
         @media(prefers-reduced-motion:reduce){.hg,.hg-art img{transition:none}.hg:hover{transform:none}}

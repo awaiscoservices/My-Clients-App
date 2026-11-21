@@ -31,7 +31,7 @@ async function apiFetch(path) {
 }
 
 // ─── stat tile ───────────────────────────────────────────────────────────────
-function Tile({ label, value, sub, color = '#fbbf24' }) {
+function Tile({ label, value, sub, color = '#ef4444' }) {
   return (
     <div style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 12, padding: '14px 16px', minWidth: 130, flex: '1 1 130px' }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.35)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>{label}</div>
@@ -63,7 +63,7 @@ function Pager({ page, pages, total, onPage }) {
     </div>
   )
 }
-const pagerBtn = dis => ({ padding: '5px 12px', fontSize: 12, fontWeight: 700, background: dis ? 'rgba(255,255,255,.04)' : 'rgba(251,191,36,.15)', border: `1px solid ${dis ? 'rgba(255,255,255,.08)' : 'rgba(251,191,36,.3)'}`, borderRadius: 8, color: dis ? 'rgba(255,255,255,.2)' : '#fbbf24', cursor: dis ? 'default' : 'pointer', fontFamily: "'Outfit',sans-serif" })
+const pagerBtn = dis => ({ padding: '5px 12px', fontSize: 12, fontWeight: 700, background: dis ? 'rgba(255,255,255,.04)' : 'rgba(239,68,68,.15)', border: `1px solid ${dis ? 'rgba(255,255,255,.08)' : 'rgba(239,68,68,.3)'}`, borderRadius: 8, color: dis ? 'rgba(255,255,255,.2)' : '#ef4444', cursor: dis ? 'default' : 'pointer', fontFamily: "'Outfit',sans-serif" })
 
 // ─── empty state ──────────────────────────────────────────────────────────────
 function Empty({ msg }) {
@@ -95,14 +95,14 @@ function FilterBar({ value, onChange, options = ['all','pending','approved','rej
   return (
     <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,.04)', padding: 4, borderRadius: 10, marginBottom: 14, flexWrap: 'wrap' }}>
       {options.map(s => (
-        <button key={s} onClick={() => onChange(s)} style={{ padding: '5px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", fontSize: 12, fontWeight: 700, background: value === s ? 'rgba(251,191,36,.7)' : 'transparent', color: value === s ? '#fff' : 'rgba(255,255,255,.4)', textTransform: 'capitalize', transition: 'all .15s' }}>{s}</button>
+        <button key={s} onClick={() => onChange(s)} style={{ padding: '5px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", fontSize: 12, fontWeight: 700, background: value === s ? 'rgba(239,68,68,.7)' : 'transparent', color: value === s ? '#fff' : 'rgba(255,255,255,.4)', textTransform: 'capitalize', transition: 'all .15s' }}>{s}</button>
       ))}
     </div>
   )
 }
 
 // ─── XP progress bar ──────────────────────────────────────────────────────────
-function XpBar({ pct, color = '#fbbf24' }) {
+function XpBar({ pct, color = '#ef4444' }) {
   return (
     <div style={{ height: 8, background: 'rgba(255,255,255,.08)', borderRadius: 99, overflow: 'hidden' }}>
       <div style={{ height: '100%', width: `${Math.min(100, pct)}%`, background: `linear-gradient(90deg, ${color}, ${color}cc)`, borderRadius: 99, transition: 'width .4s ease' }} />
@@ -128,7 +128,7 @@ function TabSummary({ playerId }) {
   if (!data) return <div style={{ color: 'rgba(255,255,255,.3)', padding: 16 }}>Loading…</div>
 
   const s = data
-  const levelColor = s.current_level?.color || '#fbbf24'
+  const levelColor = s.current_level?.color || '#ef4444'
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -136,7 +136,7 @@ function TabSummary({ playerId }) {
       {/* Pending alerts */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         <Pending count={s.pending_deposit_count}  label="deposits"  color="#3b82f6" />
-        <Pending count={s.pending_withdraw_count} label="withdrawals" color="#f59e0b" />
+        <Pending count={s.pending_withdraw_count} label="withdrawals" color="#dc2626" />
         <Pending count={s.pending_scores_count}   label="scores"    color="#a855f7" />
         <Pending count={s.pending_redeem_count}   label="redeems"   color="#22c55e" />
       </div>
@@ -148,7 +148,7 @@ function TabSummary({ playerId }) {
           <Tile label="Cash Balance"    value={fmt(s.cash_balance_cents)}    color="#22c55e" />
           <Tile label="Bonus Balance"   value={fmt(s.bonus_balance_cents)}   color="#a855f7" />
           <Tile label="Withdrawable"    value={fmt(s.withdrawable_cents)}    color="#3b82f6" />
-          <Tile label="Reserved"        value={fmt(s.reserved_cents)}        color="#f59e0b" />
+          <Tile label="Reserved"        value={fmt(s.reserved_cents)}        color="#dc2626" />
         </div>
       </div>
 
@@ -165,7 +165,7 @@ function TabSummary({ playerId }) {
             const balance = scr - red
             return <>
               <Tile label="Total Deposit"  value={fmt(dep)}     color="#3b82f6" />
-              <Tile label="Total Withdraw" value={fmt(with_)}   color="#f59e0b" />
+              <Tile label="Total Withdraw" value={fmt(with_)}   color="#dc2626" />
               <Tile label="Total Profit"   value={fmt(profit)}  color={profit  >= 0 ? '#10b981' : '#f87171'} />
               <Tile label="Total Scores"   value={fmt(scr)}     color="#a855f7" />
               <Tile label="Total Redeem"   value={fmt(red)}     color="#22c55e" />
@@ -183,7 +183,7 @@ function TabSummary({ playerId }) {
             <div style={{ fontSize: 18, fontWeight: 800, color: levelColor }}>{s.current_level?.name || 'Unranked'}</div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 22, fontWeight: 800, color: '#fbbf24' }}>{fmtN(s.current_xp)}</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: '#ef4444' }}>{fmtN(s.current_xp)}</div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,.3)' }}>Total XP</div>
           </div>
         </div>
@@ -209,7 +209,7 @@ function TabSummary({ playerId }) {
               <div key={h.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5, fontSize: 12 }}>
                 <span style={{ color: h.from_level?.accent_color || 'rgba(255,255,255,.4)' }}>{h.from_level?.name || '—'}</span>
                 <span style={{ color: 'rgba(255,255,255,.25)' }}>→</span>
-                <span style={{ color: h.to_level?.accent_color || '#fbbf24', fontWeight: 700 }}>{h.to_level?.name || '—'}</span>
+                <span style={{ color: h.to_level?.accent_color || '#ef4444', fontWeight: 700 }}>{h.to_level?.name || '—'}</span>
                 <span style={{ color: 'rgba(255,255,255,.25)', marginLeft: 'auto' }}>{fmtDt(h.created_at)}</span>
               </div>
             ))}
@@ -270,7 +270,7 @@ function TabDeposits({ playerId }) {
       columns={['Reference', 'Amount', 'Method', 'Status', 'Date', 'Reviewed By']}
       renderRow={(r, i) => (
         <tr key={r.id || i} style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
-          <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, color: '#fbbf24', fontFamily: 'monospace' }}>{r.reference_id}</span></td>
+          <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, color: '#ef4444', fontFamily: 'monospace' }}>{r.reference_id}</span></td>
           <td style={tdS}><span style={{ fontSize: 13, fontWeight: 700, color: '#3b82f6' }}>+{fmt(r.amount_cents)}</span></td>
           <td style={tdS}><span style={{ fontSize: 12, color: 'rgba(255,255,255,.5)' }}>{r.payment_methods?.name || '—'}</span></td>
           <td style={tdS}><StatusBadge status={r.status} size="xs" /></td>
@@ -291,8 +291,8 @@ function TabWithdrawals({ playerId }) {
       columns={['Reference', 'Amount', 'Method', 'Status', 'Date', 'Reviewed By']}
       renderRow={(r, i) => (
         <tr key={r.id || i} style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
-          <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, color: '#fbbf24', fontFamily: 'monospace' }}>{r.reference_id}</span></td>
-          <td style={tdS}><span style={{ fontSize: 13, fontWeight: 700, color: '#f59e0b' }}>−{fmt(r.amount_cents)}</span></td>
+          <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, color: '#ef4444', fontFamily: 'monospace' }}>{r.reference_id}</span></td>
+          <td style={tdS}><span style={{ fontSize: 13, fontWeight: 700, color: '#dc2626' }}>−{fmt(r.amount_cents)}</span></td>
           <td style={tdS}><span style={{ fontSize: 12, color: 'rgba(255,255,255,.5)' }}>{r.method || '—'}</span></td>
           <td style={tdS}><StatusBadge status={r.status} size="xs" /></td>
           <td style={{ ...tdS, fontSize: 11, color: 'rgba(255,255,255,.35)', whiteSpace: 'nowrap' }}>{fmtDt(r.created_at)}</td>
@@ -312,11 +312,11 @@ function TabScores({ playerId }) {
       columns={['Reference', 'Amount', 'Bucket', 'Game', 'Account', 'Status', 'Date']}
       renderRow={(r, i) => (
         <tr key={r.id || i} style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
-          <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, color: '#fbbf24', fontFamily: 'monospace' }}>{r.reference_id}</span></td>
+          <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, color: '#ef4444', fontFamily: 'monospace' }}>{r.reference_id}</span></td>
           <td style={tdS}><span style={{ fontSize: 13, fontWeight: 700, color: '#ef4444' }}>−{fmt(r.amount_cents)}</span></td>
           <td style={tdS}><span style={{ fontSize: 10, fontWeight: 800, padding: '2px 8px', borderRadius: 99, background: r.wallet_bucket === 'bonus' ? 'rgba(168,85,247,.15)' : 'rgba(255,255,255,.08)', color: r.wallet_bucket === 'bonus' ? '#a855f7' : 'rgba(255,255,255,.4)' }}>{r.wallet_bucket || 'cash'}</span></td>
           <td style={{ ...tdS, fontSize: 12, color: '#a855f7', fontWeight: 600 }}>{r.game_panel_name || '—'}</td>
-          <td style={{ ...tdS, fontSize: 12, color: '#fbbf24', fontFamily: 'monospace' }}>{r.game_account_username || '—'}</td>
+          <td style={{ ...tdS, fontSize: 12, color: '#ef4444', fontFamily: 'monospace' }}>{r.game_account_username || '—'}</td>
           <td style={tdS}><StatusBadge status={r.status} size="xs" /></td>
           <td style={{ ...tdS, fontSize: 11, color: 'rgba(255,255,255,.35)', whiteSpace: 'nowrap' }}>{fmtDt(r.created_at)}</td>
         </tr>
@@ -334,11 +334,11 @@ function TabRedeems({ playerId }) {
       columns={['Reference', 'Requested', 'Excess', 'Game', 'Account', 'Status', 'Date']}
       renderRow={(r, i) => (
         <tr key={r.id || i} style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
-          <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, color: '#fbbf24', fontFamily: 'monospace' }}>{r.reference_id}</span></td>
+          <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, color: '#ef4444', fontFamily: 'monospace' }}>{r.reference_id}</span></td>
           <td style={tdS}><span style={{ fontSize: 13, fontWeight: 700, color: '#22c55e' }}>+{fmt(r.amount_cents)}</span></td>
-          <td style={tdS}><span style={{ fontSize: 12, color: '#fbbf24' }}>{r.excess_cents ? fmt(r.excess_cents) : '—'}</span></td>
+          <td style={tdS}><span style={{ fontSize: 12, color: '#ef4444' }}>{r.excess_cents ? fmt(r.excess_cents) : '—'}</span></td>
           <td style={{ ...tdS, fontSize: 12, color: '#a855f7', fontWeight: 600 }}>{r.game_panel_name || '—'}</td>
-          <td style={{ ...tdS, fontSize: 12, color: '#fbbf24', fontFamily: 'monospace' }}>{r.game_account_username || '—'}</td>
+          <td style={{ ...tdS, fontSize: 12, color: '#ef4444', fontFamily: 'monospace' }}>{r.game_account_username || '—'}</td>
           <td style={tdS}><StatusBadge status={r.status} size="xs" /></td>
           <td style={{ ...tdS, fontSize: 11, color: 'rgba(255,255,255,.35)', whiteSpace: 'nowrap' }}>{fmtDt(r.created_at)}</td>
         </tr>
@@ -348,7 +348,7 @@ function TabRedeems({ playerId }) {
 }
 
 // ─── Transactions tab ─────────────────────────────────────────────────────────
-const TX_COLORS = { deposit: '#3b82f6', withdrawal: '#f59e0b', bonus: '#a855f7', adjustment: '#fbbf24', game_load: '#ef4444', redemption: '#22c55e' }
+const TX_COLORS = { deposit: '#3b82f6', withdrawal: '#dc2626', bonus: '#a855f7', adjustment: '#ef4444', game_load: '#ef4444', redemption: '#22c55e' }
 function txColor(type) { for (const [k, c] of Object.entries(TX_COLORS)) { if (type?.includes(k)) return c } return 'rgba(255,255,255,.5)' }
 
 function TabTransactions({ playerId }) {
@@ -398,7 +398,7 @@ function TabTransactions({ playerId }) {
                 <tr key={r.id || i} style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
                   <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, padding: '2px 8px', borderRadius: 99, background: `${txColor(r.type)}22`, color: txColor(r.type), textTransform: 'capitalize' }}>{(r.type || '').replace(/_/g, ' ')}</span></td>
                   <td style={tdS}><span style={{ fontSize: 13, fontWeight: 700, color: r.amount_cents >= 0 ? '#22c55e' : '#ef4444' }}>{r.amount_cents >= 0 ? '+' : ''}{fmt(r.amount_cents)}</span></td>
-                  <td style={{ ...tdS, fontSize: 13, fontWeight: 600, color: '#fbbf24' }}>{fmt(r.balance_after_cents)}</td>
+                  <td style={{ ...tdS, fontSize: 13, fontWeight: 600, color: '#ef4444' }}>{fmt(r.balance_after_cents)}</td>
                   <td style={tdS}><span style={{ fontSize: 11, color: 'rgba(255,255,255,.4)', fontFamily: 'monospace' }}>{r.reference_id || '—'}</span></td>
                   {/* FIX: was r.notes — ledger column is `description` */}
                   <td style={{ ...tdS, fontSize: 12, color: 'rgba(255,255,255,.35)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.description || '—'}</td>
@@ -441,7 +441,7 @@ function TabPlayerLevel({ playerId }) {
     <div>
       <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,.04)', padding: 4, borderRadius: 10, marginBottom: 14, width: 'fit-content' }}>
         {['history', 'xp'].map(s => (
-          <button key={s} onClick={() => setSub(s)} style={{ padding: '5px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", fontSize: 12, fontWeight: 700, background: sub === s ? 'rgba(251,191,36,.7)' : 'transparent', color: sub === s ? '#fff' : 'rgba(255,255,255,.4)', textTransform: 'capitalize' }}>{s === 'xp' ? 'XP Log' : 'Level History'}</button>
+          <button key={s} onClick={() => setSub(s)} style={{ padding: '5px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", fontSize: 12, fontWeight: 700, background: sub === s ? 'rgba(239,68,68,.7)' : 'transparent', color: sub === s ? '#fff' : 'rgba(255,255,255,.4)', textTransform: 'capitalize' }}>{s === 'xp' ? 'XP Log' : 'Level History'}</button>
         ))}
       </div>
 
@@ -453,8 +453,8 @@ function TabPlayerLevel({ playerId }) {
               rows={data.history.map((h, i) => (
                 <tr key={h.id || i} style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
                   <td style={tdS}><span style={{ fontWeight: 700, color: h.from_level?.accent_color || 'rgba(255,255,255,.4)' }}>{h.from_level?.name || '—'}</span></td>
-                  <td style={tdS}><span style={{ fontWeight: 700, color: h.to_level?.accent_color || '#fbbf24' }}>{h.to_level?.name || '—'}</span></td>
-                  <td style={tdS}><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 99, background: 'rgba(251,191,36,.1)', color: '#fbbf24', textTransform: 'capitalize' }}>{(h.trigger || '').replace(/_/g, ' ')}</span></td>
+                  <td style={tdS}><span style={{ fontWeight: 700, color: h.to_level?.accent_color || '#ef4444' }}>{h.to_level?.name || '—'}</span></td>
+                  <td style={tdS}><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 99, background: 'rgba(239,68,68,.1)', color: '#ef4444', textTransform: 'capitalize' }}>{(h.trigger || '').replace(/_/g, ' ')}</span></td>
                   <td style={{ ...tdS, fontSize: 11, color: 'rgba(255,255,255,.35)', whiteSpace: 'nowrap' }}>{fmtTs(h.created_at)}</td>
                   <td style={{ ...tdS, fontSize: 12, color: 'rgba(255,255,255,.4)' }}>{h.triggered_by_profile?.full_name || '—'}</td>
                 </tr>
@@ -472,7 +472,7 @@ function TabPlayerLevel({ playerId }) {
               headers={['XP', 'Source', 'Reference', 'Notes', 'Date']}
               rows={data.xp_log.map((x, i) => (
                 <tr key={x.id || i} style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
-                  <td style={tdS}><span style={{ fontSize: 14, fontWeight: 800, color: x.xp_amount >= 0 ? '#fbbf24' : '#ef4444' }}>{x.xp_amount >= 0 ? '+' : ''}{fmtN(x.xp_amount)}</span></td>
+                  <td style={tdS}><span style={{ fontSize: 14, fontWeight: 800, color: x.xp_amount >= 0 ? '#ef4444' : '#ef4444' }}>{x.xp_amount >= 0 ? '+' : ''}{fmtN(x.xp_amount)}</span></td>
                   <td style={tdS}><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 99, background: 'rgba(168,85,247,.12)', color: '#a855f7', textTransform: 'capitalize' }}>{(x.source || '').replace(/_/g, ' ')}</span></td>
                   <td style={tdS}><span style={{ fontSize: 11, color: 'rgba(255,255,255,.4)', fontFamily: 'monospace' }}>{x.reference_id || '—'}</span></td>
                   <td style={{ ...tdS, fontSize: 12, color: 'rgba(255,255,255,.35)' }}>{x.notes || '—'}</td>
@@ -520,7 +520,7 @@ function TabBonuses({ playerId }) {
                 <tr key={r.id || i} style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
                   <td style={tdS}><span style={{ fontSize: 11, fontWeight: 800, padding: '2px 8px', borderRadius: 99, background: 'rgba(168,85,247,.15)', color: '#a855f7', textTransform: 'capitalize' }}>{(r.type || '').replace(/_/g, ' ')}</span></td>
                   <td style={tdS}><span style={{ fontSize: 13, fontWeight: 700, color: r.amount_cents >= 0 ? '#a855f7' : '#ef4444' }}>{r.amount_cents >= 0 ? '+' : ''}{fmt(r.amount_cents)}</span></td>
-                  <td style={{ ...tdS, fontSize: 13, fontWeight: 600, color: '#fbbf24' }}>{fmt(r.balance_after_cents)}</td>
+                  <td style={{ ...tdS, fontSize: 13, fontWeight: 600, color: '#ef4444' }}>{fmt(r.balance_after_cents)}</td>
                   <td style={tdS}><span style={{ fontSize: 11, color: 'rgba(255,255,255,.4)', fontFamily: 'monospace' }}>{r.reference_id || '—'}</span></td>
                   {/* FIX: was r.notes — ledger column is `description` */}
                   <td style={{ ...tdS, fontSize: 12, color: 'rgba(255,255,255,.35)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.description || '—'}</td>
@@ -587,7 +587,7 @@ export default function PlayerWalletModal({ playerId, playerName, onClose }) {
         }
         .wallet-modal-box {
           background: #0a1628;
-          border: 1px solid rgba(251,191,36,.22);
+          border: 1px solid rgba(239,68,68,.22);
           border-radius: 0;
           width: 100%;
           height: 100dvh;
@@ -661,7 +661,7 @@ export default function PlayerWalletModal({ playerId, playerName, onClose }) {
           <div className="wallet-header">
             <div style={{ paddingBottom: 14 }}>
               <h2 style={{ fontFamily: "'Cinzel',serif", fontSize: 18, fontWeight: 700, color: '#fff', margin: 0, display: 'inline-flex', alignItems: 'center', gap: 9 }}>
-                <Icon name="wallet" size={18} color="#fbbf24" /> Wallet Overview
+                <Icon name="wallet" size={18} color="#ef4444" /> Wallet Overview
               </h2>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{playerName}</div>
             </div>
@@ -680,9 +680,9 @@ export default function PlayerWalletModal({ playerId, playerName, onClose }) {
                 style={{
                   padding: '12px 14px',
                   border: 'none',
-                  borderBottom: activeTab === t.key ? '2px solid #fbbf24' : '2px solid transparent',
+                  borderBottom: activeTab === t.key ? '2px solid #ef4444' : '2px solid transparent',
                   background: 'transparent',
-                  color: activeTab === t.key ? '#fbbf24' : 'rgba(255,255,255,.35)',
+                  color: activeTab === t.key ? '#ef4444' : 'rgba(255,255,255,.35)',
                   fontSize: 11,
                   fontWeight: 700,
                   fontFamily: "'Outfit',sans-serif",

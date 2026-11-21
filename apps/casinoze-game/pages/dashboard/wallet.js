@@ -93,7 +93,7 @@ function TransferModal({ wallet, onClose, onDone }) {
 
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.8)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: '#0b1626', border: '1px solid rgba(251,191,36,.3)', borderRadius: 18, padding: 24, width: '100%', maxWidth: 440 }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#0b1626', border: '1px solid rgba(239,68,68,.3)', borderRadius: 18, padding: 24, width: '100%', maxWidth: 440 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
           <h2 style={{ fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: '#fff', margin: 0 }}>Transfer</h2>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', cursor: 'pointer', display: 'flex' }}><Icon name="x" size={18} /></button>
@@ -106,9 +106,9 @@ function TransferModal({ wallet, onClose, onDone }) {
             return (
               <button key={key} onClick={() => { setDir(key); setAmount(''); setErr('') }}
                 style={{ padding: '10px 8px', borderRadius: 12, cursor: 'pointer', fontFamily: "'Outfit',sans-serif", fontSize: 13, fontWeight: 800,
-                  background: on ? 'rgba(251,191,36,.16)' : 'rgba(255,255,255,.05)',
-                  border: `1px solid ${on ? 'rgba(251,191,36,.5)' : 'rgba(255,255,255,.1)'}`,
-                  color: on ? '#fbbf24' : 'rgba(255,255,255,.6)' }}>
+                  background: on ? 'rgba(239,68,68,.16)' : 'rgba(255,255,255,.05)',
+                  border: `1px solid ${on ? 'rgba(239,68,68,.5)' : 'rgba(255,255,255,.1)'}`,
+                  color: on ? '#ef4444' : 'rgba(255,255,255,.6)' }}>
                 {label}
               </button>
             )
@@ -118,7 +118,7 @@ function TransferModal({ wallet, onClose, onDone }) {
         {/* Amount */}
         <div style={{ marginBottom: 6, display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
           <span style={{ color: 'rgba(255,255,255,.5)' }}>{srcLabel} to move</span>
-          <button onClick={() => setAmount((srcCents / 100).toFixed(2))} style={{ background: 'none', border: 'none', color: '#fbbf24', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+          <button onClick={() => setAmount((srcCents / 100).toFixed(2))} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
             Max {money(srcCents)}
           </button>
         </div>
@@ -147,7 +147,7 @@ function TransferModal({ wallet, onClose, onDone }) {
 
         <button onClick={submit} disabled={!canSubmit}
           style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', fontSize: 15, fontWeight: 800, fontFamily: "'Outfit',sans-serif",
-            background: canSubmit ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 'rgba(255,255,255,.08)',
+            background: canSubmit ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'rgba(255,255,255,.08)',
             color: canSubmit ? '#050505' : 'rgba(255,255,255,.4)', cursor: canSubmit ? 'pointer' : 'default' }}>
           {busy ? 'Transferring…' : 'Confirm Transfer'}
         </button>
@@ -223,13 +223,13 @@ export default function WalletPage() {
     },
     {
       text: 'Scores', icon: 'gamepad',
-      bg: 'linear-gradient(135deg,#fbbf24,#f59e0b)',
+      bg: 'linear-gradient(135deg,#ef4444,#dc2626)',
       color: '#050505',
       onClick: () => router.push('/dashboard/games'),
     },
     {
       text: 'Redeem', icon: 'trophy',
-      bg: 'linear-gradient(135deg,#f59e0b,#d97706)',
+      bg: 'linear-gradient(135deg,#dc2626,#b91c1c)',
       color: '#050505',
       onClick: () => router.push('/dashboard/redeem'),
     },
@@ -255,9 +255,9 @@ export default function WalletPage() {
       {wallet && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px,100%),1fr))', gap: 12, marginBottom: 20 }}>
           <BucketCard label="Cash"         cents={wallet.cash_balance_cents}   color="#10b981" icon="cash"  desc="Available to load or withdraw" />
-          <BucketCard label="Bonus"        cents={wallet.bonus_balance_cents}  color="#f59e0b" icon="gift"  desc="Bonus credits" />
+          <BucketCard label="Bonus"        cents={wallet.bonus_balance_cents}  color="#dc2626" icon="gift"  desc="Bonus credits" />
           <BucketCard label="Reserved"     cents={wallet.reserved_cents}       color="#94a3b8" icon="lock"  desc="Held for pending requests" />
-          <BucketCard label="Withdrawable" cents={wallet.withdrawable_cents}   color="#fbbf24" icon="money" desc="Ready to withdraw" />
+          <BucketCard label="Withdrawable" cents={wallet.withdrawable_cents}   color="#ef4444" icon="money" desc="Ready to withdraw" />
         </div>
       )}
 
@@ -289,7 +289,7 @@ export default function WalletPage() {
               <button key={f.key} onClick={() => setFilter(f.key)} style={{
                 padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer',
                 fontFamily: "'Outfit',sans-serif", fontSize: 12, fontWeight: 700,
-                background: filter === f.key ? 'rgba(251,191,36,.8)' : 'transparent',
+                background: filter === f.key ? 'rgba(239,68,68,.8)' : 'transparent',
                 color: filter === f.key ? '#fff' : 'rgba(255,255,255,.4)', transition: 'all .15s',
               }}>
                 {f.label}
@@ -316,7 +316,7 @@ export default function WalletPage() {
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>
                       {tx.label}
-                      {tx.game_name && <span style={{ color: '#fbbf24' }}> · {tx.game_name}</span>}
+                      {tx.game_name && <span style={{ color: '#ef4444' }}> · {tx.game_name}</span>}
                       {tx.source_label && <span style={{ color: 'rgba(255,255,255,.4)', fontWeight: 500 }}> · {tx.source_label}</span>}
                     </div>
                     {tx.status === 'rejected' && tx.rejection_reason && (
@@ -347,7 +347,7 @@ export default function WalletPage() {
             ))}
             {hasMore && (
               <div style={{ padding: '16px', textAlign: 'center' }}>
-                <button onClick={() => loadTransactions(page + 1)} disabled={txLoading} style={{ padding: '10px 28px', background: 'rgba(251,191,36,.15)', border: '1px solid rgba(251,191,36,.3)', borderRadius: 10, color: '#fbbf24', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
+                <button onClick={() => loadTransactions(page + 1)} disabled={txLoading} style={{ padding: '10px 28px', background: 'rgba(239,68,68,.15)', border: '1px solid rgba(239,68,68,.3)', borderRadius: 10, color: '#ef4444', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
                   {txLoading ? 'Loading…' : 'Load More'}
                 </button>
               </div>

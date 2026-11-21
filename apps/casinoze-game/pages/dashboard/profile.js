@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
 import Icon from '../../components/ui/Icon'
 
-const gold = '#fbbf24', green = '#22c55e', red = '#ef4444'
+const gold = '#ef4444', green = '#22c55e', red = '#ef4444'
 
 const money = c => '$' + ((c || 0) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n))
@@ -240,7 +240,7 @@ export default function ProfilePage() {
               <h2 style={{ fontSize: 14, fontWeight: 800, color: gold, margin: '0 0 14px', letterSpacing: '.02em' }}>Quick Actions</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {[
-                  { href: '/dashboard/deposit', label: 'Deposit', icon: 'plus', bg: 'linear-gradient(135deg,#fbbf24,#f59e0b)', fg: '#050505' },
+                  { href: '/dashboard/deposit', label: 'Deposit', icon: 'plus', bg: 'linear-gradient(135deg,#ef4444,#dc2626)', fg: '#050505' },
                   { href: '/dashboard/load-game', label: 'Load Credits', icon: 'arrowUp', bg: 'linear-gradient(135deg,#2dd4bf,#0891b2)', fg: '#fff' },
                   { href: '/dashboard/redeem', label: 'Redeem', icon: 'arrowDown', bg: 'rgba(255,255,255,.05)', fg: '#fff', border: '1px solid rgba(255,255,255,.12)' },
                   { href: '/dashboard/withdraw', label: 'Withdraw', icon: 'wallet', bg: 'rgba(255,255,255,.05)', fg: '#fff', border: '1px solid rgba(255,255,255,.12)' },
@@ -260,10 +260,10 @@ export default function ProfilePage() {
               <h2 style={{ fontSize: 14, fontWeight: 800, color: gold, margin: '0 0 6px', letterSpacing: '.02em' }}>Your Referral Code</h2>
               <p style={{ fontSize: 12, color: 'rgba(255,255,255,.45)', margin: '0 0 14px' }}>Share it — you earn a bonus when a friend deposits.</p>
               <div style={{ display: 'flex', gap: 10 }}>
-                <div style={{ flex: 1, padding: '13px 16px', borderRadius: 11, background: 'rgba(251,191,36,.08)', border: '1px dashed rgba(251,191,36,.4)', color: gold, fontSize: 18, fontWeight: 800, fontFamily: 'monospace', letterSpacing: '.12em', textAlign: 'center' }}>
+                <div style={{ flex: 1, padding: '13px 16px', borderRadius: 11, background: 'rgba(239,68,68,.08)', border: '1px dashed rgba(239,68,68,.4)', color: gold, fontSize: 18, fontWeight: 800, fontFamily: 'monospace', letterSpacing: '.12em', textAlign: 'center' }}>
                   {p?.my_referral_code || '—'}
                 </div>
-                <button onClick={copyRef} disabled={!p?.my_referral_code} style={{ padding: '0 18px', borderRadius: 11, border: 'none', cursor: 'pointer', fontFamily: 'Outfit, sans-serif', fontSize: 13, fontWeight: 800, color: '#050505', background: `linear-gradient(135deg, ${gold}, #f59e0b)` }}>
+                <button onClick={copyRef} disabled={!p?.my_referral_code} style={{ padding: '0 18px', borderRadius: 11, border: 'none', cursor: 'pointer', fontFamily: 'Outfit, sans-serif', fontSize: 13, fontWeight: 800, color: '#050505', background: `linear-gradient(135deg, ${gold}, #dc2626)` }}>
                   {copied ? 'Copied' : 'Copy'}
                 </button>
               </div>
@@ -286,7 +286,7 @@ export default function ProfilePage() {
                 <input type="password" className="pf-field" value={pwForm.confirm_password} onChange={e => setPwForm(f => ({ ...f, confirm_password: e.target.value }))} placeholder="Repeat new password" />
               </div>
               {pwMsg && <div style={{ color: red, fontSize: 12, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {pwMsg}</div>}
-              <button onClick={changePassword} disabled={pwSaving} style={{ width: '100%', padding: '12px', borderRadius: 10, border: 'none', background: pwSaving ? 'rgba(251,191,36,.2)' : `linear-gradient(135deg, #f59e0b, ${gold})`, color: pwSaving ? 'rgba(255,255,255,.4)' : '#050505', fontSize: 15, fontWeight: 800, cursor: pwSaving ? 'not-allowed' : 'pointer', fontFamily: 'Outfit, sans-serif' }}>
+              <button onClick={changePassword} disabled={pwSaving} style={{ width: '100%', padding: '12px', borderRadius: 10, border: 'none', background: pwSaving ? 'rgba(239,68,68,.2)' : `linear-gradient(135deg, #dc2626, ${gold})`, color: pwSaving ? 'rgba(255,255,255,.4)' : '#050505', fontSize: 15, fontWeight: 800, cursor: pwSaving ? 'not-allowed' : 'pointer', fontFamily: 'Outfit, sans-serif' }}>
                 {pwSaving ? 'Updating…' : 'Update Password'}
               </button>
             </Card>
