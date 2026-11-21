@@ -23,6 +23,9 @@ export const BRAND = {
   markBottom: pick(process.env.NEXT_PUBLIC_BRAND_MARK_BOTTOM, 'ROOM'),
   // Optional support address shown in copy; blank hides it
   supportEmail: pick(process.env.NEXT_PUBLIC_SUPPORT_EMAIL, ''),
+  // Logo mark image. A copy either drops its own file at this default path or
+  // points this env var at a different asset under /public.
+  logoSrc:    pick(process.env.NEXT_PUBLIC_BRAND_LOGO, '/images/logo/logo.png'),
 }
 
 // Browser tab titles: pageTitle('Deposit') -> "Deposit — Casinoze Room"

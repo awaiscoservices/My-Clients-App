@@ -3,9 +3,10 @@ import Icon from './Icon'
 import { BRAND } from '../../lib/brand'
 
 // ONE image file: public/images/logo/logo.png  (logo mark only, no text, square)
-// variant "full" = mark + "CASINOZE ROOM" written as text next to it
+// variant "full" = mark + the wordmark text next to it
 // variant "icon" = mark only
-const SRC = '/images/logo/logo.png'
+// Path comes from BRAND.logoSrc so a casino copy can swap the asset via env.
+const SRC = BRAND.logoSrc
 
 export default function Logo({ variant = 'full', height = 40, stack = false, className, style }) {
   const [failed, setFailed] = useState(false)
