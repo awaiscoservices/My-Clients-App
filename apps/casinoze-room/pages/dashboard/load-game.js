@@ -7,7 +7,7 @@ import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay, { centsToDisplay } from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
 import { getMyGameAccounts } from '../../lib/wallet'
-import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents, WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
+import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents, WaitPopup, WAIT_MESSAGES, isMaintenanceError } from '../../components/ui/kit'
 
 const QUICK = [10, 20, 50, 100]
 
@@ -52,7 +52,7 @@ export default function LoadGame() {
     setBusy(true)
     const { error } = await supabase.rpc('request_game_load', { p_game_account_id: acct, p_amount_cents: cents, p_bucket: bucket })
     setBusy(false)
-    if (error) return setMsg({ kind: 'error', text: error.message })
+    if (error) return isMaintenanceError(error.message) ? setPopup(WAIT_MESSAGES.maintenance) : setMsg({ kind: 'error', text: error.message })
     setPopup(WAIT_MESSAGES.scores)
     setAmount(''); load()
   }

@@ -61,11 +61,13 @@ export function Empty({ icon = 'inbox', text }) {
 // null (hidden).
 export function WaitPopup({ data, onClose, icon = 'checkCircle' }) {
   if (!data) return null
+  const popIcon = data.icon || icon
+  const popColor = data.iconColor || '#10b981'
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <div onClick={e => e.stopPropagation()} style={{ position: 'relative', background: '#0e1a2e', border: '1px solid rgba(251,191,36,.3)', borderRadius: 20, padding: '30px 28px', width: '100%', maxWidth: 420, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,.5)' }}>
         <button onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', lineHeight: 1, cursor: 'pointer', display: 'inline-flex' }}><Icon name="x" size={20} /></button>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14, color: '#10b981' }}><Icon name={icon} size={46} /></div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14, color: popColor }}><Icon name={popIcon} size={46} /></div>
         <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: '#fff', margin: '0 0 10px' }}>{data.title}</h3>
         <p style={{ fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,.6)', margin: '0 0 22px' }}>{data.text}</p>
         <Btn onClick={onClose} style={{ width: '100%' }}>Got it</Btn>
@@ -83,7 +85,14 @@ export const WAIT_MESSAGES = {
   game_account: { title: 'Account Requested', text: 'Your game account request has been received. Our team is setting it up and your login details will be ready shortly — thank you for your patience.' },
   game_password: { title: 'Reset Requested', text: 'Your game password reset request has been received. Our team will update your login shortly — thank you for your patience.' },
   password: { title: 'Password Updated', text: 'Your password has been updated successfully. Please use your new password the next time you sign in.' },
+  maintenance: { title: 'Temporarily unavailable', text: 'This game is temporarily unavailable. Please try again later.', icon: 'alert', iconColor: '#f59e0b' },
 }
+
+// The server raises / returns this exact text when a game is under maintenance;
+// the player pages match on it to show the maintenance popup instead of an
+// inline error. Keep in sync with the RPCs and game-account API routes.
+export const MAINTENANCE_TEXT = 'This game is temporarily unavailable. Please try again later.'
+export const isMaintenanceError = (m) => typeof m === 'string' && /temporarily unavailable/i.test(m)
 
 export const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 export const toCents = (v) => Math.round(parseFloat(v) * 100)

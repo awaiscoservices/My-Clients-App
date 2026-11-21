@@ -26,12 +26,14 @@ export default async function handler(req, res) {
   // Check game panel exists and is active
   const { data: panel } = await supabaseAdmin
     .from('game_panels')
-    .select('id, name, is_active, tenant_id')
+    .select('id, name, is_active, under_maintenance, tenant_id')
     .eq('id', game_panel_id)
     .eq('is_active', true)
     .single()
 
   if (!panel) return res.status(404).json({ error: 'Game not found or unavailable' })
+  if (panel.under_maintenance)
+    return res.status(423).json({ error: 'This game is temporarily unavailable. Please try again later.' })
 
   // Check player status
   const { data: profile } = await supabaseAdmin

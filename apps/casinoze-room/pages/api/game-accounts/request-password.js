@@ -37,12 +37,14 @@ export default async function handler(req, res) {
   // account that is theirs. Anything else is simply not found.
   const { data: account } = await supabaseAdmin
     .from('game_accounts')
-    .select('id, status, reference_id, game_username, tenant_id, password_change_requested, game_panels(name)')
+    .select('id, status, reference_id, game_username, tenant_id, password_change_requested, game_panels(name, under_maintenance)')
     .eq('id', account_id)
     .eq('user_id', user.id)
     .maybeSingle()
 
   if (!account) return res.status(404).json({ error: 'Game account not found' })
+  if (account.game_panels?.under_maintenance)
+    return res.status(423).json({ error: 'This game is temporarily unavailable. Please try again later.' })
   if (account.status !== 'active')
     return res.status(409).json({ error: 'This account is not active yet, so there is no password to change.' })
   if (account.password_change_requested)

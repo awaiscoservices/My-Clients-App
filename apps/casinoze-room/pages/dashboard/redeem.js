@@ -5,7 +5,7 @@ import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
 import StatusBadge from '../../components/ui/StatusBadge'
 import { getMyGameAccounts } from '../../lib/wallet'
-import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents, WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
+import { useUser, Title, Label, Btn, Notice, Empty, card, input, fmtDate, toCents, WaitPopup, WAIT_MESSAGES, isMaintenanceError } from '../../components/ui/kit'
 import Link from 'next/link'
 
 export default function Redeem() {
@@ -53,7 +53,7 @@ export default function Redeem() {
     setBusy(true)
     const { error } = await supabase.rpc('request_redemption', { p_game_account_id: acct, p_amount_cents: cents, p_notes: notes || null })
     setBusy(false)
-    if (error) return setMsg({ kind: 'error', text: error.message })
+    if (error) return isMaintenanceError(error.message) ? setPopup(WAIT_MESSAGES.maintenance) : setMsg({ kind: 'error', text: error.message })
     setPopup(WAIT_MESSAGES.redeem)
     setAmount(''); setNotes(''); load()
   }

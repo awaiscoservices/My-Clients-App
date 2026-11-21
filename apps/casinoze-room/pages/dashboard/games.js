@@ -22,7 +22,7 @@ import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import StatusBadge from '../../components/ui/StatusBadge'
 import GameIcon from '../../components/ui/GameIcon'
-import { WaitPopup, WAIT_MESSAGES } from '../../components/ui/kit'
+import { WaitPopup, WAIT_MESSAGES, isMaintenanceError } from '../../components/ui/kit'
 
 // The same colour pairs the dashboard tiles cycle through, so a game looks
 // the same in both places.
@@ -299,7 +299,8 @@ export default function GamesPage() {
       setPopup(WAIT_MESSAGES.game_account)
       loadData()
     } catch (err) {
-      showToast(err.message || 'Something went wrong', 'error')
+      if (isMaintenanceError(err.message)) setPopup(WAIT_MESSAGES.maintenance)
+      else showToast(err.message || 'Something went wrong', 'error')
     } finally {
       setRequesting(null)
     }
@@ -321,7 +322,8 @@ export default function GamesPage() {
       setPopup(WAIT_MESSAGES.game_password)
       loadData()
     } catch (err) {
-      showToast(err.message || 'Something went wrong', 'error')
+      if (isMaintenanceError(err.message)) setPopup(WAIT_MESSAGES.maintenance)
+      else showToast(err.message || 'Something went wrong', 'error')
     } finally {
       setPwRequesting(null)
     }
