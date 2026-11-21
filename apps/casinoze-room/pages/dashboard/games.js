@@ -16,6 +16,7 @@
  */
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
@@ -346,7 +347,7 @@ export default function GamesPage() {
 
   return (
     <PlayerLayout>
-      <Head><title>Games — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Games')}</title></Head>
       <WaitPopup data={popup} onClose={() => setPopup(null)} />
 
       <style>{`

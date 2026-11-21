@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
@@ -59,7 +60,7 @@ export default function LoadGame() {
 
   return (
     <PlayerLayout>
-      <Head><title>Load Game — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Load Game')}</title></Head>
       <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <Title sub="Move cash from your wallet into a game account">Load Game</Title>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 20 }}>

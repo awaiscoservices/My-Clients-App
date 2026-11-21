@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import StaticPage, { panel } from '../components/ui/StaticPage'
+import { BRAND } from '../lib/brand'
 
 const STEPS = [
   ['Register', 'Create a free account. Your wallet is set up for you.'],
@@ -11,10 +12,10 @@ const STEPS = [
 
 export default function About() {
   return (
-    <StaticPage title="About Casinoze Room" subtitle="One account and one wallet for all your game rooms.">
+    <StaticPage title={`About ${BRAND.name}`} subtitle="One account and one wallet for all your game rooms.">
       <div style={{ ...panel, marginBottom: 20 }}>
         <p style={{ color: 'rgba(255,255,255,.65)', fontSize: 15, lineHeight: 1.9, margin: 0 }}>
-          Casinoze Room lets you manage everything in one place: your wallet, your game accounts, and every deposit,
+          {BRAND.name} lets you manage everything in one place: your wallet, your game accounts, and every deposit,
           load, redemption and withdrawal. Requests are reviewed and processed by our team, and you are notified
           as soon as something changes.
         </p>
@@ -32,7 +33,7 @@ export default function About() {
         <Link href="/auth/register" style={{ padding: '12px 28px', borderRadius: 12, background: 'linear-gradient(135deg,#fbbf24,#f59e0b)', color: '#050505', fontWeight: 800, textDecoration: 'none', fontSize: 14 }}>Create free account</Link>
         <Link href="/faq" style={{ padding: '12px 28px', borderRadius: 12, border: '1px solid rgba(251,191,36,.4)', color: '#fbbf24', fontWeight: 700, textDecoration: 'none', fontSize: 14 }}>Read the FAQ</Link>
       </div>
-      <p style={{ marginTop: 28, color: 'rgba(255,255,255,.35)', fontSize: 13 }}>You must be 18 or older to use Casinoze Room. Please play responsibly.</p>
+      <p style={{ marginTop: 28, color: 'rgba(255,255,255,.35)', fontSize: 13 }}>You must be 18 or older to use {BRAND.name}. Please play responsibly.</p>
     </StaticPage>
   )
 }

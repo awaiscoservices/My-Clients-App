@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
@@ -281,7 +282,7 @@ export default function DepositPage() {
   // ── Success screen ───────────────────────────────────────
   if (result) return (
     <PlayerLayout>
-      <Head><title>Deposit Submitted — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Deposit Submitted')}</title></Head>
       <WaitPopup data={showWait ? WAIT_MESSAGES.deposit : null} onClose={() => setShowWait(false)} />
       {showKyc && (
         <div onClick={() => setShowKyc(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
@@ -334,7 +335,7 @@ export default function DepositPage() {
 
   return (
     <PlayerLayout>
-      <Head><title>Add Money — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Add Money')}</title></Head>
 
       {/* Toast */}
       {toast && (

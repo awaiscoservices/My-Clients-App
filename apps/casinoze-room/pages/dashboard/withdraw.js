@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import Link from 'next/link'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
@@ -113,7 +114,7 @@ export default function Withdraw() {
   const verified = kyc === 'verified'
   return (
     <PlayerLayout>
-      <Head><title>Withdraw — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Withdraw')}</title></Head>
       <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <Title sub="Send your withdrawable balance to your own account">Withdraw</Title>
       {kyc && !verified && (

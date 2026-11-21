@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Logo from '../ui/Logo'
 import Ico from '../ui/Icons'
+import { BRAND } from '../../lib/brand'
 
 // Public top bar, shared by the landing page and the static pages (About, FAQ, Terms, Privacy).
 export default function SiteNav({ landing = false }) {
@@ -18,7 +19,7 @@ export default function SiteNav({ landing = false }) {
   return (
     <header className={`sn${scrolled || open ? ' sn-solid' : ''}`}>
       <div className="sn-in">
-        <Link href="/" style={{ textDecoration: 'none' }} aria-label="Casinoze Room home"><Logo variant="full" height={42} className="sn-logo" /></Link>
+        <Link href="/" style={{ textDecoration: 'none' }} aria-label={`${BRAND.name} home`}><Logo variant="full" height={42} className="sn-logo" /></Link>
         <nav className="sn-links" aria-label="Main">
           {links.map(([l, h]) => <a key={l} href={base + h}>{l}</a>)}
         </nav>

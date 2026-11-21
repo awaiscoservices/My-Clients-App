@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
@@ -688,7 +689,7 @@ export default function Dashboard() {
 
   return (
     <PlayerLayout>
-      <Head><title>Dashboard — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Dashboard')}</title></Head>
 
       {/* WELCOME — notifications live in the topbar bell, not here */}
       <div style={{ marginBottom: 20, minWidth: 0 }}>

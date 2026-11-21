@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import { useUser, Title, card, Btn, Empty, fmtDate, G } from '../../components/ui/kit'
@@ -26,7 +27,7 @@ export default function Notifications() {
 
   return (
     <PlayerLayout>
-      <Head><title>Notifications — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Notifications')}</title></Head>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
         <Title sub={unread.length ? `${unread.length} unread` : 'Updates on your deposits, games and withdrawals'}>Notifications</Title>
         {unread.length > 0 && <Btn ghost onClick={() => markRead(unread)}>Mark all read</Btn>}

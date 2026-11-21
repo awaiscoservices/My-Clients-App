@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Logo from '../ui/Logo'
 import { GAME_CATALOG } from '../../lib/gameCatalog'
 import { useSettings } from '../../lib/settings'
+import { BRAND } from '../../lib/brand'
 
 const cols = [
   ['Platform', [['Games', '/#games'], ['How it works', '/#how'], ['Register', '/auth/register'], ['Login', '/auth/login']]],
@@ -11,7 +12,7 @@ const cols = [
 
 export default function SiteFooter() {
   const { platform_name, support_email } = useSettings()
-  const brand = platform_name || 'Casinoze Room'
+  const brand = platform_name || BRAND.name
   return (
     <footer className="sf">
       <div className="sf-in">

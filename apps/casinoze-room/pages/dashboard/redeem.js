@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
@@ -60,7 +61,7 @@ export default function Redeem() {
 
   return (
     <PlayerLayout>
-      <Head><title>Redeem — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Redeem')}</title></Head>
       <WaitPopup data={popup} onClose={() => setPopup(null)} />
       <Title sub="Cash out your winnings from a game account">Redeem</Title>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 20 }}>

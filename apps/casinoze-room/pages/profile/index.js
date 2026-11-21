@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import Link from 'next/link'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
@@ -52,7 +53,7 @@ export default function Profile() {
 
   return (
     <PlayerLayout>
-      <Head><title>My Profile — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('My Profile')}</title></Head>
       <Title sub="Your details, verification and level">My Profile</Title>
 
       <div style={{ ...card, display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap', marginBottom: 20 }}>

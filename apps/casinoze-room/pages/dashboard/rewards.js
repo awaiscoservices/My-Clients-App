@@ -6,6 +6,7 @@
  */
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import Icon, { ICON_PATHS } from '../../components/ui/Icon'
@@ -248,7 +249,7 @@ export default function PlayerLevels() {
 
   return (
     <PlayerLayout>
-      <Head><title>Levels — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Levels')}</title></Head>
 
       {/* Page heading */}
       <div style={{ marginBottom: 24 }}>

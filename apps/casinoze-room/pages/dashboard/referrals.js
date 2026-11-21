@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
 import MoneyDisplay from '../../components/ui/MoneyDisplay'
@@ -104,7 +105,7 @@ export default function Referrals() {
 
   return (
     <PlayerLayout>
-      <Head><title>Referrals — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Referrals')}</title></Head>
       <Title sub="Invite friends and earn on their first 3 deposits">Referrals</Title>
 
       {/* How it works */}

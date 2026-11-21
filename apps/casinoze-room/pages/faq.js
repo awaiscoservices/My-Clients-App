@@ -2,11 +2,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import StaticPage, { panel } from '../components/ui/StaticPage'
 import { FAQS } from '../lib/siteContent'
+import { BRAND } from '../lib/brand'
 
 export default function FAQ() {
   const [open, setOpen] = useState(0)
   return (
-    <StaticPage title="Frequently Asked Questions" subtitle="Quick answers about using Casinoze Room.">
+    <StaticPage title="Frequently Asked Questions" subtitle={`Quick answers about using ${BRAND.name}.`}>
       <div style={{ ...panel, padding: '4px 24px' }}>
         {FAQS.map((f, i) => (
           <div key={f.q} style={{ borderBottom: i < FAQS.length - 1 ? '1px solid rgba(255,255,255,.07)' : 'none' }}>

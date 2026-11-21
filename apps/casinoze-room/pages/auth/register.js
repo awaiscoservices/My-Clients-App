@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signUpWithEmail, verifyEmailOtp, resendSignupOtp } from '../../lib/auth';
+import { BRAND, pageTitle } from '../../lib/brand';
 import Logo from '../../components/ui/Logo';
 import AuthBackdrop from '../../components/site/AuthBackdrop'
 import Icon from '../../components/ui/Icon'
@@ -173,7 +174,7 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>Create Account — Casinoze Room</title>
+        <title>{pageTitle('Create Account')}</title>
         <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,700&family=Cinzel:wght@600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
         <style>{`
           *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -204,7 +205,7 @@ export default function Register() {
         {/* Logo */}
         <div style={{ animation: 'fadeSlideUp 0.6s ease both', marginBottom: 32, textAlign: 'center' }}>
           <Logo variant="full" stack height={88} />
-          <div style={{ marginTop: 6, fontSize: 11, letterSpacing: 4, color: 'rgba(251,191,36,0.7)', textTransform: 'uppercase', fontWeight: 500 }}>Premium Fish Game Platform</div>
+          <div style={{ marginTop: 6, fontSize: 11, letterSpacing: 4, color: 'rgba(251,191,36,0.7)', textTransform: 'uppercase', fontWeight: 500 }}>{BRAND.tagline}</div>
         </div>
 
         {/* OTP verification step */}
@@ -257,7 +258,7 @@ export default function Register() {
             <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: 1, background: 'linear-gradient(90deg, transparent, #f59e0b, #fbbf24, #f59e0b, transparent)' }} />
 
             <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 6, textAlign: 'center' }}>Join the Table</h2>
-            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, textAlign: 'center', marginBottom: 28 }}>Create your Casinoze account and start playing</p>
+            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, textAlign: 'center', marginBottom: 28 }}>Create your {BRAND.short} account and start playing</p>
 
             {refLocked && refCode && (
               <div style={{ margin: '0 0 18px', padding: '12px 16px', borderRadius: 12, background: 'rgba(251,191,36,.1)', border: '1px solid rgba(251,191,36,.35)', color: '#fbbf24', fontSize: 13, fontWeight: 700, textAlign: 'center' }}>

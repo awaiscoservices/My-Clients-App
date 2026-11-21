@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import Link from 'next/link'
 import { supabase } from '../../lib/supabase'
 import PlayerLayout from '../../components/layout/PlayerLayout'
@@ -145,7 +146,7 @@ export default function KycSubmit() {
 
   return (
     <PlayerLayout>
-      <Head><title>Verify Identity — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Verify Identity')}</title></Head>
       <Title sub="Complete your identity verification to unlock withdrawals">KYC Verification</Title>
       <div style={{ maxWidth: 760, margin: '0 auto' }}>
         {latest && (

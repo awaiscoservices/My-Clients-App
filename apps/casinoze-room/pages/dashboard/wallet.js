@@ -8,6 +8,7 @@
  */
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { pageTitle } from '../../lib/brand'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
@@ -242,7 +243,7 @@ export default function WalletPage() {
 
   return (
     <PlayerLayout>
-      <Head><title>Wallet — Casinoze Room</title></Head>
+      <Head><title>{pageTitle('Wallet')}</title></Head>
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>

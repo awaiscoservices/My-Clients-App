@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import SiteNav from '../components/site/SiteNav'
 import SiteFooter from '../components/site/SiteFooter'
+import { BRAND } from '../lib/brand'
 import Reveal from '../components/site/Reveal'
 import Ico from '../components/ui/Icons'
 import { GAME_CATALOG } from '../lib/gameCatalog'
@@ -194,7 +195,7 @@ export default function Home() {
   return (
     <div className="lp">
       <Head>
-        <title>Casinoze Room — Every game room. One wallet.</title>
+        <title>{`${BRAND.name} — Every game room. One wallet.`}</title>
         <meta name="description" content="One account and one wallet for every game room. Add money, load credits and play." />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -271,7 +272,7 @@ export default function Home() {
       <section id="about" className="sec">
         <div className="wrap why">
           <Reveal className="why-copy">
-            <div className="lab">Why Casinoze Room</div>
+            <div className="lab">{`Why ${BRAND.name}`}</div>
             <h2>You always know<br /><em>where your money is.</em></h2>
             <p>Every deposit, load, redemption and withdrawal is reviewed by our team, and you can see its status in your dashboard at any time.</p>
             <ul className="ticks">

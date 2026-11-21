@@ -5,8 +5,9 @@ import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
 import { centsToDisplay } from '../ui/MoneyDisplay'
 import Logo from '../ui/Logo'
+import { BRAND } from '../../lib/brand'
 
-const PROMO_TEXT = 'Welcome to Casinoze Room — add money, load a game and play.'
+const PROMO_TEXT = `Welcome to ${BRAND.name} — add money, load a game and play.`
 const GOLD = '#fbbf24'
 
 const ICONS = {
