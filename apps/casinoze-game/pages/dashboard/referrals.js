@@ -142,7 +142,7 @@ export default function Referrals() {
         ) : (
           <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {refs.map((r, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)' }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', padding: '12px 14px', borderRadius: 4, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(239,68,68,.1)' }}>
                 <div style={{ fontWeight: 700, fontSize: 14, flex: 1, minWidth: 120 }}>{r.name}</div>
                 <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,.4)' }}>{fmtDate(r.joined_at)}</div>
                 <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 99, background: r.has_deposited ? 'rgba(16,185,129,.12)' : 'rgba(239,68,68,.12)', color: r.has_deposited ? '#10b981' : G }}>

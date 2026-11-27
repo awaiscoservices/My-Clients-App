@@ -102,7 +102,7 @@ function AccountCard({ account, onRequestPassword, requestingPassword }) {
 
   return (
     <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{
-      borderRadius: 18, overflow: 'hidden', background: 'rgba(255,255,255,.03)',
+      borderRadius: 6, overflow: 'hidden', background: 'rgba(255,255,255,.03)',
       border: `1.5px solid ${hov ? color + '55' : 'rgba(255,255,255,.08)'}`, transition: 'all .2s',
     }}>
       <div style={{ height: 4, background: `linear-gradient(90deg,${color},${color}66)` }} />
@@ -365,19 +365,19 @@ export default function GamesPage() {
 
         /* Gradient action buttons on an account card */
         .pill {
-          padding: 12px 10px; border-radius: 11px; color: #fff;
+          padding: 12px 10px; border-radius: 4px; color: #fff;
           font-size: 12.5px; font-weight: 800; text-decoration: none; text-align: center;
           letter-spacing: .03em; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
         }
         .pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
         .pill-load   { background: linear-gradient(135deg, #ef4444, #dc2626); color: #050505; box-shadow: 0 8px 20px rgba(239,68,68,.35); }
         .pill-load:hover   { box-shadow: 0 12px 26px rgba(239,68,68,.5); }
-        .pill-redeem { background: linear-gradient(135deg, #2dd4bf, #0891b2); box-shadow: 0 8px 20px rgba(13,148,136,.35); }
-        .pill-redeem:hover { box-shadow: 0 12px 26px rgba(13,148,136,.5); }
+        .pill-redeem { background: linear-gradient(135deg, #e8c874, #b8863a); color: #050505; box-shadow: 0 8px 20px rgba(184,134,58,.35); }
+        .pill-redeem:hover { box-shadow: 0 12px 26px rgba(184,134,58,.5); }
 
         /* Soft gold gradient for the secondary "Change Password" action */
         .btn-soft {
-          width: 100%; margin-bottom: 10px; padding: 10px 12px; border-radius: 10px;
+          width: 100%; margin-bottom: 10px; padding: 10px 12px; border-radius: 4px;
           font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif;
           color: #ef4444; border: 1px solid rgba(239,68,68,.3);
           background: linear-gradient(135deg, rgba(239,68,68,.18), rgba(220,38,38,.08));
@@ -388,8 +388,8 @@ export default function GamesPage() {
 
         /* The dashboard's tile, so a game looks the same in both places. */
         .gtile {
-          position: relative; border-radius: 18px; overflow: hidden; color: #fff;
-          background: linear-gradient(165deg, var(--g1) 0%, var(--g2) 62%, #0a1222 100%);
+          position: relative; border-radius: 4px; overflow: hidden; color: #fff;
+          background: linear-gradient(165deg, var(--g1) 0%, var(--g2) 62%, #140a0a 100%);
           border: 1px solid rgba(255,255,255,.1);
           box-shadow: 0 8px 22px rgba(0,0,0,.35);
           transition: transform .3s cubic-bezier(.2,.9,.3,1.35), box-shadow .3s, border-color .3s;
@@ -414,7 +414,7 @@ export default function GamesPage() {
         .gcard:hover .gtile-art img { transform: scale(1.1) translateY(-3px); }
 
         .gcard-cta {
-          width: 100%; padding: 10px 8px; border-radius: 11px;
+          width: 100%; padding: 10px 8px; border-radius: 4px;
           font-size: 12px; font-weight: 800; font-family: 'Outfit', sans-serif;
           letter-spacing: .02em; transition: filter .2s;
         }
@@ -422,7 +422,7 @@ export default function GamesPage() {
 
         .show-more {
           display: inline-flex; align-items: center; gap: 10px;
-          padding: 13px 34px; border-radius: 14px; cursor: pointer;
+          padding: 13px 34px; border-radius: 4px; cursor: pointer;
           font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; color: #050505;
           background: linear-gradient(135deg, #ef4444, #dc2626); border: none;
           box-shadow: 0 10px 26px rgba(239,68,68,.25);
@@ -432,7 +432,7 @@ export default function GamesPage() {
 
         /* Bigger, so the two tabs read as the main control on the page. */
         .gtab {
-          padding: 13px 42px; border-radius: 12px; border: none; cursor: pointer;
+          padding: 13px 42px; border-radius: 4px; border: none; cursor: pointer;
           font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800;
           letter-spacing: .01em; transition: all .2s;
         }
@@ -452,7 +452,7 @@ export default function GamesPage() {
 
       {/* Heading — centred, like the tabs and the stat cards below it. */}
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(22px,3vw,30px)', fontWeight: 700, color: '#fff', marginBottom: 6 }}>Games</h1>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(22px,3vw,30px)', fontWeight: 700, color: '#fff', marginBottom: 6, letterSpacing: '.04em', textTransform: 'uppercase' }}>Games</h1>
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 14, margin: 0 }}>
           Request an account in any game room. Our team sets it up for you.
         </p>
@@ -460,7 +460,7 @@ export default function GamesPage() {
 
       {/* Tabs */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 26 }}>
-        <div style={{ display: 'flex', gap: 5, background: 'rgba(255,255,255,.04)', padding: 5, borderRadius: 15 }}>
+        <div style={{ display: 'flex', gap: 5, background: 'rgba(255,255,255,.04)', padding: 5, borderRadius: 6 }}>
           {[['all', 'All Games'], ['mine', 'My Games']].map(([key, label]) => (
             <button key={key} onClick={() => setTab(key)} className="gtab" style={{
               background: tab === key ? 'linear-gradient(135deg,#dc2626,#ef4444)' : 'transparent',

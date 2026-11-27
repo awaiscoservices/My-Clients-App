@@ -10,7 +10,7 @@ const money = c => '$' + ((c || 0) / 100).toLocaleString('en-US', { minimumFract
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n))
 
 function Card({ children, style }) {
-  return <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 16, padding: 22, ...style }}>{children}</div>
+  return <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(239,68,68,.12)', borderRadius: 6, padding: 22, ...style }}>{children}</div>
 }
 
 function BenefitRow({ label, value, mute }) {
@@ -24,7 +24,7 @@ function BenefitRow({ label, value, mute }) {
 
 function StatTile({ label, value, accent, icon }) {
   return (
-    <div style={{ background: `${accent}0f`, border: `1px solid ${accent}2e`, borderRadius: 14, padding: '16px 18px' }}>
+    <div style={{ background: `${accent}0f`, border: `1px solid ${accent}2e`, borderRadius: 6, padding: '16px 18px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 8, color: accent }}>
         {icon && <Icon name={icon} size={15} color={accent} />}
         <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: '.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)' }}>{label}</span>
@@ -106,17 +106,17 @@ export default function ProfilePage() {
           .pf-hero-badges { flex-direction: row !important; flex-wrap: wrap; justify-content: center !important; align-items: center !important; width: 100% !important; }
         }
         .pf-input { width: 100%; padding: '11px 14px'; }
-        .pf-field { width: 100%; padding: 11px 14px; border-radius: 10px; box-sizing: border-box; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); color: #fff; font-size: 14px; font-family: 'Outfit', sans-serif; outline: none; }
+        .pf-field { width: 100%; padding: 11px 14px; border-radius: 4px; box-sizing: border-box; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); color: #fff; font-size: 14px; font-family: 'Outfit', sans-serif; outline: none; }
       `}</style>
 
       <div style={{ fontFamily: 'Outfit, sans-serif', color: '#fff' }}>
 
         {/* Hero */}
-        <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 20, padding: 26, marginBottom: 18,
+        <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 6, padding: 26, marginBottom: 18,
           background: `linear-gradient(135deg, ${accent}26, rgba(255,255,255,.02) 60%)`, border: `1px solid ${accent}33` }}>
           <div className="pf-hero" style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'center', justifyContent: 'space-between' }}>
             <div className="pf-hero-id" style={{ display: 'flex', alignItems: 'center', gap: 18, minWidth: 0 }}>
-              <div style={{ width: 74, height: 74, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              <div style={{ width: 74, height: 74, borderRadius: 10, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 30, fontWeight: 800, color: '#050505', fontFamily: "'Fraunces',serif",
                 background: `linear-gradient(135deg, ${accent}, ${accent}aa)`, boxShadow: `0 8px 24px ${accent}55` }}>{initial}</div>
               <div className="pf-hero-name" style={{ minWidth: 0 }}>
@@ -241,11 +241,11 @@ export default function ProfilePage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 {[
                   { href: '/dashboard/deposit', label: 'Deposit', icon: 'plus', bg: 'linear-gradient(135deg,#ef4444,#dc2626)', fg: '#050505' },
-                  { href: '/dashboard/load-game', label: 'Load Credits', icon: 'arrowUp', bg: 'linear-gradient(135deg,#2dd4bf,#0891b2)', fg: '#fff' },
+                  { href: '/dashboard/load-game', label: 'Load Credits', icon: 'arrowUp', bg: 'linear-gradient(135deg,#e8c874,#b8863a)', fg: '#050505' },
                   { href: '/dashboard/redeem', label: 'Redeem', icon: 'arrowDown', bg: 'rgba(255,255,255,.05)', fg: '#fff', border: '1px solid rgba(255,255,255,.12)' },
                   { href: '/dashboard/withdraw', label: 'Withdraw', icon: 'wallet', bg: 'rgba(255,255,255,.05)', fg: '#fff', border: '1px solid rgba(255,255,255,.12)' },
                 ].map((a, i) => (
-                  <a key={i} href={a.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '13px', borderRadius: 11, fontSize: 13.5, fontWeight: 800, textDecoration: 'none', color: a.fg, background: a.bg, border: a.border || 'none', fontFamily: 'Outfit, sans-serif' }}>
+                  <a key={i} href={a.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '13px', borderRadius: 4, fontSize: 13.5, fontWeight: 800, textDecoration: 'none', color: a.fg, background: a.bg, border: a.border || 'none', fontFamily: 'Outfit, sans-serif' }}>
                     <Icon name={a.icon} size={15} color={a.fg} /> {a.label}
                   </a>
                 ))}
