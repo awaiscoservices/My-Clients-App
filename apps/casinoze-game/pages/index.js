@@ -29,10 +29,10 @@ const byName = (n) => GAMES.find(g => g.name === n)
 const tint = (g) => `linear-gradient(165deg,${g.tint[0]},${g.tint[1]})`
 
 const STEPS = [
-  ['I',   'user', 'Register', 'Create your free account. Your wallet is set up for you automatically.'],
-  ['II',  'card', 'Add money', 'Pick a payment method and upload your payment proof. Our team reviews it and adds the funds.'],
-  ['III', 'gamepad', 'Load & play', 'Request an account in any game room, then load credits from your wallet and play.'],
-  ['IV',  'out', 'Redeem & withdraw', 'Redeem winnings back to your wallet, then withdraw once your identity is verified.'],
+  ['I',   'user', 'Create your account', 'Sign up free in under a minute. Your private wallet is set up for you on the spot.'],
+  ['II',  'card', 'Fund your wallet', 'Choose a payment method and upload your proof. Our team reviews it and credits your wallet.'],
+  ['III', 'gamepad', 'Load & play', 'Open an account in any room, load credits from your wallet, and take your seat.'],
+  ['IV',  'out', 'Redeem & cash out', 'Send winnings back to your wallet, then withdraw once your identity is verified.'],
 ]
 
 // Ornamental crest — a faceted diamond emblem used behind the hero and as a
@@ -78,20 +78,20 @@ function Hero() {
     <section className="hero" onMouseMove={move} onMouseLeave={leave}>
       <div className="hero-in">
         <div className="hero-copy">
-          <div className="eyebrow"><Crest size={15} className="eb-crest" />{SITE.signupBonus || `${GAMES.length} game rooms · one wallet`}</div>
+          <div className="eyebrow"><Crest size={15} className="eb-crest" />{SITE.signupBonus || `${GAMES.length} rooms · one wallet · one account`}</div>
           <h1 className="hero-h1">
-            <span className="ml"><span>Every game room.</span></span>
+            <span className="ml"><span>The whole floor.</span></span>
             <span className="ml"><span className="goldtxt">One wallet.</span></span>
           </h1>
-          <p className="hero-p">Add money once, request an account in any of our {GAMES.length} game rooms, load credits and play. Deposits, loads, redemptions and withdrawals all live in one refined dashboard.</p>
+          <p className="hero-p">Fund your wallet once, open an account in any of our {GAMES.length} rooms, and load credits in seconds. Every deposit, load, redemption and withdrawal is tracked in one refined dashboard.</p>
           <div className="hero-cta">
             <Link href="/auth/register" className="btn-gold">Create free account <Ico name="arrow" size={17} stroke={2.3} /></Link>
             <a href="#games" className="btn-link">Browse the games <Ico name="arrow" size={15} stroke={2} /></a>
           </div>
           <ul className="facts">
-            <li><Ico name="card" size={17} />Team-reviewed deposits</li>
-            <li><Ico name="shield" size={17} />Identity-verified withdrawals</li>
-            <li><Ico name="device" size={17} />Works on any device</li>
+            <li><Ico name="card" size={17} />Hand-reviewed deposits</li>
+            <li><Ico name="shield" size={17} />Verified, secure withdrawals</li>
+            <li><Ico name="device" size={17} />Flawless on any device</li>
           </ul>
         </div>
 
@@ -207,8 +207,8 @@ export default function Home() {
   return (
     <div className="lp">
       <Head>
-        <title>{`${BRAND.name} — Every game room. One wallet.`}</title>
-        <meta name="description" content="One account and one wallet for every game room. Add money, load credits and play." />
+        <title>{`${BRAND.name} — The whole floor. One wallet.`}</title>
+        <meta name="description" content="One account and one wallet for every game room. Fund once, load credits and play." />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href={FONTS} rel="stylesheet" />
@@ -225,8 +225,8 @@ export default function Home() {
       <section id="games" className="sec">
         <div className="wrap">
           <Reveal className="shead">
-            <div><div className="lab">The lineup</div><h2>{n} game rooms,<br /><em>one account.</em></h2></div>
-            <p>Request an account in any room. Once it's set up, load credits from your wallet and start playing.</p>
+            <div><div className="lab">The floor</div><h2>{n} rooms.<br /><em>One account.</em></h2></div>
+            <p>Open an account in any room. Once it's live, load credits from your wallet and take your seat.</p>
           </Reveal>
           <div className="game-grid">
             {GAMES.map((g, i) => <Reveal key={g.name} delay={(i % 6) * 60} y={30}><GameCard game={g} /></Reveal>)}
@@ -240,7 +240,7 @@ export default function Home() {
       <section id="how" className="sec">
         <div className="wrap">
           <Reveal className="shead">
-            <div><div className="lab">How it works</div><h2>From sign-up to<br /><em>first spin</em> in four steps.</h2></div>
+            <div><div className="lab">How it works</div><h2>Sign-up to<br /><em>first spin,</em> in four steps.</h2></div>
           </Reveal>
           <div className="steps">
             {STEPS.map(([num, icon, title, desc], i) => (
@@ -259,20 +259,20 @@ export default function Home() {
       <section id="features" className="sec">
         <div className="wrap">
           <Reveal className="shead">
-            <div><div className="lab">Your dashboard</div><h2>Everything in<br /><em>one place.</em></h2></div>
-            <p>No spreadsheets, no chasing messages. Every request has a status, and you get a notification when it changes.</p>
+            <div><div className="lab">Your dashboard</div><h2>It all lives<br /><em>in one place.</em></h2></div>
+            <p>No spreadsheets, no chasing replies. Every request carries a status, and you're notified the moment it changes.</p>
           </Reveal>
           <div className="bento">
             <Bento cls="b-wide" icon="wallet" title="One wallet, two balances" desc="Cash and bonus credits are kept separate, so you always know what you can withdraw." delay={0}>
               <div className="bars"><div><b>Cash</b><span><i style={{ '--w': '78%' }} /></span></div><div><b>Bonus</b><span><i className="alt" style={{ '--w': '34%' }} /></span></div></div>
             </Bento>
-            <Bento cls="b-wide" icon="gamepad" title={`${n} game rooms`} desc="Request an account in any room. Your logins and status are always one tap away." delay={90}>
+            <Bento cls="b-wide" icon="gamepad" title={`${n} game rooms`} desc="Open an account in any room. Your logins and status stay one tap away." delay={90}>
               <div className="stack">{mini.map((g, i) => <div key={g.name} style={{ background: tint(g), zIndex: 9 - i }}><img src={g.src} alt="" loading="lazy" /></div>)}</div>
             </Bento>
             <Bento cls="b-third" icon="swap" title="Loads & redemptions" desc="Move money to a game and winnings back to your wallet." delay={0}>
               <div className="flow"><span /><span /><span /></div>
             </Bento>
-            <Bento cls="b-third" icon="shield" title="Safe withdrawals" desc="Verify your ID once, then withdraw. Each request is reviewed by our team." delay={90}>
+            <Bento cls="b-third" icon="shield" title="Safe withdrawals" desc="Verify your ID once, then withdraw. Every request is reviewed by hand." delay={90}>
               <div className="chip"><Ico name="check" size={14} stroke={2.6} />ID verified</div>
             </Bento>
             <Bento cls="b-third" icon="star" title="Levels & referrals" desc="Earn XP as you play and share your referral code with friends." delay={180}>
@@ -289,10 +289,10 @@ export default function Home() {
         <div className="wrap why">
           <Reveal className="why-copy">
             <div className="lab">{`Why ${BRAND.name}`}</div>
-            <h2>You always know<br /><em>where your money is.</em></h2>
-            <p>Every deposit, load, redemption and withdrawal is reviewed by our team, and you can see its status in your dashboard at any time.</p>
+            <h2>Always know<br /><em>where your money is.</em></h2>
+            <p>Every deposit, load, redemption and withdrawal passes a human review, and its status is in your dashboard whenever you want it.</p>
             <ul className="ticks">
-              {['One account and one wallet for every game room', 'A status and a notification for every request', 'Identity verification protects your withdrawals', 'Built for phones as much as desktops'].map(t => <li key={t}><span><Ico name="check" size={14} stroke={2.8} /></span>{t}</li>)}
+              {['One account, one wallet, every room', 'A status and an alert on every request', 'Identity checks guard every withdrawal', 'Built for your phone as much as your desktop'].map(t => <li key={t}><span><Ico name="check" size={14} stroke={2.8} /></span>{t}</li>)}
             </ul>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 28 }}>
               <Link href="/auth/register" className="btn-gold sm">Get started <Ico name="arrow" size={16} stroke={2.2} /></Link>
@@ -335,8 +335,8 @@ export default function Home() {
               <div className="cta-float c2" style={{ background: tint(byName('Yolo 777')) }}><img src={byName('Yolo 777').src} alt="" /></div>
               <div className="cta-float c3" style={{ background: tint(byName('Orion Stars')) }}><img src={byName('Orion Stars').src} alt="" /></div>
               <div className="lab" style={{ justifyContent: 'center' }}>Ready when you are</div>
-              <h2>Pick a room.<br /><em>Start playing.</em></h2>
-              <p>Create your free account in a minute and request your first game room.</p>
+              <h2>Take a seat.<br /><em>Start playing.</em></h2>
+              <p>Create your free account in a minute and open your first room.</p>
               <Link href="/auth/register" className="btn-gold">Create free account <Ico name="arrow" size={18} stroke={2.3} /></Link>
             </div>
           </Reveal>

@@ -3,21 +3,21 @@ import StaticPage, { panel } from '../components/ui/StaticPage'
 import { BRAND } from '../lib/brand'
 
 const STEPS = [
-  ['Register', 'Create a free account. Your wallet is set up for you.'],
-  ['Add money', 'Pick a payment method and upload your payment proof. Our team reviews it and adds the funds to your wallet.'],
-  ['Get a game account', 'Request an account in the game room you want. Our team sets it up and sends you the login details.'],
-  ['Load & play', 'Load credits from your wallet into your game account and play.'],
-  ['Redeem & withdraw', 'Redeem winnings back to your wallet, then request a withdrawal once your identity is verified.'],
+  ['Create your account', 'Sign up free in under a minute. Your private wallet is ready on the spot.'],
+  ['Fund your wallet', 'Choose a payment method and upload your proof. Our team reviews it and credits your wallet.'],
+  ['Open a game account', 'Request an account in the room you want. Our team sets it up and sends you the login details.'],
+  ['Load & play', 'Load credits from your wallet into your game account and take your seat.'],
+  ['Redeem & cash out', 'Send winnings back to your wallet, then request a withdrawal once your identity is verified.'],
 ]
 
 export default function About() {
   return (
-    <StaticPage title={`About ${BRAND.name}`} subtitle="One account and one wallet for all your game rooms.">
+    <StaticPage title={`About ${BRAND.name}`} subtitle="One account and one wallet for every game room you play.">
       <div style={{ ...panel, marginBottom: 20 }}>
         <p style={{ color: 'rgba(255,255,255,.65)', fontSize: 15, lineHeight: 1.9, margin: 0 }}>
-          {BRAND.name} lets you manage everything in one place: your wallet, your game accounts, and every deposit,
-          load, redemption and withdrawal. Requests are reviewed and processed by our team, and you are notified
-          as soon as something changes.
+          {BRAND.name} brings everything under one roof: your wallet, your game accounts, and every deposit,
+          load, redemption and withdrawal. Each request is reviewed and handled by our team, and you are
+          notified the moment anything changes.
         </p>
       </div>
       <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 22, margin: '28px 0 14px' }}>How it works</h2>
