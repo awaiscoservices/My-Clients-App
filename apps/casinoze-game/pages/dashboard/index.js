@@ -52,10 +52,10 @@ function I({ name, size = 18, stroke = 1.8 }) {
 // Colours of the wheel. (To make it gold instead of teal, change `accent`, `ring`, `hub` and `glow`.)
 const TWO_PI = Math.PI * 2
 const WHEEL = {
-  accent: '#5eead4', glow: 'rgba(45,212,191,',
-  ring: ['#1d5f6b', '#0d3342', '#17707a'],
-  dial: ['#3b4644', '#0a2a32'],
-  hub: ['#6fc4bd', '#24777e', '#0c373d'],
+  accent: '#e8c874', glow: 'rgba(232,200,116,',
+  ring: ['#7f1d1d', '#2a0a0a', '#b91c1c'],
+  dial: ['#2a1414', '#120707'],
+  hub: ['#f3d998', '#b8863a', '#5a3410'],
 }
 const ICO = {
   trophy: 'M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4zM17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3',
@@ -64,7 +64,7 @@ const ICO = {
   gift: 'M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H8.5a2.5 2.5 0 110-5C11 2 12 7 12 7zM12 7h3.5a2.5 2.5 0 100-5C13 2 12 7 12 7z',
   bag: 'M9 3h6l-1.2 3h-3.6L9 3zM8.6 6C5.2 9 4 12 4 15a5 5 0 005 5h6a5 5 0 005-5c0-3-1.2-6-4.6-9M12 11v7M14 12.6c-.4-.8-1.1-1.1-2-1.1s-1.8.5-1.8 1.4 1 1.3 1.8 1.5 1.8.6 1.8 1.5-.9 1.4-1.8 1.4-1.7-.4-2-1.2',
 }
-const SEG_ICON = [['trophy', '#f5c451'], ['gem', '#f59e42'], ['coin', '#a78bfa'], ['gift', '#2dd4bf'], ['bag', '#f59e42'], ['gem', '#22d3ee'], ['coin', '#4ade80'], ['bag', '#a78bfa'], ['gift', '#2dd4bf'], ['coin', '#ef4444']]
+const SEG_ICON = [['trophy', '#f5c451'], ['gem', '#f59e42'], ['coin', '#a78bfa'], ['gift', '#e8c874'], ['bag', '#f59e42'], ['gem', '#f0b45a'], ['coin', '#4ade80'], ['bag', '#a78bfa'], ['gift', '#e8c874'], ['coin', '#ef4444']]
 const polar = (R, th) => [200 + R * Math.sin(th), 200 - R * Math.cos(th)]
 const WEDGE = (() => {
   const w = SEG_ANGLE * 0.84, Ro = 152, Ri = 57
@@ -117,22 +117,22 @@ function SpinnerWheel({ spinning, finalAngle, onDone, onSpin, disabled }) {
 
   return (
     <div className="fw" style={{ position: 'relative', width: 'min(380px, 84vw)', margin: '0 auto' }}>
-      <svg viewBox="0 -24 400 426" width="100%" style={{ display: 'block', overflow: 'visible' }} role="img" aria-label="Wheel of Fortune">
+      <svg viewBox="0 -24 400 426" width="100%" style={{ display: 'block', overflow: 'visible' }} role="img" aria-label="The Golden Wheel">
         <defs>
           <linearGradient id="fwRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor={WHEEL.ring[0]} /><stop offset=".5" stopColor={WHEEL.ring[1]} /><stop offset="1" stopColor={WHEEL.ring[2]} /></linearGradient>
           <radialGradient id="fwDial" cx="50%" cy="50%" r="50%"><stop offset="0" stopColor={WHEEL.dial[0]} /><stop offset="1" stopColor={WHEEL.dial[1]} /></radialGradient>
-          <linearGradient id="fwWedge" gradientUnits="userSpaceOnUse" x1="0" y1="48" x2="0" y2="144"><stop offset="0" stopColor="#12474f" /><stop offset="1" stopColor="#06202a" /></linearGradient>
-          <linearGradient id="fwWin" gradientUnits="userSpaceOnUse" x1="0" y1="48" x2="0" y2="144"><stop offset="0" stopColor="#2dd4bf" /><stop offset="1" stopColor="#0f6f78" /></linearGradient>
+          <linearGradient id="fwWedge" gradientUnits="userSpaceOnUse" x1="0" y1="48" x2="0" y2="144"><stop offset="0" stopColor="#3a1414" /><stop offset="1" stopColor="#160808" /></linearGradient>
+          <linearGradient id="fwWin" gradientUnits="userSpaceOnUse" x1="0" y1="48" x2="0" y2="144"><stop offset="0" stopColor="#f3d998" /><stop offset="1" stopColor="#b8863a" /></linearGradient>
           <radialGradient id="fwHub" cx="50%" cy="30%" r="80%"><stop offset="0" stopColor={WHEEL.hub[0]} /><stop offset=".55" stopColor={WHEEL.hub[1]} /><stop offset="1" stopColor={WHEEL.hub[2]} /></radialGradient>
-          <linearGradient id="fwPtr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#7fd6cf" /><stop offset="1" stopColor="#2a8088" /></linearGradient>
+          <linearGradient id="fwPtr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f3d998" /><stop offset="1" stopColor="#9a6a24" /></linearGradient>
         </defs>
 
         {/* ring */}
         <circle cx="200" cy="200" r="196" fill="url(#fwRing)" />
         <circle cx="200" cy="200" r="195" fill="none" stroke="rgba(255,255,255,.14)" strokeWidth="1.5" />
-        <circle cx="200" cy="200" r="168" fill="none" stroke="rgba(94,234,212,.28)" strokeWidth="1.5" />
+        <circle cx="200" cy="200" r="168" fill="none" stroke="rgba(232,200,116,.28)" strokeWidth="1.5" />
         {Array.from({ length: 28 }, (_, i) => { const [x, y] = polar(180, (i / 28) * TWO_PI); return <circle key={i} className={`fw-l${spinning ? ' fast' : ''}`} cx={x} cy={y} r="2.7" style={{ '--i': i }} /> })}
-        <circle cx="200" cy="200" r="163" fill="#06202a" stroke="rgba(94,234,212,.22)" strokeWidth="2" />
+        <circle cx="200" cy="200" r="163" fill="#160808" stroke="rgba(232,200,116,.22)" strokeWidth="2" />
         <circle cx="200" cy="200" r="158" fill="url(#fwDial)" />
 
         {/* spinning part */}
@@ -142,7 +142,7 @@ function SpinnerWheel({ spinning, finalAngle, onDone, onSpin, disabled }) {
             const win = winIdx === i
             return (
               <g key={i} transform={`rotate(${((i + 0.5) * SEG_ANGLE * 180) / Math.PI} 200 200)`}>
-                <path d={WEDGE} className={win ? 'fw-win' : ''} fill={win ? 'url(#fwWin)' : 'url(#fwWedge)'} stroke={win ? 'rgba(255,255,255,.6)' : 'rgba(94,234,212,.24)'} strokeWidth="1.3" strokeLinejoin="round" />
+                <path d={WEDGE} className={win ? 'fw-win' : ''} fill={win ? 'url(#fwWin)' : 'url(#fwWedge)'} stroke={win ? 'rgba(255,255,255,.6)' : 'rgba(232,200,116,.24)'} strokeWidth="1.3" strokeLinejoin="round" />
                 <g transform="translate(187 66) scale(1.08)" fill="none" stroke={col} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d={ICO[ic]} /></g>
                 <text x="200" y="113" textAnchor="middle" className="fw-t">{seg.label}</text>
               </g>
@@ -152,7 +152,7 @@ function SpinnerWheel({ spinning, finalAngle, onDone, onSpin, disabled }) {
 
         {/* centre button */}
         <g className={`fw-hub${canSpin ? ' on' : ''}`} onClick={press} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); press() } }} role="button" tabIndex={canSpin ? 0 : -1} aria-label="Spin the wheel" aria-disabled={!canSpin}>
-          <circle cx="200" cy="200" r="60" fill="#06222a" />
+          <circle cx="200" cy="200" r="60" fill="#160808" />
           <circle className="fw-hubc" cx="200" cy="200" r="53" fill="url(#fwHub)" stroke="rgba(255,255,255,.28)" strokeWidth="2.5" />
           <ellipse cx="200" cy="178" rx="34" ry="15" fill="rgba(255,255,255,.14)" />
           <text x="200" y="205" textAnchor="middle" className="fw-hubt">{spinning ? 'Please Stay' : 'Spin Now!'}</text>
@@ -162,7 +162,7 @@ function SpinnerWheel({ spinning, finalAngle, onDone, onSpin, disabled }) {
         <g ref={pRef} transform="rotate(0 200 8)">
           <path d="M191 22L200 66L209 22Z" fill="url(#fwPtr)" />
           <circle cx="200" cy="8" r="23" fill="url(#fwPtr)" stroke="rgba(255,255,255,.22)" strokeWidth="2" />
-          <circle cx="200" cy="8" r="11.5" fill="#0b2f37" stroke="rgba(94,234,212,.55)" strokeWidth="1.5" />
+          <circle cx="200" cy="8" r="11.5" fill="#160808" stroke="rgba(232,200,116,.55)" strokeWidth="1.5" />
         </g>
       </svg>
       <style>{`
@@ -239,19 +239,19 @@ function WheelSection({ wallet, onBalanceChange }) {
   const stepBtn = { width: 44, height: 44, borderRadius: 14, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.14)', color: '#fff', fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit', transition: 'background .2s,border-color .2s' }
 
   return (
-    <div style={{ ...PANEL, borderRadius: 26, padding: 'clamp(18px,3vw,32px)', marginBottom: 28, position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', right: '-8%', top: '-25%', width: '58%', height: '130%', background: 'radial-gradient(closest-side,rgba(45,212,191,.13),transparent 72%)', pointerEvents: 'none' }} />
+    <div style={{ ...PANEL, borderRadius: 6, padding: 'clamp(18px,3vw,32px)', marginBottom: 28, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', right: '-8%', top: '-25%', width: '58%', height: '130%', background: 'radial-gradient(closest-side,rgba(232,200,116,.13),transparent 72%)', pointerEvents: 'none' }} />
 
       {/* Header */}
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5eead4', background: 'rgba(45,212,191,.12)', border: '1px solid rgba(45,212,191,.35)' }}><I name="spin" size={22} /></span>
+          <span style={{ width: 46, height: 46, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e8c874', background: 'rgba(232,200,116,.12)', border: '1px solid rgba(232,200,116,.35)' }}><I name="spin" size={22} /></span>
           <div>
-            <div style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(17px,2.4vw,22px)', fontWeight: 700, color: '#fff', letterSpacing: '.04em' }}>Wheel of Fortune</div>
-            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>Spin to multiply your bet, up to {maxMult}×</div>
+            <div style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(17px,2.4vw,22px)', fontWeight: 700, color: '#fff', letterSpacing: '.06em', textTransform: 'uppercase' }}>The Golden Wheel</div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>Spin to multiply your stake, up to {maxMult}×</div>
           </div>
         </div>
-        <div style={{ fontSize: 11, padding: '5px 14px', borderRadius: 99, background: 'rgba(239,68,68,.12)', border: '1px solid rgba(239,68,68,.35)', color: '#ef4444', fontWeight: 800, letterSpacing: '.12em' }}>WINS → {bucket === 'cash' ? 'CASH' : 'BONUS'}</div>
+        <div style={{ fontSize: 11, padding: '5px 14px', borderRadius: 99, background: 'rgba(239,68,68,.12)', border: '1px solid rgba(239,68,68,.35)', color: '#ef4444', fontWeight: 800, letterSpacing: '.12em' }}>WINS → {bucket === 'cash' ? 'MAIN' : 'BONUS'}</div>
       </div>
 
       {!hasDeposit ? (
@@ -270,9 +270,9 @@ function WheelSection({ wallet, onBalanceChange }) {
             <div style={{ marginBottom: 20 }}>
               <div style={smallLabel}>Bet From</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                {[['cash', 'Cash', wallet?.cash_balance_cents], ['bonus', 'Bonus', wallet?.bonus_balance_cents]].map(([key, name, cents]) => (
-                  <button key={key} onClick={() => setBucket(key)} style={{ textAlign: 'left', padding: '11px 14px', borderRadius: 14, cursor: 'pointer', fontFamily: 'inherit', background: bucket === key ? 'linear-gradient(135deg,rgba(45,212,191,.2),rgba(45,212,191,.06))' : 'rgba(255,255,255,.04)', border: `1px solid ${bucket === key ? 'rgba(45,212,191,.6)' : 'rgba(255,255,255,.1)'}`, color: '#fff', transition: 'all .2s' }}>
-                    <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.12em', textTransform: 'uppercase', color: bucket === key ? '#5eead4' : 'rgba(255,255,255,.45)' }}>{name}</div>
+                {[['cash', 'Main', wallet?.cash_balance_cents], ['bonus', 'Bonus', wallet?.bonus_balance_cents]].map(([key, name, cents]) => (
+                  <button key={key} onClick={() => setBucket(key)} style={{ textAlign: 'left', padding: '11px 14px', borderRadius: 14, cursor: 'pointer', fontFamily: 'inherit', background: bucket === key ? 'linear-gradient(135deg,rgba(232,200,116,.2),rgba(232,200,116,.06))' : 'rgba(255,255,255,.04)', border: `1px solid ${bucket === key ? 'rgba(232,200,116,.6)' : 'rgba(255,255,255,.1)'}`, color: '#fff', transition: 'all .2s' }}>
+                    <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.12em', textTransform: 'uppercase', color: bucket === key ? '#e8c874' : 'rgba(255,255,255,.45)' }}>{name}</div>
                     <div style={{ fontSize: 17, fontWeight: 800, marginTop: 2 }}>${((cents || 0) / 100).toFixed(2)}</div>
                   </button>
                 ))}
@@ -292,7 +292,7 @@ function WheelSection({ wallet, onBalanceChange }) {
                   <button key={v} onClick={() => setBetCents(v)} style={{ padding: '8px 4px', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 800, background: betCents === v ? 'rgba(239,68,68,.18)' : 'rgba(255,255,255,.04)', border: `1px solid ${betCents === v ? 'rgba(239,68,68,.6)' : 'rgba(255,255,255,.1)'}`, color: betCents === v ? '#ef4444' : 'rgba(255,255,255,.65)', transition: 'all .2s' }}>${v / 100}</button>
                 ))}
               </div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 10, textAlign: 'center' }}>Top prize: <span style={{ color: '#5eead4', fontWeight: 800 }}>${((betCents * maxMult) / 100).toFixed(2)}</span> ({maxMult}×)</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 10, textAlign: 'center' }}>Top prize: <span style={{ color: '#e8c874', fontWeight: 800 }}>${((betCents * maxMult) / 100).toFixed(2)}</span> ({maxMult}×)</div>
             </div>
 
             {err && <div style={{ fontSize: 13, color: '#f87171', marginBottom: 12, background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 12, padding: '10px 14px', fontWeight: 600 }}>{err}</div>}
@@ -365,7 +365,7 @@ function DailyBonusCard() {
   }, [])
 
   return (
-    <div style={{ background: 'linear-gradient(135deg,rgba(239,68,68,.08),rgba(220,38,38,.04))', border: '1px solid rgba(239,68,68,.2)', borderRadius: 18, padding: '18px 20px' }}>
+    <div style={{ background: 'linear-gradient(135deg,rgba(239,68,68,.08),rgba(220,38,38,.04))', border: '1px solid rgba(239,68,68,.2)', borderRadius: 6, padding: '18px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
         <span style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', background: 'rgba(239,68,68,.12)', border: '1px solid rgba(239,68,68,.3)' }}><I name="gift" size={22} /></span>
         <div>
@@ -400,7 +400,7 @@ function VIPProgressCard({ level, profile }) {
   const pct = Math.min(100, (xp / Math.max(level.xp_required, 1)) * 100)
 
   return (
-    <div style={{ ...PANEL, borderRadius: 18, padding: '18px 20px' }}>
+    <div style={{ ...PANEL, borderRadius: 6, padding: '18px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
         <span style={LABEL}>VIP Level</span>
         <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 99, background: `${level.badge_color}22`, color: level.badge_color, fontWeight: 800, border: `1px solid ${level.badge_color}44` }}>{level.name}</span>
@@ -439,7 +439,7 @@ function LuckyNumberCard() {
   }
 
   return (
-    <div style={{ ...PANEL, borderRadius: 18, padding: '18px 20px' }}>
+    <div style={{ ...PANEL, borderRadius: 6, padding: '18px 20px' }}>
       <div style={{ ...LABEL, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}><I name="clover" size={16} /> Lucky Numbers</div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
         {nums.length === 0
@@ -467,7 +467,7 @@ function QuickAction({ href, icon, label, desc, color }) {
   return (
     <Link href={href} style={{ textDecoration: 'none', display: 'block' }}
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
-      <div className="qa" style={{ position: 'relative', overflow: 'hidden', padding: '20px', borderRadius: 20, height: '100%', background: hov ? `linear-gradient(145deg,${color}28,#0e1627 72%)` : 'linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.016))', border: `1px solid ${hov ? color + '88' : 'rgba(255,255,255,.08)'}`, transform: hov ? 'translateY(-5px)' : 'none', boxShadow: hov ? `0 20px 40px rgba(0,0,0,.42), 0 0 30px ${color}24` : '0 8px 20px rgba(0,0,0,.22)', transition: 'all .3s cubic-bezier(.2,.8,.2,1)', cursor: 'pointer' }}>
+      <div className="qa" style={{ position: 'relative', overflow: 'hidden', padding: '20px', borderRadius: 6, height: '100%', background: hov ? `linear-gradient(145deg,${color}28,#140a0a 72%)` : 'linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.016))', border: `1px solid ${hov ? color + '88' : 'rgba(255,255,255,.08)'}`, transform: hov ? 'translateY(-5px)' : 'none', boxShadow: hov ? `0 20px 40px rgba(0,0,0,.42), 0 0 30px ${color}24` : '0 8px 20px rgba(0,0,0,.22)', transition: 'all .3s cubic-bezier(.2,.8,.2,1)', cursor: 'pointer' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
           <span style={{ width: 46, height: 46, borderRadius: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0a0a0a', background: `linear-gradient(135deg,${color},${color}bb)`, boxShadow: `0 8px 22px ${color}44`, transform: hov ? 'rotate(-6deg) scale(1.05)' : 'none', transition: 'transform .3s' }}><I name={icon} size={22} stroke={2} /></span>
           <span style={{ color, opacity: hov ? 1 : 0.3, transform: hov ? 'translateX(0)' : 'translateX(-8px)', transition: 'all .3s' }}><I name="arrow" size={20} stroke={2.2} /></span>
@@ -482,7 +482,7 @@ function QuickAction({ href, icon, label, desc, color }) {
 // ─── WALLET CARD ───────────────────────────────────────────────────────────────
 function WalletCard({ label, cents, color, icon, sub }) {
   return (
-    <div className="wc" style={{ position: 'relative', overflow: 'hidden', padding: '24px 24px 22px', background: 'linear-gradient(180deg,#121d33,#0b1322)' }}>
+    <div className="wc" style={{ position: 'relative', overflow: 'hidden', padding: '24px 24px 22px', background: 'linear-gradient(180deg,#1a0f10,#120808)' }}>
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${color},transparent 85%)` }} />
       <div style={{ position: 'absolute', right: -30, top: -30, width: 110, height: 110, borderRadius: '50%', background: `radial-gradient(closest-side,${color}1c,transparent)`, pointerEvents: 'none' }} />
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 11, marginBottom: 18 }}>
@@ -727,9 +727,9 @@ export default function Dashboard() {
       {wallet && (
         <div style={{ marginBottom: 26 }}>
           <div style={{ ...LABEL, marginBottom: 12 }}>Your Wallet</div>
-          <div className="wl-grid" style={{ ...PANEL, borderRadius: 24, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px,100%),1fr))', gap: 1, background: 'rgba(239,68,68,.14)' }}>
-            <WalletCard label="Cash"         cents={wallet.cash_balance_cents}   color="#10b981" icon="wallet" sub="Available to play" />
-            <WalletCard label="Bonus"        cents={wallet.bonus_balance_cents}  color="#dc2626" icon="gift"   sub="Bonus credits" />
+          <div className="wl-grid" style={{ ...PANEL, borderRadius: 6, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px,100%),1fr))', gap: 1, background: 'rgba(239,68,68,.14)' }}>
+            <WalletCard label="Main Wallet"  cents={wallet.cash_balance_cents}   color="#10b981" icon="wallet" sub="Available to play" />
+            <WalletCard label="Bonus Wallet" cents={wallet.bonus_balance_cents}  color="#dc2626" icon="gift"   sub="Bonus credits" />
             <WalletCard label="Reserved"     cents={wallet.reserved_cents}       color="#94a3b8" icon="lock"   sub="Held pending" />
             <WalletCard label="Withdrawable" cents={wallet.withdrawable_cents}   color="#ef4444" icon="out"    sub="Ready to withdraw" />
           </div>
@@ -800,7 +800,7 @@ export default function Dashboard() {
             shorter answer to a question that has a better page — and it left
             the player's own game accounts squeezed into a 300px column with
             a placeholder where each logo should be. */}
-        <div style={{ ...PANEL, borderRadius: 18, overflow: 'hidden' }}>
+        <div style={{ ...PANEL, borderRadius: 6, overflow: 'hidden' }}>
           <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>My Games</span>
             <Link href="/dashboard/games?tab=mine" style={{ fontSize: 12, color: '#ef4444', fontWeight: 600, textDecoration: 'none' }}>View All →</Link>
@@ -864,7 +864,7 @@ export default function Dashboard() {
           <LuckyNumberCard />
 
           {/* Verification status */}
-          <div style={{ ...PANEL, borderRadius: 18, padding: '16px 20px' }}>
+          <div style={{ ...PANEL, borderRadius: 6, padding: '16px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,.6)', display: 'inline-flex', alignItems: 'center', gap: 7 }}><I name="lock" size={14} /> Verification</span>
               <StatusBadge status={profile?.kyc_status || 'not_started'} size="xs" />
@@ -896,7 +896,7 @@ export default function Dashboard() {
            rows of scrolling before the rest of the dashboard. View all is
            right above them. */
         @media(max-width:720px){.hg-grid{grid-template-columns:repeat(2,1fr);gap:11px}.hg-grid>:nth-child(n+7){display:none}}
-        .hg{position:relative;display:block;text-decoration:none;color:#fff;border-radius:18px;overflow:hidden;background:linear-gradient(165deg,var(--g1) 0%,var(--g2) 62%,#0a1222 100%);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 22px rgba(0,0,0,.35);transition:transform .3s cubic-bezier(.2,.9,.3,1.35),box-shadow .3s,border-color .3s}
+        .hg{position:relative;display:block;text-decoration:none;color:#fff;border-radius:4px;overflow:hidden;background:linear-gradient(165deg,var(--g1) 0%,var(--g2) 62%,#140a0a 100%);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 22px rgba(0,0,0,.35);transition:transform .3s cubic-bezier(.2,.9,.3,1.35),box-shadow .3s,border-color .3s}
         .hg::after{content:'';position:absolute;top:0;left:-70%;width:45%;height:100%;pointer-events:none;background:linear-gradient(105deg,transparent,rgba(255,255,255,.24),transparent);transform:skewX(-18deg);transition:left .7s}
         .hg-art{height:128px;display:flex;align-items:center;justify-content:center;padding:16px 12px 6px}
         .hg-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.5));transition:transform .35s cubic-bezier(.2,.9,.3,1.35)}

@@ -7,7 +7,7 @@ import { centsToDisplay } from '../ui/MoneyDisplay'
 import Logo from '../ui/Logo'
 import { BRAND } from '../../lib/brand'
 
-const PROMO_TEXT = `Welcome to ${BRAND.name} — add money, load a game and play.`
+const PROMO_TEXT = `Welcome to ${BRAND.name} — fund your wallet, open a room and take your seat.`
 const GOLD = '#ef4444'
 
 const ICONS = {
@@ -26,6 +26,7 @@ const ICONS = {
   menu:     'M3 6h18M3 12h18M3 18h18',
   trophy:   'M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4zM17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3',
   gift:     'M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H8.5a2.5 2.5 0 110-5C11 2 12 7 12 7zM12 7h3.5a2.5 2.5 0 100-5C13 2 12 7 12 7z',
+  diamond:  'M6 3h12l4 6-10 12L2 9l4-6zM2 9h20M9 3l3 6 3-6',
 }
 
 function Icon({ name, size = 18, color = 'currentColor' }) {
@@ -37,33 +38,32 @@ function Icon({ name, size = 18, color = 'currentColor' }) {
   )
 }
 
-// Sidebar: Wallet is the hub — Deposit/Transactions/Redeem/Withdraw all removed.
-//
-// One flat list rather than Main and Account: six entries did not need two
-// headings over them, and the headings cost a line each in a rail this
-// narrow. Verification moved under Profile, and Support is reachable from
-// the pages that need it.
-const NAV_ITEMS = [
-  { href: '/dashboard',           icon: 'home',   label: 'Dashboard'     },
-  { href: '/dashboard/games',     icon: 'games',  label: 'Games'         },
-  { href: '/dashboard/wallet',    icon: 'wallet', label: 'Wallet'        },
-  { href: '/dashboard/rewards',   icon: 'star',   label: 'Levels'        },
-  { href: '/dashboard/referrals', icon: 'users',  label: 'Referrals'     },
-  // Live chat replaces the old Support page — a real conversation with staff
-  // rather than a ticket form.
-  { href: '/dashboard/chat',      icon: 'chat',   label: 'Support'       },
-  { href: '/dashboard/profile',   icon: 'user',   label: 'Profile'       },
+// Grouped sidebar (Play / Account) — deliberately different from the flat list
+// used elsewhere, with renamed entries ("Lobby", "VIP Levels"). Hrefs are
+// unchanged; this only reorders and relabels for a distinct look.
+const NAV_SECTIONS = [
+  { title: 'Play', icon: 'diamond', items: [
+    { href: '/dashboard',           icon: 'home',   label: 'Lobby'      },
+    { href: '/dashboard/games',     icon: 'games',  label: 'Games'      },
+    { href: '/dashboard/rewards',   icon: 'star',   label: 'VIP Levels' },
+    { href: '/dashboard/referrals', icon: 'users',  label: 'Referrals'  },
+  ] },
+  { title: 'Account', icon: 'user', items: [
+    { href: '/dashboard/wallet',    icon: 'wallet', label: 'Wallet'     },
+    { href: '/dashboard/chat',      icon: 'chat',   label: 'Support'    },
+    { href: '/dashboard/profile',   icon: 'user',   label: 'Profile'    },
+  ] },
 ]
 
 function BalanceChip({ label, cents, accent }) {
   return (
     <Link href="/dashboard/wallet" className="bal-chip" style={{
       textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center',
-      padding: '5px 14px', borderRadius: 12, minWidth: 96,
-      background: 'linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02))',
-      border: `1px solid ${accent}55`,
+      padding: '6px 15px', borderRadius: 4, minWidth: 98,
+      background: 'linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015))',
+      border: `1px solid ${accent}44`, boxShadow: 'inset 0 1px 0 rgba(255,255,255,.06)',
     }}>
-      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', lineHeight: 1.2 }}>{label}</span>
+      <span style={{ fontSize: 8.5, fontWeight: 800, letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', lineHeight: 1.3 }}>{label}</span>
       <span style={{ fontSize: 15, fontWeight: 800, color: accent, lineHeight: 1.3 }}>{centsToDisplay(cents)}</span>
     </Link>
   )
@@ -80,11 +80,11 @@ function WinsTicker() {
   if (!wins.length) return null
   const row = [...wins, ...wins]
   return (
-    <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', borderBottom: '1px solid rgba(239,68,68,.12)', background: 'rgba(239,68,68,.03)', height: 34, display: 'flex', alignItems: 'center' }}>
+    <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', borderBottom: '1px solid rgba(231,216,195,.1)', background: 'rgba(239,68,68,.03)', height: 34, display: 'flex', alignItems: 'center' }}>
       <div className="wins-track" style={{ display: 'inline-flex', gap: 40 }}>
         {row.map((w, i) => (
-          <span key={i} style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>
-            <span style={{ display: 'inline-flex', verticalAlign: '-2px', color: GOLD }}><Icon name="trophy" size={13} /></span> {w.masked_name} <span style={{ opacity: .6 }}>WON</span> <span style={{ color: GOLD }}>{centsToDisplay(w.amount_cents)}</span>
+          <span key={i} style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.02em', color: 'rgba(255,255,255,.82)' }}>
+            <span style={{ display: 'inline-flex', verticalAlign: '-2px', color: GOLD }}><Icon name="trophy" size={13} /></span> {w.masked_name} <span style={{ opacity: .55, fontWeight: 600 }}>won</span> <span style={{ color: GOLD }}>{centsToDisplay(w.amount_cents)}</span>
           </span>
         ))}
       </div>
@@ -158,16 +158,17 @@ export default function PlayerLayout({ children }) {
     <div style={{ minHeight: '100vh', background: 'var(--bg-gradient)', backgroundAttachment: 'fixed', fontFamily: "'Outfit', sans-serif", color: '#fff' }}>
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Cinzel:wght@500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
       {/* TOP BAR */}
       <header className="top-header" style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 64, zIndex: 60,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '0 20px', maxWidth: '100vw',
-        background: 'var(--panel-gradient)', backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(239,68,68,.18)', boxShadow: '0 4px 24px rgba(0,0,0,.6)',
+        background: 'var(--panel-gradient)', backdropFilter: 'blur(14px) saturate(1.2)',
+        borderBottom: '1px solid rgba(231,216,195,.1)', boxShadow: '0 4px 24px rgba(0,0,0,.6)',
       }}>
+        <span className="top-filament" aria-hidden="true" />
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => setSidebarOpen(p => !p)} className="mobile-hamburger" aria-label="Menu"
             style={{ display: 'none', background: 'none', border: 'none', color: GOLD, cursor: 'pointer', padding: 4 }}>
@@ -181,20 +182,20 @@ export default function PlayerLayout({ children }) {
 
         <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Link href="/dashboard/deposit" className="deposit-btn" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px',
-            background: 'linear-gradient(135deg,#ef4444,#dc2626)', borderRadius: 12,
-            color: '#050505', fontSize: 12, fontWeight: 800, textDecoration: 'none', letterSpacing: '.06em',
-            textTransform: 'uppercase', boxShadow: '0 0 18px rgba(239,68,68,.3)',
+            display: 'inline-flex', alignItems: 'center', gap: 7, padding: '11px 20px',
+            background: 'linear-gradient(135deg,#ef4444,#b91c1c)', borderRadius: 4,
+            color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', letterSpacing: '.12em',
+            textTransform: 'uppercase', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.28),0 0 18px rgba(239,68,68,.28)',
           }}>
             <Icon name="plus" size={14} /> Deposit
           </Link>
-          <BalanceChip label="Cash Balance"  cents={wallet?.cash_balance_cents  || 0} accent="#10b981" />
-          <BalanceChip label="Bonus Balance" cents={wallet?.bonus_balance_cents || 0} accent={GOLD} />
-          <Link href="/dashboard/notifications" style={{ position: 'relative', color: 'rgba(255,255,255,.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)' }}>
+          <BalanceChip label="Main Wallet"  cents={wallet?.cash_balance_cents  || 0} accent="#10b981" />
+          <BalanceChip label="Bonus Wallet" cents={wallet?.bonus_balance_cents || 0} accent={GOLD} />
+          <Link href="/dashboard/notifications" style={{ position: 'relative', color: 'rgba(255,255,255,.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 4, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(231,216,195,.14)' }}>
             <Icon name="bell" size={18} />
-            {unread > 0 && <span style={{ position: 'absolute', top: -4, right: -4, background: GOLD, color: '#000', fontSize: 9, fontWeight: 800, padding: '1px 5px', borderRadius: 99 }}>{unread}</span>}
+            {unread > 0 && <span style={{ position: 'absolute', top: -4, right: -4, background: GOLD, color: '#fff', fontSize: 9, fontWeight: 800, padding: '1px 5px', borderRadius: 99 }}>{unread}</span>}
           </Link>
-          <Link href="/dashboard/profile" className="avatar-btn" style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg,#ef4444,#b45309)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, color: '#050505', textDecoration: 'none', border: '2px solid rgba(239,68,68,.5)' }}>
+          <Link href="/dashboard/profile" className="avatar-btn" style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg,#ef4444,#b91c1c)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, color: '#fff', textDecoration: 'none', border: '1px solid rgba(231,216,195,.3)' }}>
             {(profile?.full_name || 'U')[0].toUpperCase()}
           </Link>
         </div>
@@ -203,33 +204,41 @@ export default function PlayerLayout({ children }) {
       {/* SIDEBAR */}
       <aside className={`player-sidebar${sidebarOpen ? ' open' : ''}`} style={{
         position: 'fixed', top: 64, left: 0, bottom: 0, zIndex: 50,
-        background: 'var(--panel-gradient)', borderRight: '1px solid rgba(239,68,68,.1)',
+        background: 'var(--panel-gradient)', borderRight: '1px solid rgba(231,216,195,.08)',
         display: 'flex', flexDirection: 'column',
       }}>
         <nav ref={navRef} onScroll={e => { cache.navScroll = e.currentTarget.scrollTop }} style={{ flex: 1, overflowY: 'auto', padding: '14px 12px', scrollbarWidth: 'none' }}>
-          {NAV_ITEMS.map(item => {
-            const active = isActive(item.href)
-            return (
-              <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
-                title={item.label}
-                className={`nav-link${active ? ' active' : ''}`}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 12, padding: '11px 12px', borderRadius: 12, marginBottom: 4,
-                  textDecoration: 'none', fontSize: 14, fontWeight: active ? 700 : 500,
-                  color: active ? '#050505' : 'rgba(255,255,255,.7)',
-                  background: active ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'transparent',
-                  boxShadow: active ? '0 0 20px rgba(239,68,68,.25)' : 'none',
-                }}>
-                <Icon name={item.icon} />
-                <span className="rail-label" style={{ flex: 1, whiteSpace: 'nowrap' }}>{item.label}</span>
-              </Link>
-            )
-          })}
+          {NAV_SECTIONS.map(section => (
+            <div key={section.title} style={{ marginBottom: 14 }}>
+              <div className="rail-section" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 12px 8px', color: 'rgba(239,68,68,.75)' }}>
+                <Icon name={section.icon} size={13} />
+                <span className="rail-label" style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: '.24em', textTransform: 'uppercase' }}>{section.title}</span>
+              </div>
+              {section.items.map(item => {
+                const active = isActive(item.href)
+                return (
+                  <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
+                    title={item.label}
+                    className={`nav-link${active ? ' active' : ''}`}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 12, padding: '11px 12px', borderRadius: 4, marginBottom: 3,
+                      textDecoration: 'none', fontSize: 14, fontWeight: active ? 700 : 500,
+                      color: active ? '#fff' : 'rgba(255,255,255,.68)',
+                      background: active ? 'linear-gradient(135deg,#ef4444,#b91c1c)' : 'transparent',
+                      boxShadow: active ? 'inset 0 1px 0 rgba(255,255,255,.22),0 0 20px rgba(239,68,68,.22)' : 'none',
+                    }}>
+                    <Icon name={item.icon} />
+                    <span className="rail-label" style={{ flex: 1, whiteSpace: 'nowrap' }}>{item.label}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          ))}
         </nav>
 
-        <div style={{ padding: 12, borderTop: '1px solid rgba(239,68,68,.1)' }}>
+        <div style={{ padding: 12, borderTop: '1px solid rgba(231,216,195,.08)' }}>
           <button onClick={handleSignOut} disabled={signingOut} title="Sign out" className="rail-btn"
-            style={{ width: '100%', height: 40, padding: '0 12px', background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 10, color: '#f87171', fontSize: 13, fontWeight: 700, cursor: signingOut ? 'default' : 'pointer', fontFamily: "'Outfit', sans-serif", display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: signingOut ? .6 : 1 }}>
+            style={{ width: '100%', height: 40, padding: '0 12px', background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 4, color: '#f87171', fontSize: 12, fontWeight: 700, letterSpacing: '.06em', cursor: signingOut ? 'default' : 'pointer', fontFamily: "'Outfit', sans-serif", display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: signingOut ? .6 : 1 }}>
             <Icon name="logout" size={16} />
             <span className="rail-label" style={{ whiteSpace: 'nowrap' }}>{signingOut ? 'Signing out…' : 'Sign Out'}</span>
           </button>
@@ -242,7 +251,7 @@ export default function PlayerLayout({ children }) {
       <div className="player-main" style={{ marginLeft: 72, paddingTop: 64, minHeight: '100vh' }}>
         <WinsTicker />
         {showPromo && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '10px 40px 10px 16px', position: 'relative', background: 'linear-gradient(90deg,rgba(239,68,68,.14),rgba(220,38,38,.06),rgba(239,68,68,.14))', borderBottom: '1px solid rgba(239,68,68,.18)', fontSize: 13, fontWeight: 600, textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '10px 40px 10px 16px', position: 'relative', background: 'linear-gradient(90deg,rgba(239,68,68,.12),rgba(185,28,28,.05),rgba(239,68,68,.12))', borderBottom: '1px solid rgba(231,216,195,.1)', fontSize: 13, fontWeight: 600, letterSpacing: '.01em', textAlign: 'center' }}>
             <span style={{ display: 'inline-flex', verticalAlign: '-3px', color: GOLD }}><Icon name="gift" size={15} /></span> {PROMO_TEXT}
             <button onClick={() => setPromoOpen(false)} aria-label="Dismiss" style={{ position: 'absolute', right: 14, background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', fontSize: 18, cursor: 'pointer' }}>×</button>
           </div>
@@ -254,21 +263,27 @@ export default function PlayerLayout({ children }) {
 
       <style>{`
         /* Icon rail: 72px of icons, expanding to 250px on hover and sitting
-           over the page, so nothing shifts underneath. Same as both admin
-           portals. */
+           over the page, so nothing shifts underneath. */
         .player-sidebar { width: 72px; overflow: hidden; transition: width .18s ease; }
         .player-sidebar:hover,
         .player-sidebar:focus-within { width: 250px; box-shadow: 8px 0 32px rgba(0,0,0,.55); }
 
-        /* A hidden label must take no WIDTH either, or the Sign Out button
-           centres its icon against invisible text and pushes it off the
-           edge — which is exactly what happened in the admin rail. */
+        .top-header { position: fixed; }
+        .top-filament { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg,transparent,rgba(239,68,68,.5),transparent); }
+
+        /* A hidden label must take no WIDTH either, or a centred-icon button
+           pushes its icon off the 72px edge. */
         .player-sidebar .rail-label {
           opacity: 0; max-width: 0; overflow: hidden;
           transition: opacity .12s ease, max-width .18s ease; pointer-events: none;
         }
         .player-sidebar:hover .rail-label,
         .player-sidebar:focus-within .rail-label { opacity: 1; max-width: 190px; pointer-events: auto; }
+
+        /* Section heading keeps its height collapsed or expanded, so rows below
+           never shift out from under the cursor when the rail widens. */
+        .player-sidebar .rail-section { height: 21px; overflow: hidden; }
+        .player-sidebar .rail-section svg { opacity: .8; }
 
         .player-sidebar .rail-btn { gap: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }
         .player-sidebar:hover .rail-btn,
@@ -283,14 +298,15 @@ export default function PlayerLayout({ children }) {
         @media (max-width: 900px) {
           .logo-full { display: none; }
           .logo-icon { display: inline-flex !important; }
-          .deposit-btn { padding: 9px 12px !important; }
+          .deposit-btn { padding: 10px 13px !important; }
         }
         @media (max-width: 768px) {
-          /* On a phone there is no hover, so the drawer opens at full width
-             with every label showing. */
+          /* On a phone there is no hover, so the drawer opens full width with
+             every label showing. */
           .player-sidebar { width: 250px !important; transform: translateX(-100%); transition: transform .25s; }
           .player-sidebar.open { transform: translateX(0); }
           .player-sidebar .rail-label { opacity: 1 !important; max-width: none !important; pointer-events: auto !important; }
+          .player-sidebar .rail-section { height: auto !important; }
           .player-sidebar .rail-btn { gap: 8px !important; padding-left: 12px !important; padding-right: 12px !important; }
           .player-main { margin-left: 0 !important; overflow-x: hidden; }
           .player-content { padding: 18px 14px !important; }
