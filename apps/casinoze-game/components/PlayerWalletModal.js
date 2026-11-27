@@ -145,8 +145,8 @@ function TabSummary({ playerId }) {
       <div>
         <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.35)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>Current Balances</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          <Tile label="Cash Balance"    value={fmt(s.cash_balance_cents)}    color="#22c55e" />
-          <Tile label="Bonus Balance"   value={fmt(s.bonus_balance_cents)}   color="#a855f7" />
+          <Tile label="Main Wallet"     value={fmt(s.cash_balance_cents)}    color="#22c55e" />
+          <Tile label="Bonus Wallet"    value={fmt(s.bonus_balance_cents)}   color="#a855f7" />
           <Tile label="Withdrawable"    value={fmt(s.withdrawable_cents)}    color="#3b82f6" />
           <Tile label="Reserved"        value={fmt(s.reserved_cents)}        color="#dc2626" />
         </div>

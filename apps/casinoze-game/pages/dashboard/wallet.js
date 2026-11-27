@@ -32,7 +32,7 @@ const TX_FILTERS = [
 // ─── Balance card ─────────────────────────────────────────────────────────────
 function BucketCard({ label, cents, color, icon, desc }) {
   return (
-    <div style={{ padding: '20px', borderRadius: 16, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', flex: 1, minWidth: 150 }}>
+    <div style={{ padding: '20px', borderRadius: 6, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(239,68,68,.12)', flex: 1, minWidth: 150 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
         <span style={{ display: 'inline-flex', color }}><Icon name={icon} size={18} color={color} /></span>
         <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)' }}>{label}</span>
@@ -67,8 +67,8 @@ function TransferModal({ wallet, onClose, onDone }) {
 
   const fromBonus = dir === 'bonus_to_cash'
   const srcCents  = fromBonus ? (wallet?.bonus_balance_cents || 0) : (wallet?.cash_balance_cents || 0)
-  const srcLabel  = fromBonus ? 'Bonus' : 'Cash'
-  const dstLabel  = fromBonus ? 'Cash' : 'Bonus'
+  const srcLabel  = fromBonus ? 'Bonus' : 'Main'
+  const dstLabel  = fromBonus ? 'Main' : 'Bonus'
   const amtCents  = Math.round((parseFloat(amount) || 0) * 100)
   const rate      = pct && pct > 0 ? pct : 0
   // Preview of what lands in the destination wallet.
@@ -93,7 +93,7 @@ function TransferModal({ wallet, onClose, onDone }) {
 
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.8)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: '#0b1626', border: '1px solid rgba(239,68,68,.3)', borderRadius: 18, padding: 24, width: '100%', maxWidth: 440 }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#160a0a', border: '1px solid rgba(239,68,68,.3)', borderRadius: 6, padding: 24, width: '100%', maxWidth: 440 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
           <h2 style={{ fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: '#fff', margin: 0 }}>Transfer</h2>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.5)', cursor: 'pointer', display: 'flex' }}><Icon name="x" size={18} /></button>
@@ -101,7 +101,7 @@ function TransferModal({ wallet, onClose, onDone }) {
 
         {/* Direction toggle */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 18 }}>
-          {[['bonus_to_cash', 'Bonus → Cash'], ['cash_to_bonus', 'Cash → Bonus']].map(([key, label]) => {
+          {[['bonus_to_cash', 'Bonus → Main'], ['cash_to_bonus', 'Main → Bonus']].map(([key, label]) => {
             const on = dir === key
             return (
               <button key={key} onClick={() => { setDir(key); setAmount(''); setErr('') }}
@@ -135,7 +135,7 @@ function TransferModal({ wallet, onClose, onDone }) {
             <span style={{ fontSize: 20, fontWeight: 800, color: '#10b981' }}>{money(recvCents)}</span>
           </div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,.3)', marginTop: 6 }}>
-            {rate > 0 ? `Rate: Bonus is worth ${rate}% of Cash` : 'Transfers are currently unavailable'}
+            {rate > 0 ? `Rate: Bonus is worth ${rate}% of Main Wallet` : 'Transfers are currently unavailable'}
           </div>
         </div>
 
@@ -247,15 +247,15 @@ export default function WalletPage() {
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(20px,3vw,28px)', fontWeight: 700, color: '#fff', marginBottom: 4 }}>My Wallet</h1>
+        <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(20px,3vw,28px)', fontWeight: 700, color: '#fff', marginBottom: 4, letterSpacing: '.06em', textTransform: 'uppercase' }}>My Wallet</h1>
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>All your balances and transaction history</p>
       </div>
 
       {/* 4 Balance cards */}
       {wallet && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px,100%),1fr))', gap: 12, marginBottom: 20 }}>
-          <BucketCard label="Cash"         cents={wallet.cash_balance_cents}   color="#10b981" icon="cash"  desc="Available to load or withdraw" />
-          <BucketCard label="Bonus"        cents={wallet.bonus_balance_cents}  color="#dc2626" icon="gift"  desc="Bonus credits" />
+          <BucketCard label="Main Wallet"  cents={wallet.cash_balance_cents}   color="#10b981" icon="cash"  desc="Available to load or withdraw" />
+          <BucketCard label="Bonus Wallet" cents={wallet.bonus_balance_cents}  color="#dc2626" icon="gift"  desc="Bonus credits" />
           <BucketCard label="Reserved"     cents={wallet.reserved_cents}       color="#94a3b8" icon="lock"  desc="Held for pending requests" />
           <BucketCard label="Withdrawable" cents={wallet.withdrawable_cents}   color="#ef4444" icon="money" desc="Ready to withdraw" />
         </div>
@@ -281,7 +281,7 @@ export default function WalletPage() {
       </div>
 
       {/* Transaction history */}
-      <div style={{ background: 'rgba(255,255,255,.02)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 18, overflow: 'hidden' }}>
+      <div style={{ background: 'rgba(255,255,255,.02)', border: '1px solid rgba(239,68,68,.12)', borderRadius: 6, overflow: 'hidden' }}>
         <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,.06)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>Transaction History</span>
           <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,.05)', padding: 4, borderRadius: 10, flexWrap: 'wrap', justifyContent: 'center' }}>

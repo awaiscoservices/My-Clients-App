@@ -139,8 +139,8 @@ export default function ProfilePage() {
 
         {/* Stat tiles */}
         <div className="pf-stats" style={{ marginBottom: 18 }}>
-          <StatTile label="Cash Balance"  value={money(p?.cash_balance_cents)}  accent={green} icon="wallet" />
-          <StatTile label="Bonus Balance" value={money(p?.bonus_balance_cents)} accent="#a855f7" icon="gift" />
+          <StatTile label="Main Wallet"   value={money(p?.cash_balance_cents)}  accent={green} icon="wallet" />
+          <StatTile label="Bonus Wallet"  value={money(p?.bonus_balance_cents)} accent="#a855f7" icon="gift" />
           <StatTile label="Total Balance" value={money(total)}                 accent={gold}  icon="gem" />
           <StatTile label="XP Points"     value={xp.toLocaleString()}          accent="#38bdf8" icon="star" />
         </div>

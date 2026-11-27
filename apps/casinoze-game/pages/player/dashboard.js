@@ -68,8 +68,8 @@ export default function PlayerDashboard() {
         <div style={{ background:'rgba(255,255,255,.03)', border:'1px solid rgba(255,255,255,.07)', borderRadius:20, padding:24 }}>
           <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.1em', textTransform:'uppercase', color:'rgba(255,255,255,.35)', marginBottom:16 }}>Wallet</div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
-            <BalanceBox label="Cash Balance"  value={fmt(wallet.cash_balance_cents)}  color="#22c55e" />
-            <BalanceBox label="Bonus Balance" value={fmt(wallet.bonus_balance_cents)} color="#6366f1" />
+            <BalanceBox label="Main Wallet"   value={fmt(wallet.cash_balance_cents)}  color="#22c55e" />
+            <BalanceBox label="Bonus Wallet"  value={fmt(wallet.bonus_balance_cents)} color="#6366f1" />
           </div>
           <div style={{ marginTop:16, paddingTop:14, borderTop:'1px solid rgba(255,255,255,.06)', display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
             <StatRow label="Total Deposited"  value={fmt(wallet.total_deposited_cents)} />

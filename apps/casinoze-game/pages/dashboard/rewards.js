@@ -86,9 +86,9 @@ function LevelCard({ level, status, bonusRows }) {
 
   return (
     <div style={{
-      background: `linear-gradient(170deg, ${accent}0f, rgba(10,20,36,.82) 60%)`,
+      background: `linear-gradient(170deg, ${accent}12, rgba(20,8,8,.85) 60%)`,
       border: `1px solid ${borderColor}`,
-      borderRadius: 14,
+      borderRadius: 6,
       boxShadow: status === 'active' ? `0 0 0 1px ${accent}55, 0 10px 30px ${accent}22` : '0 6px 18px rgba(0,0,0,.25)',
       transition: 'box-shadow .2s',
       overflow: 'hidden',
@@ -253,7 +253,7 @@ export default function PlayerLevels() {
 
       {/* Page heading */}
       <div style={{ marginBottom: 24 }}>
-        <h1 className="levels-heading" style={{ fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>Levels</h1>
+        <h1 className="levels-heading" style={{ fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 700, color: '#fff', margin: '0 0 4px', letterSpacing: '.06em', textTransform: 'uppercase' }}>VIP Levels</h1>
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 13, margin: 0 }}>
           Complete more activity to unlock higher tiers and bigger bonuses.
         </p>
@@ -262,8 +262,8 @@ export default function PlayerLevels() {
       {/* Progress bar */}
       {profile && levels.length > 0 && (
         <div className="levels-progress" style={{
-          background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.08)',
-          borderRadius: 16, padding: '18px 22px', marginBottom: 24,
+          background: 'rgba(255,255,255,.03)', border: '1px solid rgba(239,68,68,.14)',
+          borderRadius: 6, padding: '18px 22px', marginBottom: 24,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: currentLevel?.accent_color || '#ef4444' }}>
