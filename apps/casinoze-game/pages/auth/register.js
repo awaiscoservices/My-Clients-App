@@ -164,8 +164,8 @@ export default function Register() {
 
   const inputStyle = (field) => ({
     width: '100%', padding: '14px 16px', background: 'rgba(255,255,255,0.05)',
-    border: `1.5px solid ${focusedField === field ? errors[field] ? '#ef4444' : '#ef4444' : errors[field] ? 'rgba(239,68,68,0.5)' : 'rgba(239,68,68,0.2)'}`,
-    borderRadius: 10, color: '#fff', fontSize: 15, fontFamily: 'Outfit, sans-serif',
+    border: `1px solid ${focusedField === field ? errors[field] ? '#ef4444' : '#ef4444' : errors[field] ? 'rgba(239,68,68,0.5)' : 'rgba(231,216,195,0.2)'}`,
+    borderRadius: 6, color: '#fff', fontSize: 15, fontFamily: 'Outfit, sans-serif',
     outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.25s, box-shadow 0.25s',
     boxShadow: focusedField === field ? errors[field] ? '0 0 0 3px rgba(239,68,68,0.15)' : '0 0 0 3px rgba(239,68,68,0.15), 0 0 20px rgba(239,68,68,0.1)' : 'none',
     caretColor: '#ef4444',
@@ -210,10 +210,10 @@ export default function Register() {
 
         {/* OTP verification step */}
         {step === 'otp' ? (
-          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 20, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', animation: 'fadeSlideUp 0.5s ease both, pulse-glow 4s ease-in-out infinite', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(231,216,195,0.14)', borderRadius: 4, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', animation: 'fadeSlideUp 0.5s ease both', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: 1, background: 'linear-gradient(90deg, transparent, #dc2626, #ef4444, #dc2626, transparent)' }} />
             <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'center', color: '#ef4444' }}><Icon name="inbox" size={44} stroke={1.6} /></div>
-            <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 6, textAlign: 'center' }}>Verify Your Email</h2>
+            <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 6, textAlign: 'center' }}>Verify Your Email</h2>
             <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, textAlign: 'center', marginBottom: 26 }}>Enter the 6-digit code we sent to <span style={{ color: '#ef4444', fontWeight: 600 }}>{form.email}</span></p>
 
             <form onSubmit={handleVerify} noValidate>
@@ -227,8 +227,8 @@ export default function Register() {
               />
               {otpError && <p style={{ color: '#f87171', fontSize: 12, marginTop: 10, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Icon name="alert" size={13} /> {otpError}</p>}
 
-              <button type="submit" disabled={otpLoading} style={{ width: '100%', marginTop: 22, padding: 15, background: otpLoading ? 'rgba(220,38,38,0.4)' : 'linear-gradient(135deg, #dc2626, #ef4444)', border: 'none', borderRadius: 10, color: '#0a0410', fontSize: 15, fontWeight: 700, fontFamily: 'Outfit, sans-serif', letterSpacing: 0.5, cursor: otpLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: otpLoading ? 'none' : '0 4px 24px rgba(220,38,38,0.35)' }}>
-                {otpLoading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Verifying…</>) : 'Verify & Continue'}
+              <button type="submit" disabled={otpLoading} style={{ width: '100%', marginTop: 22, padding: 15, background: otpLoading ? 'rgba(220,38,38,0.4)' : 'linear-gradient(135deg, #dc2626, #ef4444)', border: 'none', borderRadius: 4, color: '#fff', fontSize: 13, fontWeight: 800, fontFamily: 'Outfit, sans-serif', letterSpacing: 1.4, textTransform: 'uppercase', cursor: otpLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: otpLoading ? 'none' : '0 4px 24px rgba(220,38,38,0.35)' }}>
+                {otpLoading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Verifying…</>) : 'Verify & Continue'}
               </button>
             </form>
 
@@ -244,9 +244,9 @@ export default function Register() {
             </p>
           </div>
         ) : !regOpen ? (
-          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 20, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', textAlign: 'center' }}>
+          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(231,216,195,0.14)', borderRadius: 4, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', textAlign: 'center' }}>
             <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'center', color: '#ef4444' }}><Icon name="lock" size={44} stroke={1.6} /></div>
-            <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 8 }}>Registrations Closed</h2>
+            <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 8 }}>Registrations Closed</h2>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, lineHeight: 1.7 }}>New sign-ups are paused right now. Please check back soon.</p>
             <p style={{ marginTop: 22, color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
               Already have an account?{' '}
@@ -254,10 +254,10 @@ export default function Register() {
             </p>
           </div>
         ) : (
-          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 20, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', animation: 'fadeSlideUp 0.7s ease 0.1s both, pulse-glow 4s ease-in-out infinite', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ width: '100%', maxWidth: 460, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(231,216,195,0.14)', borderRadius: 4, padding: 'clamp(28px, 5vw, 44px)', backdropFilter: 'blur(20px)', animation: 'fadeSlideUp 0.7s ease 0.1s both', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: 1, background: 'linear-gradient(90deg, transparent, #dc2626, #ef4444, #dc2626, transparent)' }} />
 
-            <h2 style={{ fontFamily: 'Cinzel Decorative, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 6, textAlign: 'center' }}>Join the Table</h2>
+            <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 6, textAlign: 'center' }}>Join the Table</h2>
             <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, textAlign: 'center', marginBottom: 28 }}>Create your {BRAND.short} account and start playing</p>
 
             {refLocked && refCode && (
@@ -311,10 +311,10 @@ export default function Register() {
                 {errors.confirmPassword && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="alert" size={13} /> {errors.confirmPassword}</p>}
               </div>
 
-              <button type="submit" disabled={loading} style={{ width: '100%', padding: 15, background: loading ? 'rgba(220,38,38,0.4)' : 'linear-gradient(135deg, #dc2626, #ef4444)', border: 'none', borderRadius: 10, color: '#0a0410', fontSize: 15, fontWeight: 700, fontFamily: 'Outfit, sans-serif', letterSpacing: 0.5, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: loading ? 'none' : '0 4px 24px rgba(220,38,38,0.35)' }}
+              <button type="submit" disabled={loading} style={{ width: '100%', padding: 15, background: loading ? 'rgba(220,38,38,0.4)' : 'linear-gradient(135deg, #dc2626, #ef4444)', border: 'none', borderRadius: 4, color: '#fff', fontSize: 13, fontWeight: 800, fontFamily: 'Outfit, sans-serif', letterSpacing: 1.4, textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: loading ? 'none' : '0 4px 24px rgba(220,38,38,0.35)' }}
                 onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'scale(1.02)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}>
-                {loading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#0a0410', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Creating Account…</>) : 'Create My Account'}
+                {loading ? (<><span style={{ width: 18, height: 18, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />Creating Account…</>) : 'Create My Account'}
               </button>
             </form>
 
@@ -325,7 +325,7 @@ export default function Register() {
           </div>
         )}
 
-        <p style={{ marginTop: 28, color: 'rgba(255,255,255,0.18)', fontSize: 11, letterSpacing: 1, textAlign: 'center', animation: 'fadeSlideUp 0.7s ease 0.3s both' }}>♠ ♥ CASINOZE ROOM · PLAY RESPONSIBLY ♦ ♣</p>
+        <p style={{ marginTop: 28, color: 'rgba(255,255,255,0.2)', fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', textAlign: 'center', animation: 'fadeSlideUp 0.7s ease 0.3s both' }}>◆ {BRAND.name} · Play Responsibly ◆</p>
       </div>
     </>
   );
